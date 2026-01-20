@@ -1,28 +1,80 @@
-## CHAPTER 2 Modeling with Linear Programming
+## CHAPTER 2 Modeling with Linear Programming ^chapter
 
-## Real-Life Application—Frontier Airlines Purchases Fuel Economically
+```markmap
+---
+markmap:
+  height: 643
+---
+# [[#^chapter|CHAPTER 2: Modeling with Linear Programming]]
+
+## [[#^frontier|Real-Life Application: Fuel Tankering (Frontier Airlines)]]
+
+## [[#^twovar|2.1 Two-Variable LP Model]]
+### [[#^reddy|Example: Reddy Mikks (Paint Mix)]]
+#### [[#^components|Model Components]]
+##### [[#^variables|Decision Variables]]
+##### [[#^objective|Objective Function]]
+##### [[#^constraints|Constraints (Resources, Market, Nonnegativity)]]
+#### [[#^model|Complete LP Formulation]]
+
+## [[#^graphical|2.2 Graphical LP Solution]]
+### [[#^maximization|Maximization Case]]
+#### [[#^feasible|Step 1: Feasible Region (Half-Spaces)]]
+#### [[#^optimum|Step 2: Optimal Solution (Iso-Profit Lines)]]
+#### [[#^corner|Key Result: Optimum at a Corner Point]]
+### [[#^minimization|Minimization Case]]
+#### [[#^diet|Example: Diet Problem]]
+#### [[#^weakineq|Why ≥ Matters (Don’t Pre-Guess with =)]] 
+
+## [[#^computer|2.3 Computer Solution (Solver & AMPL)]]
+### [[#^solver|Excel Solver Workflow]]
+### [[#^ampl|AMPL Modeling Basics]]
+#### [[#^longhand|Rudimentary (Longhand) Model]]
+#### [[#^modeldata|Model vs Data Separation]]
+
+## [[#^applications|2.4 Linear Programming Applications]]
+### [[#^investment|Investment]]
+#### [[#^bankloan|Example: Bank Loan Model]]
+### [[#^production|Production Planning & Inventory]]
+#### [[#^singleperiod|Example: Single-Period Production]]
+#### [[#^multiperiod|Example: Multi-Period Production–Inventory]]
+#### [[#^smoothing|Example: Production Smoothing]]
+### [[#^workforce|Workforce Planning]]
+#### [[#^qantas|Real-Life Application: Qantas]]
+#### [[#^busscheduling|Example: Bus Scheduling]]
+### [[#^urban|Urban Development Planning]]
+#### [[#^urbanrenewal|Example: Urban Renewal]]
+### [[#^blending|Blending & Refining]]
+#### [[#^crudeoil|Example: Crude Oil Refining & Gasoline Blending]]
+### [[#^additional|Additional Applications]]
+
+## [[#^bibliography|Bibliography]]
+## [[#^problems|Problems]]
+```
+
+## Real-Life Application—Frontier Airlines Purchases Fuel Economically ^frontier
 
 The fueling of an aircraft can take place at any of the stopovers along a flight route. Fuel price varies among the stopovers, and potential savings can be realized by tankering (loading) extra fuel at a cheaper location for use on subsequent flight legs. The disadvantage is that the extra weight of tankered fuel will result in higher burn of gasoline. Linear programming (LP) and heuristics are used to determine the optimum amount of tanker-ing that balances the cost of excess burn against the savings in fuel cost. The study, carried out in 1981, resulted in net savings of about $350,000 per year. With the significant rise in the cost of fuel, many airlines are using LP-based tankering software to purchase fuel. Details of the study are given in Case 1, Chapter 26 on the website.
 
-### 2.1 TWO-VARIABLE LP MODEL
+### 2.1 TWO-VARIABLE LP MODEL ^twovar
 
 This section deals with the graphical solution of a two-variable LP. Though two-variable problems hardly exist in practice, the treatment provides concrete foundations for the development of the general simplex algorithm presented in Chapter 3.
 
-## Example 2.1-1 (The Reddy Mikks Company)
+## Example 2.1-1 (The Reddy Mikks Company) ^reddy
 
 Reddy Mikks produces both interior and exterior paints from two raw materials, ${M1}$ and ${M2}$ . The following table provides the basic data of the problem:
 
-| | Exterior paint | Interior paint | Maximum daily availability (tons) |
-|---|---|---|---|
-| Raw material, M1 | 6 | 4 | 24 |
-| Raw material, M2 | 1 | 2 | 6 |
-| Profit per ton ($1000) | 5 | 4 | |
+|                        | Exterior paint | Interior paint | Maximum daily availability (tons) |
+| ---------------------- | -------------- | -------------- | --------------------------------- |
+| Raw material, M1       | 6              | 4              | 24                                |
+| Raw material, M2       | 1              | 2              | 6                                 |
+| Profit per ton ($1000) | 5              | 4              |                                   |
 
 The daily demand for interior paint cannot exceed that for exterior paint by more than 1 ton. Also, the maximum daily demand for interior paint is 2 tons.
 
 Reddy Mikks wants to determine the optimum (best) product mix of interior and exterior paints that maximizes the total daily profit.
 
-All OR models, LP included, consist of three basic components:
+All OR models, LP included, consist of three basic components: ^components
 
 1. Decision variables that we seek to determine.
 
@@ -32,7 +84,7 @@ All OR models, LP included, consist of three basic components:
 
 The proper definition of the decision variables is an essential first step in the development of the model. Once done, the task of constructing the objective function and the constraints becomes more straightforward.
 
-For the Reddy Mikks problem, we need to determine the daily amounts of exterior and interior paints to be produced. Thus the variables of the model are defined as:
+For the Reddy Mikks problem, we need to determine the daily amounts of exterior and interior paints to be produced. Thus the variables of the model are defined as: ^variables
 
 $$
 {x}_{1} = \text{ Tons produced daily of exterior paint }
@@ -52,13 +104,13 @@ $$
 \text{ Profit from interior paint } = 4{x}_{2}\text{ (thousand) dollars }
 $$
 
-Letting $z$ represent the total daily profit (in thousands of dollars), the objective (or goal) of Reddy Mikks is expressed as
+Letting $z$ represent the total daily profit (in thousands of dollars), the objective (or goal) of Reddy Mikks is expressed as ^objective
 
 $$
 \text{ Maximize }z = 5{x}_{1} + 4{x}_{2}
 $$
 
-Next, we construct the constraints that restrict raw material usage and product demand. The raw material restrictions are expressed verbally as
+Next, we construct the constraints that restrict raw material usage and product demand. The raw material restrictions are expressed verbally as ^constraints
 
 $$
 \left( \begin{matrix} \text{ Usage of a raw material } \\  \text{ by both paints } \end{matrix}\right)  \leq  \left( \begin{matrix} \text{ Maximum raw material } \\  \text{ availability } \end{matrix}\right)
@@ -98,7 +150,7 @@ $$
 
 An implicit (or "understood-to-be") restriction requires (all) the variables, ${x}_{1}$ and ${x}_{2}$ , to assume zero or positive values only. The restrictions, expressed as ${x}_{1} \geq  0$ and ${x}_{2} \geq  0$ , are referred to as nonnegativity constraints.
 
-The complete Reddy Mikks model is
+The complete Reddy Mikks model is ^model
 
 $$
 \text{ Maximize }z = 5{x}_{1} + 4{x}_{2}
@@ -132,7 +184,7 @@ The goal of the problem is to find the optimum, the best feasible solution that 
 
 Remarks. The objective and the constraint function in all LPs must be linear. Additionally, all the parameters (coefficients of the objective and constraint functions) of the model are known with certainty.
 
-### 2.2 GRAPHICAL LP SOLUTION
+### 2.2 GRAPHICAL LP SOLUTION ^graphical
 
 The graphical solution includes two steps:
 
@@ -142,13 +194,13 @@ The graphical solution includes two steps:
 
 The presentation uses two examples to show how maximization and minimization objective functions are handled.
 
-#### 2.2.1 Solution of a Maximization Model
+#### 2.2.1 Solution of a Maximization Model ^maximization
 
 Example 2.2-1
 
 This example solves the Reddy Mikks model of Example 2.1-1.
 
-## Step 1. Determination of the Feasible Solution Space:
+## Step 1. Determination of the Feasible Solution Space: ^feasible
 
 First, consider the nonnegativity constraints ${x}_{1} \geq  0$ and ${x}_{2} \geq  0$ . In Figure 2.1, the horizontal axis ${x}_{1}$ and the vertical axis ${x}_{2}$ represent the exterior- and interior-paint variables, respectively. Thus, the nonnegativity constraints restrict the variables to the first quadrant (above the ${x}_{1}$ -axis and to the right of the ${x}_{2}$ -axis).
 
@@ -164,7 +216,7 @@ Feasible space of the Reddy Mikks model
 
 ![bo_d56m43v7aajc73800n2g_3_470_1309_924_864_0.jpg](bo_d56m43v7aajc73800n2g_3_470_1309_924_864_0.jpg)
 
-## Step 2. Determination of the Optimum Solution:
+## Step 2. Determination of the Optimum Solution: ^optimum
 
 The number of solution points in the feasible space ${ABCDEF}$ in Figure 2.1 is infinite, clearly precluding the use of exhaustive enumeration. A systematic procedure is thus needed to determine the optimum solution.
 
@@ -188,15 +240,20 @@ Optimum solution of the Reddy Mikks model
 
 The solution is ${x}_{1} = 3$ and ${x}_{2} = {1.5}$ with $z = \left( {5 \times  3}\right)  + \left( {4 \times  {1.5}}\right)  = {21}$ . This calls for a daily product mix of 3 tons of exterior paint and 1.5 tons of interior paint. The associated daily profit is \$21,000.
 
-Remarks. In practice, a typical LP may include hundreds or even thousands of variables and constraints. Of what good then is the study of a two-variable LP? The answer is that the graphical solution provides a key result: The optimum solution of an LP, when it exists, is always associated with a corner point of the solution space, thus limiting the search for the optimum from an infinite number of feasible points to a finite number of corner points. This powerful result is the basis for the development of the general algebraic simplex method presented in Chapter 3.1
+Remarks. In practice, a typical LP may include hundreds or even thousands of variables and constraints. Of what good then is the study of a two-variable LP? The answer is that the graphical solution provides a key result: The optimum solution of an LP, when it exists, is always associated with a corner point of the solution space, thus limiting the search for the optimum from an infinite number of feasible points to a finite number of corner points. This powerful result is the basis for the development of the general algebraic simplex method presented in Chapter 3.1 ^corner
 
-#### 2.2.2 Solution of a Minimization Model
+#### 2.2.2 Solution of a Minimization Model ^minimization
 
-## Example 2.2-2 (Diet Problem)
+## Example 2.2-2 (Diet Problem) ^diet
 
 Ozark Farms uses at least 800 lb of special feed daily. The special feed is a mixture of corn and soybean meal with the following compositions:
 
-<table><tr><td rowspan="2">Feedstuff</td><td colspan="2">lb per lb of feedstuff</td><td rowspan="2">Cost (\$/lb)</td></tr><tr><td>Protein</td><td>Fiber</td></tr><tr><td>Corn</td><td>.09</td><td>.02</td><td>.30</td></tr><tr><td>Soybean meal</td><td>.60</td><td>.06</td><td>.90</td></tr></table>
+
+| Feedstuff | lb per lb of feedstuff - Protein | Fiber | Cost (\$/lb) |
+| --- | --- | --- | --- |
+| Corn | .09 | .02 | .30 |
+| Soybean meal | .60 | .06 | .90 |
+
 
 The dietary requirements of the special feed are at least 30% protein and at most 5% fiber. The goal is to determine the daily minimum-cost feed mix.
 
@@ -288,13 +345,13 @@ Graphical solution of the diet model the feasible half-spaces of these two const
 
 The model minimizes the value of the objective function by reducing $z$ in the direction shown in Figure 2.3. The optimum solution is the intersection of the two lines ${x}_{1} + {x}_{2} = {800}$ and ${.21}{x}_{1} - {.3}{x}_{2} = 0$ , which yields ${x}_{1} = {470.6}\mathrm{{lb}}$ and ${x}_{2} = {329.4}\mathrm{{lb}}$ . The minimum cost of the feed mix is $z = {.3} \times  {470.6} + {.9} \times  {329.4} = \$ {437.64}$ per day.
 
-Remarks. One may wonder why the constraint ${x}_{1} + {x}_{2} \geq  {800}$ cannot be replaced with ${x}_{1} + {x}_{2} = {800}$ because it would not be optimum to produce more than the minimum quantity. Although the solution of the present model did satisfy the equation, a more complex model may impose additional restrictions that would require mixing more than the minimum amount. More importantly, the weak inequality (≥), by definition, implies the equality case, so that the equation $\left(  = \right)$ is permitted if optimality requires it. The conclusion is that one should not "preguess" the solution by imposing the additional equality restriction.
+Remarks. One may wonder why the constraint ${x}_{1} + {x}_{2} \geq  {800}$ cannot be replaced with ${x}_{1} + {x}_{2} = {800}$ because it would not be optimum to produce more than the minimum quantity. Although the solution of the present model did satisfy the equation, a more complex model may impose additional restrictions that would require mixing more than the minimum amount. More importantly, the weak inequality (≥), by definition, implies the equality case, so that the equation $\left(  = \right)$ is permitted if optimality requires it. The conclusion is that one should not "preguess" the solution by imposing the additional equality restriction. ^weakineq
 
-### 2.3 COMPUTER SOLUTION WITH SOLVER AND AMPL
+### 2.3 COMPUTER SOLUTION WITH SOLVER AND AMPL ^computer
 
 In practice, where typical LP models may involve thousands of variables and constraints, the computer is the only viable venue for solving LP problems. This section presents two commonly used software systems: Excel Solver and AMPL. Solver is particularly appealing to spreadsheet users. AMPL is an algebraic modeling language that, like all higher-order programming languages, requires more expertise. Nevertheless, AMPL, and similar languages, ${}^{2}$ offers great modeling flexibility. Although the presentation in this section concentrates on LPs, both AMPL and Solver can handle integer and nonlinear problems, as will be shown in later chapters.
 
-#### 2.3.1 LP Solution with Excel Solver
+#### 2.3.1 LP Solution with Excel Solver ^solver
 
 In Excel Solver, the spreadsheet is the input and output medium for the LP. Figure 2.4 shows the layout of the data for the Reddy Mikks model (file solverRM1.xls). The top of the figure includes four types of information: (1) input data cells (B5:C9 and F6:F9), (2) cells representing the variables and the objective function (B13:D13), (3) algebraic definitions of the objective function and the left-hand side of the constraints (cells D5:D9), and (4) cells that provide (optional) explanatory names or symbols. Solver requires the first three types only. The fourth type enhances readability but serves no other purpose. The relative positioning of the four types of information on the spreadsheet (as suggested in Figure 2.4) is convenient for proper cell cross-referencing in Solver, and its use is recommended.
 
@@ -314,7 +371,15 @@ How does Solver link to the spreadsheet data? First, we provide "algebraic" defi
 
 input data (cells B5:C9 and F6:F9) and the objective function and variables (cells B13:D13). Next, we place the resulting formulas appropriately in cells D5:D9, as the following table shows:
 
-<table><tr><td></td><td>Algebraic expression</td><td>Spreadsheet formula</td><td>Entered in cell</td></tr><tr><td>Objective, $z$</td><td>$5{x}_{1} + 4{x}_{2}$</td><td>=B5*\$B\$13+C5*\$C\$13</td><td>D5</td></tr><tr><td>Constraint 1</td><td>$6{x}_{1} + 4{x}_{2}$</td><td>=B6*\$B\$13+C6*\$C\$13</td><td>D6</td></tr><tr><td>Constraint 2</td><td>${x}_{1} + 2{x}_{2}$</td><td>=B7*\$B\$13+C7*\$C\$13</td><td>D7</td></tr><tr><td>Constraint 3</td><td>$- {x}_{1} + {x}_{2}$</td><td>=B8*\$B\$13+C8*\$C\$13</td><td>D8</td></tr><tr><td>Constraint 4</td><td>$0{x}_{1} + {x}_{2}$</td><td>=B9*\$B\$13+C9*\$C\$13</td><td>D9</td></tr></table>
+
+|                | Algebraic expression  | Spreadsheet formula    | Entered in cell |
+| -------------- | --------------------- | ---------------------- | --------------- |
+| Objective, $z$ | $5{x}_{1} + 4{x}_{2}$ | =B5*\$B\$13+C5*\$C\$13 | D5              |
+| Constraint 1   | $6{x}_{1} + 4{x}_{2}$ | =B6*\$B\$13+C6*\$C\$13 | D6              |
+| Constraint 2   | ${x}_{1} + 2{x}_{2}$  | =B7*\$B\$13+C7*\$C\$13 | D7              |
+| Constraint 3   | $- {x}_{1} + {x}_{2}$ | =B8*\$B\$13+C8*\$C\$13 | D8              |
+| Constraint 4   | $0{x}_{1} + {x}_{2}$  | =B9*\$B\$13+C9*\$C\$13 | D9              |
+
 
 Actually, you only need to enter the formula for cell D5 and then copy it into cells D6:D9. To do so correctly, it is necessary to use fixed referencing of the cells representing ${x}_{1}$ and ${x}_{2}$ (i.e., $\$ \mathrm{B}\$ {13}$ and $\$ \mathrm{C}\$ {13}$ , respectively).
 
@@ -382,13 +447,13 @@ FIGURE 2.6
 
 Use of range names in Excel Solver (file solverRM2.xls)
 
-#### 2.3.2 LP Solution with AMPL ${}^{5}$
+#### 2.3.2 LP Solution with AMPL ${}^{5}$ ^ampl
 
 This section provides a brief introduction to AMPL. The material in Appendix C on the website details AMPL syntax. It will be cross-referenced with the presentation in this section and with other AMPL presentations in the book. The two examples presented here deal with the basics of AMPL.
 
-Reddy Mikks Problem-A Rudimentary Model. AMPL provides a facility for modeling an LP in a rudimentary longhand format. Figure 2.7 gives the self-explanatory code for the Reddy Mikks model (file amplRM1.txt). All reserved keywords are in bold. All other names are user generated. The objective function and each of the constraints must have distinct (user-generated) names followed by a colon. Each statement closes with a semicolon.
+Reddy Mikks Problem-A Rudimentary Model. AMPL provides a facility for modeling an LP in a rudimentary longhand format. Figure 2.7 gives the self-explanatory code for the Reddy Mikks model (file amplRM1.txt). All reserved keywords are in bold. All other names are user generated. The objective function and each of the constraints must have distinct (user-generated) names followed by a colon. Each statement closes with a semicolon. ^longhand
 
-The longhand format is problem-specific, in the sense that a new code is needed whenever the input data are changed. For practical problems (with complex structure and a large number of variables and constraints), the longhand format is at best cumbersome. AMPL alleviates this difficulty by devising a code that divides the problem into two components: (1) a general algebraic model for a specific class of problems
+The longhand format is problem-specific, in the sense that a new code is needed whenever the input data are changed. For practical problems (with complex structure and a large number of variables and constraints), the longhand format is at best cumbersome. AMPL alleviates this difficulty by devising a code that divides the problem into two components: (1) a general algebraic model for a specific class of problems ^modeldata
 
 ---
 
@@ -578,7 +643,7 @@ AMPL allows separating the algebraic model and the data into two independent fil
 
 AMPL offers a wide range of programming capabilities. For example, the input/ output data can be secured from/sent to external files, spreadsheets, and databases, and the model can be executed interactively for a wide variety of options. The details are given in Appendix C on the website.
 
-### 2.4 LINEAR PROGRAMMING APPLICATIONS
+### 2.4 LINEAR PROGRAMMING APPLICATIONS ^applications
 
 This section presents realistic LP models in which the definition of the variables and the construction of the objective function and the constraints are not as straightforward as in the case of the two-variable model. The areas covered by these applications include the following:
 
@@ -594,15 +659,23 @@ This section presents realistic LP models in which the definition of the variabl
 
 Each model is detailed, and its optimum solution is interpreted.
 
-#### 2.4.1 Investment
+#### 2.4.1 Investment ^investment
 
 Multitudes of investment opportunities are available to today's investor. Examples of investment problems are capital budgeting for projects, bond investment strategy, stock portfolio selection, and establishment of bank loan policy. In many of these situations, LP can be used to select the optimal mix of opportunities that will maximize return while meeting requirements set by the investor and the market.
 
-## Example 2.4-1 (Bank Loan Model)
+## Example 2.4-1 (Bank Loan Model) ^bankloan
 
 Bank One is in the process of devising a loan policy that involves a maximum of \$12 million. The following table provides the pertinent data about available loans.
 
-<table><tr><td>Type of loan</td><td>Interest rate</td><td>Bad-debt ratio</td></tr><tr><td>Personal</td><td>.140</td><td>.10</td></tr><tr><td>Car</td><td>.130</td><td>.07</td></tr><tr><td>Home</td><td>.120</td><td>.03</td></tr><tr><td>Farm</td><td>.125</td><td>.05</td></tr><tr><td>Commercial</td><td>.100</td><td>.02</td></tr></table>
+
+| Type of loan | Interest rate | Bad-debt ratio |
+| --- | --- | --- |
+| Personal | .140 | .10 |
+| Car | .130 | .07 |
+| Home | .120 | .03 |
+| Farm | .125 | .05 |
+| Commercial | .100 | .02 |
+
 
 Bad debts are unrecoverable and produce no interest revenue.
 
@@ -738,15 +811,25 @@ $$
 
 This shows that the combined annual rate of return is 8.034%, which is less than the best net interest rate (= 8.64% for home loans), and one wonders why the model does not take full advantage of this opportunity. The answer is that the stipulation that farm and commercial loans must account for at least 40% of all loans (constraint 2) forces the solution to allocate $\$ {4.8}$ million to commercial loans at the lower net rate of ${7.8}\%$ , hence lowering the overall interest rate to ${100}\left( \frac{{.0864} \times  {7.2} + {.078} \times  {4.8}}{12}\right)  = {8.034}\%$ . In fact, if we remove constraint 2, the optimum will allocate all the funds to home loans at the higher 8.64% rate (try it using the AMPL model!).
 
-#### 2.4.2 Production Planning and Inventory Control
+#### 2.4.2 Production Planning and Inventory Control ^production
 
 There is a wealth of LP applications in the area of production planning and inventory control. This section presents three examples. The first deals with production scheduling to meet a single-period demand. The second deals with the use of inventory in a multiperiod production system to meet future demand, and the third deals with the use of inventory and worker hiring/firing to "smooth" production over a multiperiod planning horizon.
 
-## Example 2.4-2 (Single-Period Production Model)
+## Example 2.4-2 (Single-Period Production Model) ^singleperiod
 
 In preparation for the winter season, a clothing company is manufacturing parka and goose overcoats, insulated pants, and gloves. All products are manufactured in four different departments: cutting, insulating, sewing, and packaging. The company has received firm orders for its products. The contract stipulates a penalty for undelivered items. Devise an optimal production plan for the company based on the following data:
 
-<table><tr><td rowspan="2">Department</td><td colspan="4">Time per unit (hr)</td><td rowspan="2">Capacity (hr)</td></tr><tr><td>Parka</td><td>Goose</td><td>Pants</td><td>Gloves</td></tr><tr><td>Cutting</td><td>.30</td><td>.30</td><td>.25</td><td>.15</td><td>1000</td></tr><tr><td>Insulating</td><td>.25</td><td>.35</td><td>.30</td><td>.10</td><td>1000</td></tr><tr><td>Sewing</td><td>.45</td><td>.50</td><td>.40</td><td>.22</td><td>1000</td></tr><tr><td>Packaging</td><td>.15</td><td>.15</td><td>.1</td><td>.05</td><td>1000</td></tr><tr><td>Demand</td><td>800</td><td>750</td><td>600</td><td>500</td><td></td></tr><tr><td>Unit profit</td><td>\$30</td><td>\$40</td><td>\$20</td><td>\$10</td><td></td></tr><tr><td>Unit penalty</td><td>\$15</td><td>\$20</td><td>\$10</td><td>\$8</td><td></td></tr></table>
+
+| Department | Time per unit (hr) - Parka | Goose | Pants | Gloves | Capacity (hr) |
+| --- | --- | --- | --- | --- | --- |
+| Cutting | .30 | .30 | .25 | .15 | 1000 |
+| Insulating | .25 | .35 | .30 | .10 | 1000 |
+| Sewing | .45 | .50 | .40 | .22 | 1000 |
+| Packaging | .15 | .15 | .1 | .05 | 1000 |
+| Demand | 800 | 750 | 600 | 500 |  |
+| Unit profit | \$30 | \$40 | \$20 | \$10 |  |
+| Unit penalty | \$15 | \$20 | \$10 | \$8 |  |
+
 
 Mathematical Model: The variables of the problem are as follows:
 
@@ -818,7 +901,7 @@ $$
 
 The optimum solution (obtained using file amplEx2.4-2.txt) is $z = \$ {64},{625},{x}_{1} = {800},{x}_{2} = {750}$ , ${x}_{3} = {387.5},{x}_{4} = {500},{s}_{1} = {s}_{2} = {s}_{4} = 0,{s}_{3} = {212.5}$ . The solution satisfies all the demand for both types of jackets and the gloves. A shortage of 213 (rounded up from 212.5) pairs of pants will result in a penalty cost of ${213} \times  \$ {10} = \$ {2130}$ .
 
-## Example 2.4-3 (Multiple Period Production-Inventory Model)
+## Example 2.4-3 (Multiple Period Production-Inventory Model) ^multiperiod
 
 Acme Manufacturing Company has a contract to deliver 100, 250, 190, 140, 220, and 110 home windows over the next 6 months. Production cost (labor, material, and utilities) per window varies by period and is estimated to be \$50, \$45, \$55, \$48, \$52, and \$50 over the next 6 months. To take advantage of the fluctuations in manufacturing cost, Acme can produce more windows than needed in a given month and hold the extra units for delivery in later months. This will incur a storage cost at the rate of $\$ 8$ per window per month, assessed on end-of-month inventory. Develop a linear program to determine the optimum production schedule.
 
@@ -902,7 +985,7 @@ Note that the initial inventory, ${I}_{0}$ , is zero. Also, in any optimal solut
 
 The optimum solution (obtained using file amplEx2.4-3.txt) is summarized in Figure 2.10. It shows that each month's demand is satisfied from the same month's production, except for month 2, where the production quantity (=440units) covers the demand for both months 2 and 3 . The total associated cost is $z = \$ {49},{980}$ .
 
-## Example 2.4-4 (Multiperiod Production Smoothing Model)
+## Example 2.4-4 (Multiperiod Production Smoothing Model) ^smoothing
 
 A company is planning the manufacture of a product for March, April, May, and June of next year. The demand quantities are 520, 720, 520, and 620 units, respectively. The company has a steady workforce of 10 employees but can meet fluctuating production needs by hiring and firing temporary workers. The extra costs of hiring and firing a temp in any month are \$200 and \$400, respectively. A permanent worker produces 12 units per month, and a temporary worker, lacking equal experience, produces 10 units per month. The company can produce more than needed in any month and carry the surplus over to a succeeding month at a holding cost of \$50 per unit per month. Develop an optimal hiring/firing policy over the 4-month planning horizon.
 
@@ -1066,9 +1149,9 @@ $$
 
 The optimum solution (obtained using file amplEx2.4-4.txt) is $z = \$ {19},{500},{x}_{1} = {50},{x}_{2} = {50}$ , ${x}_{2} = {50},{x}_{3} = {45},{x}_{4} = {45},{S}_{1}^{ - } = {50},{S}_{3}^{ + } = 5,{I}_{1} = {100},{I}_{3} = {50}$ . All the remaining variables are zero. The solution calls for hiring 50 temps in March $\left( {{S}_{1}^{ - } = {50}}\right)$ and holding the workforce steady till May when five temps are fired $\left( {{S}_{3}^{ + } = 5}\right)$ . No further hiring or firing is recommended until the end of June, when, presumably, all temps are terminated. This solution requires 100 units of inventory to be carried into May and 50 units to be carried into June.
 
-#### 2.4.3 Workforce Planning
+#### 2.4.3 Workforce Planning ^workforce
 
-## Real-Life Application-Telephone Sales Workforce Planning at Qantas Airways
+## Real-Life Application-Telephone Sales Workforce Planning at Qantas Airways ^qantas
 
 Australian airline Qantas operates its main reservation offices from 7:00 till 22:00 using six shifts that start at different times of the day. Qantas used LP (with imbedded queuing analysis) to staff its main telephone sales reservation office efficiently while providing convenient service to its customers. The study, carried out in the late 1970s, resulted in annual savings of over 200,000 Australian dollars per year. The study is detailed in Case 15, Chapter 26, on the website.
 
@@ -1076,7 +1159,7 @@ Fluctuations in a labor force to meet variable demand over time can be achieved 
 
 The idea of redefining the start of a shift to accommodate fluctuation in demand can be extended to other operating environments as well. Example 2.4-5 deals with the determination of the minimum number of buses needed to meet rush-hour and off-hour transportation needs.
 
-## Example 2.4-5 (Bus Scheduling Model)
+## Example 2.4-5 (Bus Scheduling Model) ^busscheduling
 
 Progress City is studying the feasibility of introducing a mass-transit bus system to reduce in-city driving. The study seeks the minimum number of buses that can handle the transportation needs. After gathering necessary information, the city engineer noticed that the minimum number of buses needed fluctuated with time of the day, and that the required number of buses could be approximated by constant values over successive 4-hr intervals. Figure 2.11 summarizes the engineer's findings. To carry out the required daily maintenance, each bus can operate only 8 successive hours a day.
 
@@ -1118,7 +1201,16 @@ Number of buses as a function of the time of the day
 
 We can see from Figure 2.11 that because of the overlapping of the shifts, the number of buses for the successive 4-hr periods can be computed as follows:
 
-<table><tr><td>Time period</td><td>Number of buses in operation</td></tr><tr><td>12:01 A.M. to 4:00 A.M.</td><td>${x}_{1} + {x}_{6}$</td></tr><tr><td>4:01 A.M. to 8:00 A.M.</td><td>${x}_{1} + {x}_{2}$</td></tr><tr><td>8:01 A.M. to 12:00 noon</td><td>${x}_{2} + {x}_{3}$</td></tr><tr><td>12:01 P.M. to 4:00 P.M.</td><td>${x}_{3} + {x}_{4}$</td></tr><tr><td>4:01 P.M. to 8:00 P.M.</td><td>${x}_{4} + {x}_{5}$</td></tr><tr><td>8:01 A.M. to 12:00 A.M.</td><td>${x}_{5} + {x}_{6}$</td></tr></table>
+
+| Time period | Number of buses in operation |
+| --- | --- |
+| 12:01 A.M. to 4:00 A.M. | ${x}_{1} + {x}_{6}$ |
+| 4:01 A.M. to 8:00 A.M. | ${x}_{1} + {x}_{2}$ |
+| 8:01 A.M. to 12:00 noon | ${x}_{2} + {x}_{3}$ |
+| 12:01 P.M. to 4:00 P.M. | ${x}_{3} + {x}_{4}$ |
+| 4:01 P.M. to 8:00 P.M. | ${x}_{4} + {x}_{5}$ |
+| 8:01 A.M. to 12:00 A.M. | ${x}_{5} + {x}_{6}$ |
+
 
 The complete model thus becomes
 
@@ -1160,11 +1252,11 @@ $$
 
 The optimal solution (obtained using file amplEx2.4-5.txt, solverEx2.4-5.xls, or toraEx2.4-5.txt) calls for scheduling 26 buses (compared with 30 buses when the three traditional shifts are used). The schedule calls for ${x}_{1} = 4$ buses to start at 12:01 A.M., ${x}_{2} = {10}$ at 4:01 A.M., ${x}_{4} = 8$ at 12:01 P.M., and ${x}_{5} = 4$ at 4:01 P.M. (Note: File solverEx2.4-5.xls yields the alternative optimum ${x}_{1} = 2,{x}_{2} = 6,{x}_{3} = 4,{x}_{4} = 6,{x}_{5} = 6$ , and ${x}_{6} = 2$ , with $z = {26}$ .)
 
-#### 2.4.4 Urban Development Planning ${}^{6}$
+#### 2.4.4 Urban Development Planning ${}^{6}$ ^urban
 
 Urban planning deals with three general areas: (1) building new housing developments, (2) upgrading inner-city deteriorating housing and recreational areas, and (3) planning public facilities (such as schools and airports). The constraints associated with these projects are both economic (land, construction, and financing) and social (schools, parks, and income level). The objectives in urban planning vary. In new housing developments, profit is usually the motive for undertaking the project. In the remaining two categories, the goals involve social, political, economic, and cultural considerations. Indeed, in a publicized case in 2004, the mayor of a city in Ohio wanted to condemn an old area of the city to make way for a luxury housing development. The motive was to increase tax collection to help alleviate budget shortages. The example presented in this section is fashioned after the Ohio case.
 
-## Example 2.4-6 (Urban Renewal Model)
+## Example 2.4-6 (Urban Renewal Model) ^urbanrenewal
 
 The city of Erstville is faced with a severe budget shortage. Seeking a long-term solution, the city council votes to improve the tax base by condemning an inner-city housing area and replacing it with a modern development.
 
@@ -1344,11 +1436,11 @@ Number of homes demolished $= {x}_{5} = {244.49} \simeq  {245}$ units
 
 Remarks. Linear programming does not automatically guarantee an integer solution, and this is the reason for rounding the continuous values to the closest integer. The rounded solution calls for constructing ${180}\left( { = {36} + {99} + {45}}\right)$ units and demolishing 245 old homes, which yields \$345,600 in taxes. Keep in mind, however, that, in general, the rounded solution may not be feasible. In fact, the current rounded solution violates the budget constraint by \$70,000 (verify!). Interestingly, the true optimum integer solution (using the algorithms in Chapter 9) is ${x}_{1} = {36},{x}_{2} = {98},{x}_{3} = {45},{x}_{4} = 0$ , and ${x}_{5} = {245}$ with $z = \$ {343},{700}$ . Carefully note that the rounded solution yields a better objective value, which appears contradictory. The reason is that the rounded solution calls for producing an extra double home, which is feasible only if the budget is increased by \$70,000.
 
-#### 2.4.5 Blending and Refining
+#### 2.4.5 Blending and Refining ^blending
 
 A number of LP applications deal with blending different input materials to manufacture products that meet certain specifications while minimizing cost or maximizing profit. The input materials could be ores, metal scraps, chemicals, or crude oils, and the output products could be metal ingots, paints, or gasoline of various grades. This section presents a (simplified) model for oil refining. The process starts with distilling crude oil to produce intermediate gasoline stocks, and then blending these stocks to produce final gasoline products. The final products must satisfy certain quality specifications (such as octane rating). In addition, distillation capacities and demand limits can directly affect the level of production of the different grades of gasoline. One goal of the model is to determine the optimal mix of final products that will maximize an appropriate profit function. In some cases, the goal may be to minimize a cost function.
 
-## Example 2.4-7 (Crude Oil Refining and Gasoline Blending)
+## Example 2.4-7 (Crude Oil Refining and Gasoline Blending) ^crudeoil
 
 Shale Oil, located on the island of Aruba, has a capacity of 1,500,000 bbl of crude oil per day. The final products from the refinery include three types of unleaded gasoline with different octane numbers (ON): regular with ON = 87, premium with ON = 89, and super with ON = 92 . The refining process encompasses three stages: (1) a distillation tower that produces feedstock (ON = 82) at the rate of .2 bbl per bbl of crude oil, (2) a cracker unit that produces gasoline stock (ON = 98) by using a portion of the feedstock produced from the distillation tower at the rate of ${.5}\mathrm{\;b}\mathrm{{bl}}$ per bbl of feedstock, and (3) a blender unit that blends the gasoline stock from the cracker unit and the feedstock from the distillation tower. The company estimates the net profit per barrel of the three types of gasoline to be \$6.70, \$7.20, and \$8.10, respectively. The input capacity of the cracker unit is 200,000 bbl of feedstock a day. The demand limits for regular, premium, and super gasoline are 50,000, 30,000, and 40,000 bbl, respectively, per day. Develop a model for determining the optimum production schedule for the refinery.
 
@@ -1542,11 +1634,11 @@ Daily amount of super gasoline $= {x}_{13} + {x}_{23} = {15},{000} + {25},{000} 
 
 The solution shows that regular gasoline production is 20,000 bbl/day short of satisfying the maximum demand. The demand for the remaining two grades is satisfied.
 
-#### 2.4.6 Additional LP Applications
+#### 2.4.6 Additional LP Applications ^additional
 
 The preceding sections have demonstrated representative LP applications in five areas. Problems 2-77 to 2-87 provide additional areas of application, ranging from agriculture to military.
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^bibliography
 
 Dantzig, G. and M. Thapa, Linear Programming 1: Introduction, Springer, New York, 1997.
 
@@ -1560,9 +1652,18 @@ Shepard, R., D. Hartley, P. Hasman, L. Thorpe, and M. Bathe, Applied Operations 
 
 Stark, R., and R. Nicholes, Mathematical Programming Foundations for Design: Civil Engineering Systems, McGraw-Hill, New York, 1972.
 
-## PROBLEMS
+## PROBLEMS ^problems
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>2.1</td><td>2-1 to 2-4</td><td>2.4.2</td><td>2-47 to 2-54</td></tr><tr><td>2.2.1</td><td>2-5 to 2-27</td><td>2.4.3</td><td>2-55 to 2-60</td></tr><tr><td>2.2.2</td><td>2-28 to 2-35</td><td>2.4.4</td><td>2-61 to 2-66</td></tr><tr><td>2.3.1</td><td>2-36 to 2-37</td><td>2.4.5</td><td>2-67 to 2-76</td></tr><tr><td>2.3.2</td><td>2-38 to 2-39</td><td>2.4.6</td><td>2-77 to 2-87</td></tr><tr><td>2.4.1</td><td>2-40 to 2-46</td><td></td><td></td></tr></table>
+
+| Section | Assigned Problems | Section | Assigned Problems |
+| --- | --- | --- | --- |
+| 2.1 | 2-1 to 2-4 | 2.4.2 | 2-47 to 2-54 |
+| 2.2.1 | 2-5 to 2-27 | 2.4.3 | 2-55 to 2-60 |
+| 2.2.2 | 2-28 to 2-35 | 2.4.4 | 2-61 to 2-66 |
+| 2.3.1 | 2-36 to 2-37 | 2.4.5 | 2-67 to 2-76 |
+| 2.3.2 | 2-38 to 2-39 | 2.4.6 | 2-77 to 2-87 |
+| 2.4.1 | 2-40 to 2-46 |  |  |
+
 
 2-1. For the Reddy Mikks model, construct each of the following constraints, and express it with a linear left-hand side and a constant right-hand side:
 
@@ -1628,7 +1729,12 @@ Stark, R., and R. Nicholes, Mathematical Programming Foundations for Design: Civ
 
 2-8. A company that operates 10 hrs a day manufactures two products on three sequential processes. The following table summarizes the data of the problem:
 
-<table><tr><td rowspan="2">Product</td><td colspan="3">Minutes per unit</td><td rowspan="2">Unit profit</td></tr><tr><td>Process 1</td><td>Process 2</td><td>Process 3</td></tr><tr><td>1</td><td>10</td><td>6</td><td>8</td><td>\$20</td></tr><tr><td>2</td><td>5</td><td>20</td><td>10</td><td>\$30</td></tr></table>
+
+| Product | Minutes per unit - Process 1 | Process 2 | Process 3 | Unit profit |
+| --- | --- | --- | --- | --- |
+| 1 | 10 | 6 | 8 | \$20 |
+| 2 | 5 | 20 | 10 | \$30 |
+
 
 Determine the optimal mix of the two products.
 
@@ -1656,7 +1762,12 @@ Determine the optimal mix of the two products.
 
 *2-18. Wyoming Electric Coop owns a steam-turbine power-generating plant. Because Wyoming is rich in coal deposits, the plant generates its steam from coal. This, however, may result in emission that does not meet the Environmental Protection Agency (EPA) standards. EPA regulations limit sulfur dioxide discharge to 2000 parts per million per ton of coal burned and smoke discharge from the plant stacks to 20 lb per hour. The Coop receives two grades of pulverized coal, ${C1}$ and ${C2}$ , for use in the steam plant. The two grades are usually mixed together before burning. For simplicity, it can be assumed that the amount of sulfur pollutant discharged (in parts per million) is a weighted average of the proportion of each grade used in the mixture. The following data is based on the consumption of 1 ton per hr of each of the two coal grades.
 
-<table><tr><td>Coal grade</td><td>Sulfur discharge in parts per million</td><td>Smoke discharge in lb per hour</td><td>Steam generated in lb per hour</td></tr><tr><td>${C1}$</td><td>1800</td><td>2.1</td><td>12,000</td></tr><tr><td>${C2}$</td><td>2100</td><td>.9</td><td>9,000</td></tr></table>
+
+| Coal grade | Sulfur discharge in parts per million | Smoke discharge in lb per hour | Steam generated in lb per hour |
+| --- | --- | --- | --- |
+| ${C1}$ | 1800 | 2.1 | 12,000 |
+| ${C2}$ | 2100 | .9 | 9,000 |
+
 
 (a) Determine the optimal ratio for mixing the two coal grades.
 
@@ -1666,7 +1777,12 @@ Determine the optimal mix of the two products.
 
 2-20. The Burroughs Garment Company manufactures men's shirts and women's blouses for Walmark Discount Stores. Walmark will accept all the production supplied by Burroughs. The production process includes cutting, sewing, and packaging. Burroughs employs 25 workers in the cutting department, 35 in the sewing department, and 5 in the packaging department. The factory works one 8-hr shift, 5 days a week. The following table gives the time requirements and profits per unit for the two garments.
 
-<table><tr><td rowspan="2">Garment</td><td colspan="3">Minutes per unit</td><td rowspan="2">Unit profit (\$)</td></tr><tr><td>Cutting</td><td>Sewing</td><td>Packaging</td></tr><tr><td>Shirts</td><td>20</td><td>70</td><td>12</td><td>8</td></tr><tr><td>Blouses</td><td>60</td><td>60</td><td>4</td><td>12</td></tr></table>
+
+| Garment | Minutes per unit - Cutting | Sewing | Packaging | Unit profit (\$) |
+| --- | --- | --- | --- | --- |
+| Shirts | 20 | 70 | 12 | 8 |
+| Blouses | 60 | 60 | 4 | 12 |
+
 
 Determine the optimal weekly production schedule for Burroughs.
 
@@ -1674,7 +1790,13 @@ Determine the optimal weekly production schedule for Burroughs.
 
 *2-22. An assembly line consisting of three consecutive stations produces two radio models: HiFi-1 and HiFi-2. The following table provides the assembly times for the three workstations.
 
-<table><tr><td rowspan="2">Workstation</td><td colspan="2">Minutes per unit</td></tr><tr><td>HiFi-1</td><td>HiFi-2</td></tr><tr><td>1</td><td>6</td><td>4</td></tr><tr><td>2</td><td>5</td><td>5</td></tr><tr><td>3</td><td>4</td><td>6</td></tr></table>
+
+| Workstation | Minutes per unit - HiFi-1 | HiFi-2 |
+| --- | --- | --- |
+| 1 | 6 | 4 |
+| 2 | 5 | 5 |
+| 3 | 4 | 6 |
+
 
 The daily maintenance for stations 1, 2, and 3 consumes 10%, 14%, and 12%, respectively, of the maximum 480 minutes available for each station each day. Determine the optimal product mix that will minimize the idle (or unused) times in the three workstations.
 
@@ -1822,7 +1944,17 @@ Use TORA to show that the optimum solution is associated with two distinct corne
 
 2-40. Fox Enterprises is considering six projects for possible construction over the next four years. Fox can undertake any of the projects partially or completely. A partial undertaking of a project will prorate both the return and cash outlays proportionately. The expected (present value) returns and cash outlays for the projects are given in the following table.
 
-<table><tr><td rowspan="2">Project</td><td colspan="4">Cash outlay (\$1000)</td><td rowspan="2">Return (\$1000)</td></tr><tr><td>Year 1</td><td>Year 2</td><td>Year 3</td><td>Year 4</td></tr><tr><td>1</td><td>10.5</td><td>14.4</td><td>2.2</td><td>2.4</td><td>324.00</td></tr><tr><td>2</td><td>8.3</td><td>12.6</td><td>9.5</td><td>3.1</td><td>358.00</td></tr><tr><td>3</td><td>10.2</td><td>14.2</td><td>5.6</td><td>4.2</td><td>177.50</td></tr><tr><td>4</td><td>7.2</td><td>10.5</td><td>7.5</td><td>5.0</td><td>148.00</td></tr><tr><td>5</td><td>12.3</td><td>10.1</td><td>8.3</td><td>6.3</td><td>182.00</td></tr><tr><td>6</td><td>9.2</td><td>7.8</td><td>6.9</td><td>5.1</td><td>123.50</td></tr><tr><td>Available funds (\$1000)</td><td>60.0</td><td>70.0</td><td>35.0</td><td>20.0</td><td></td></tr></table>
+
+| Project | Cash outlay (\$1000) - Year 1 | Year 2 | Year 3 | Year 4 | Return (\$1000) |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 10.5 | 14.4 | 2.2 | 2.4 | 324.00 |
+| 2 | 8.3 | 12.6 | 9.5 | 3.1 | 358.00 |
+| 3 | 10.2 | 14.2 | 5.6 | 4.2 | 177.50 |
+| 4 | 7.2 | 10.5 | 7.5 | 5.0 | 148.00 |
+| 5 | 12.3 | 10.1 | 8.3 | 6.3 | 182.00 |
+| 6 | 9.2 | 7.8 | 6.9 | 5.1 | 123.50 |
+| Available funds (\$1000) | 60.0 | 70.0 | 35.0 | 20.0 |  |
+
 
 (a) Formulate the problem as a linear program, and determine the optimal project mix that maximizes the total return using AMPL, Solver, or TORA. Ignore the time value of money.
 
@@ -1834,13 +1966,25 @@ Use TORA to show that the optimum solution is associated with two distinct corne
 
 *2-41. Investor Doe has \$10,000 to invest in four projects. The following table gives the cash flow for the four investments.
 
-<table><tr><td rowspan="2">Project</td><td colspan="5">Cash flow (\$1000) at the start of</td></tr><tr><td>Year 1</td><td>Year 2</td><td>Year 3</td><td>Year 4</td><td>Year 5</td></tr><tr><td>1</td><td>-1.00</td><td>0.50</td><td>0.30</td><td>1.80</td><td>1.20</td></tr><tr><td>2</td><td>-1.00</td><td>0.60</td><td>0.20</td><td>1.50</td><td>1.30</td></tr><tr><td>3</td><td>0.00</td><td>-1.00</td><td>0.80</td><td>1.90</td><td>0.80</td></tr><tr><td>4</td><td>-1.00</td><td>0.40</td><td>0.60</td><td>1.80</td><td>0.95</td></tr></table>
+
+| Project | Cash flow (\$1000) at the start of - Year 1 | Year 2 | Year 3 | Year 4 | Year 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | -1.00 | 0.50 | 0.30 | 1.80 | 1.20 |
+| 2 | -1.00 | 0.60 | 0.20 | 1.50 | 1.30 |
+| 3 | 0.00 | -1.00 | 0.80 | 1.90 | 0.80 |
+| 4 | -1.00 | 0.40 | 0.60 | 1.80 | 0.95 |
+
 
 The information in the table can be interpreted as follows: For project 1, \$1.00 invested at the start of year 1 will yield \$.50 at the start of year 2, \$.30 at the start of year 3, \$1.80 at the start of year 4, and \$1.20 at the start of year 5. The remaining entries can be interpreted similarly. The entry 0.00 indicates that no transaction is taking place. Doe has the additional option of investing in a bank account that earns 6.5% annually. All funds accumulated at the end of 1 year can be reinvested in the following year. Formulate the problem as a linear program to determine the optimal allocation of funds to investment opportunities. Solve the model using Solver or AMPL.
 
 2-42. HiRise Construction can bid on two 1-year projects. The following table provides the quarterly cash flow (in millions of dollars) for the two projects.
 
-<table><tr><td rowspan="2">Project</td><td colspan="5">Cash flow (in millions of \$) at</td></tr><tr><td>January 1</td><td>April 1</td><td>July 1</td><td>October 1</td><td>December 31</td></tr><tr><td>I</td><td>-1.0</td><td>-3.1</td><td>-1.5</td><td>1.8</td><td>5.0</td></tr><tr><td>II</td><td>-3.0</td><td>-2.5</td><td>1.5</td><td>1.8</td><td>2.8</td></tr></table>
+
+| Project | Cash flow (in millions of \$) at - January 1 | April 1 | July 1 | October 1 | December 31 |
+| --- | --- | --- | --- | --- | --- |
+| I | -1.0 | -3.1 | -1.5 | 1.8 | 5.0 |
+| II | -3.0 | -2.5 | 1.5 | 1.8 | 2.8 |
+
 
 HiRise has cash funds of \$1 million at the beginning of each quarter and may borrow at most \$1 million at a 10% nominal annual interest rate. Any borrowed money must be returned at the end of the quarter. Surplus cash can earn quarterly interest at an 8% nominal annual rate. Net accumulation at the end of one quarter is invested in the next quarter.
 
@@ -1850,7 +1994,11 @@ HiRise has cash funds of \$1 million at the beginning of each quarter and may bo
 
 2-43. In anticipation of the immense college expenses, Joe and Jill started an annual investment program on their child's eighth birthday that will last until the eighteenth birthday. They plan to invest the following amounts at the beginning of each year:
 
-<table><tr><td>Year</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr><tr><td>Amount (\$)</td><td>2000</td><td>2000</td><td>2500</td><td>2500</td><td>3000</td><td>3500</td><td>3500</td><td>4000</td><td>4000</td><td>5000</td></tr></table>
+
+| Year | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Amount (\$) | 2000 | 2000 | 2500 | 2500 | 3000 | 3500 | 3500 | 4000 | 4000 | 5000 |
+
 
 To avoid unpleasant surprises, they want to invest the money safely in the following options: insured savings with 7.5% annual yield, 6-year government bonds that yield 7.9% and have a current market price equal to 98% of face value, and 9-year municipal bonds yielding 8.5% and having a current market price of 1.02 of face value. How should the money be invested?
 
@@ -1858,19 +2006,37 @@ To avoid unpleasant surprises, they want to invest the money safely in the follo
 
 2-45. A gambler plays a game that requires dividing bet money among four choices. The game has three outcomes. The following table gives the corresponding gain or loss per dollar for the different options of the game.
 
-<table><tr><td rowspan="2">Outcome</td><td colspan="4">Return per dollar deposited in choice</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td>1</td><td>-3</td><td>4</td><td>-7</td><td>15</td></tr><tr><td>2</td><td>5</td><td>-3</td><td>9</td><td>4</td></tr><tr><td>3</td><td>3</td><td>-9</td><td>10</td><td>-8</td></tr></table>
+
+| Outcome | Return per dollar deposited in choice - 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- |
+| 1 | -3 | 4 | -7 | 15 |
+| 2 | 5 | -3 | 9 | 4 |
+| 3 | 3 | -9 | 10 | -8 |
+
 
 The gambler has a total of \$1500, which may be played only once. The exact outcome of the game is not known a priori. Because of this uncertainty, the gambler's strategy is to maximize the minimum return produced by the three outcomes. How should the gambler allocate the \$1500 among the four choices? Solve the model using Solver or AMPL. (Hint: The gambler's net return may be positive, zero, or negative.)
 
 2-46. Lewis (1996). Bills in a household are received monthly (e.g., utilities and home mortgage), quarterly (e.g., estimated tax payments), semiannually (e.g., insurance), or annually (e.g., subscription renewals and dues). The following table provides the monthly bills for next year.
 
-<table><tr><td>Month</td><td>Jan.</td><td>Feb.</td><td>Mar.</td><td>Apr.</td><td>May</td><td>June</td><td>July</td><td>Aug.</td><td>Sep.</td><td>Oct.</td><td>Nov.</td><td>Dec.</td><td>Total</td></tr><tr><td>\$</td><td>800</td><td>1200</td><td>400</td><td>700</td><td>600</td><td>900</td><td>1500</td><td>1000</td><td>900</td><td>1100</td><td>1300</td><td>1600</td><td>12,000</td></tr></table>
+
+| Month | Jan. | Feb. | Mar. | Apr. | May | June | July | Aug. | Sep. | Oct. | Nov. | Dec. | Total |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| \$ | 800 | 1200 | 400 | 700 | 600 | 900 | 1500 | 1000 | 900 | 1100 | 1300 | 1600 | 12,000 |
+
 
 To account for these expenses, the family sets aside \$1000 per month, which is the average of the total divided by 12 months. If the money is deposited in a regular savings account, it can earn 4% annual interest, provided it stays in the account at least 1 month. The bank also offers 3-month and 6-month certificates of deposit that can earn 5.5% and 7% annual interest, respectively. Develop a 12-month investment schedule that will maximize the family's total return for the year. State any assumptions or requirements needed to reach a feasible solution. Solve the model using Solver or AMPL.
 
 2-47. Toolco has contracted with AutoMate to supply their automotive discount stores with wrenches and chisels. AutoMate's weekly demand consists of at least 1570 wrenches and 1250 chisels. Toolco cannot produce all the requested units with its present one-shift capacity, and must use overtime and possibly subcontract with other tool shops. The result is an increase in the production cost per unit, as shown in the following table. Market demand restricts the ratio of chisels to wrenches to at least 2:1.
 
-<table><tr><td>Tool</td><td>Production type</td><td>Weekly production range (units)</td><td>Unit cost (\$)</td></tr><tr><td rowspan="3">Wrenches</td><td>Regular</td><td>0-500</td><td>2.00</td></tr><tr><td>Overtime</td><td>501-800</td><td>2.80</td></tr><tr><td>Subcontracting</td><td>801-∞</td><td>3.00</td></tr><tr><td rowspan="3">Chisel</td><td>Regular</td><td>0-620</td><td>2.10</td></tr><tr><td>Overtime</td><td>621-900</td><td>3.20</td></tr><tr><td>Subcontracting</td><td>901-0</td><td>4.20</td></tr></table>
+
+| Tool - Wrenches | Production type - Regular | Weekly production range (units) - 0-500 | Unit cost (\$) - 2.00 |
+| --- | --- | --- | --- |
+| Wrenches | Overtime | 501-800 | 2.80 |
+| Wrenches | Subcontracting | 801-∞ | 3.00 |
+| Chisel | Regular | 0-620 | 2.10 |
+| Chisel | Overtime | 621-900 | 3.20 |
+| Chisel | Subcontracting | 901-0 | 4.20 |
+
 
 (a) Formulate the problem as a linear program, and determine the optimum production schedule for each tool.
 
@@ -1880,19 +2046,38 @@ To account for these expenses, the family sets aside \$1000 per month, which is 
 
 2-48. Four products are processed sequentially on three machines. The following table gives the pertinent data of the problem.
 
-<table><tr><td rowspan="2">Machine</td><td rowspan="2">Cost per hr (\$)</td><td colspan="4">Manufacturing time (hr) per unit</td><td rowspan="2">Capacity (hr)</td></tr><tr><td>Product 1</td><td>Product 2</td><td>Product 3</td><td>Product 4</td></tr><tr><td>1</td><td>10</td><td>2</td><td>3</td><td>4</td><td>2</td><td>500</td></tr><tr><td>2</td><td>5</td><td>3</td><td>2</td><td>1</td><td>2</td><td>380</td></tr><tr><td>3</td><td>4</td><td>7</td><td>3</td><td>2</td><td>1</td><td>450</td></tr><tr><td>Unit selling <br> price (\$)</td><td></td><td>75</td><td>70</td><td>55</td><td>45</td><td></td></tr></table>
+
+| Machine | Cost per hr (\$) | Manufacturing time (hr) per unit - Product 1 | Product 2 | Product 3 | Product 4 | Capacity (hr) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 10 | 2 | 3 | 4 | 2 | 500 |
+| 2 | 5 | 3 | 2 | 1 | 2 | 380 |
+| 3 | 4 | 7 | 3 | 2 | 1 | 450 |
+| Unit selling / price (\$) |  | 75 | 70 | 55 | 45 |  |
+
 
 Formulate the problem as an LP model and find the optimum solution using AMPL, Solver, or TORA.
 
 *2-49. A manufacturer produces three models, I, II, and III, of a certain product using raw materials $A$ and $B$ . The following table gives the data for the problem.
 
-<table><tr><td rowspan="2">Raw material</td><td colspan="3">Requirements per unit</td><td rowspan="2">Availability</td></tr><tr><td>$I$</td><td>II</td><td>III</td></tr><tr><td>$A$</td><td>2</td><td>3</td><td>5</td><td>4000</td></tr><tr><td>$B$</td><td>4</td><td>2</td><td>7</td><td>6000</td></tr><tr><td rowspan="2">Minimum demand <br> Price per unit (\$)</td><td>200</td><td>200</td><td>150</td><td></td></tr><tr><td>30</td><td>20</td><td>50</td><td></td></tr></table>
+
+| Raw material | Requirements per unit - $I$ | II | III | Availability |
+| --- | --- | --- | --- | --- |
+| $A$ | 2 | 3 | 5 | 4000 |
+| $B$ | 4 | 2 | 7 | 6000 |
+| Minimum demand / Price per unit (\$) | 200 | 200 | 150 |  |
+| Minimum demand / Price per unit (\$) | 30 | 20 | 50 |  |
+
 
 The labor time per unit of model I is twice that of II and three times that of III. The entire labor force of the factory can produce the equivalent of 1500 units of model I. Market requirements specify the ratios 3:2:5 for the production of the three respective models. Formulate the problem as a linear program and find the optimum solution using AMPL, Solver, or TORA.
 
 2-50. The demand for ice cream at All-Flavors Parlor during the three summer months (June, July, and August) is estimated at 500, 600, and 400 20-gallon cartons, respectively. Two wholesalers, 1 and 2, supply All-Flavors with its ice cream. Although the flavors from the two suppliers are different, they are interchangeable. The maximum number of cartons either supplier can provide is 400 per month. Also, the price the two suppliers charge change monthly according to the following schedule:
 
-<table><tr><td rowspan="2"></td><td colspan="3">Price per carton in month</td></tr><tr><td>June</td><td>July</td><td>August</td></tr><tr><td>Supplier 1</td><td>\$100</td><td>\$110</td><td>\$120</td></tr><tr><td>Supplier 2</td><td>\$115</td><td>\$108</td><td>\$125</td></tr></table>
+
+|  | Price per carton in month - June | July | August |
+| --- | --- | --- | --- |
+| Supplier 1 | \$100 | \$110 | \$120 |
+| Supplier 2 | \$115 | \$108 | \$125 |
+
 
 To take advantage of price fluctuation, All-Flavors can purchase more than is needed for a month and store the surplus to satisfy the demand in a later month. The storage cost of an ice cream carton is \$5 per month. It is realistic in the present situation to assume that the storage cost is a function of the average number of cartons on hand during the month. Develop a model to determine the optimum schedule for buying ice cream from the two suppliers and find the optimum solution using TORA, Solver, or AMPL.
 
@@ -1900,19 +2085,37 @@ To take advantage of price fluctuation, All-Flavors can purchase more than is ne
 
 2-52. A company has contracted to produce two products, $A$ and $B$ , over the months of June, July, and August. The total production capacity (expressed in hours) varies monthly. The following table provides the basic data of the situation:
 
-<table><tr><td></td><td>June</td><td>July</td><td>August</td></tr><tr><td>Demand for $A$ (units)</td><td>500</td><td>5000</td><td>750</td></tr><tr><td>Demand for $B$ (units)</td><td>1000</td><td>1200</td><td>1200</td></tr><tr><td>Capacity (hours)</td><td>3000</td><td>3500</td><td>3000</td></tr></table>
+
+|  | June | July | August |
+| --- | --- | --- | --- |
+| Demand for $A$ (units) | 500 | 5000 | 750 |
+| Demand for $B$ (units) | 1000 | 1200 | 1200 |
+| Capacity (hours) | 3000 | 3500 | 3000 |
+
 
 The production rates in units per hour are .75 and 1 for products $A$ and $B$ , respectively. All demand must be met. However, demand for a later month may be filled from the production in an earlier one. For any carryover from one month to the next, holding costs of \$.90 and \$.75 per unit per month are charged for products $A$ and $B$ , respectively. The unit production costs for the two products are \$30 and \$28 for $A$ and $B$ , respectively. Develop an LP model to determine the optimum production schedule for the two products and find the optimum solution using AMPL, Solver, or TORA.
 
 *2-53. The manufacturing process of a product consists of two successive operations, I and II. The following table provides the pertinent data over the months of June, July, and August:
 
-<table><tr><td></td><td>June</td><td>July</td><td>August</td></tr><tr><td>Finished product demand (units)</td><td>500</td><td>450</td><td>600</td></tr><tr><td>Capacity of operation I (hr)</td><td>800</td><td>700</td><td>550</td></tr><tr><td>Capacity of operation II (hr)</td><td>1000</td><td>850</td><td>700</td></tr></table>
+
+|  | June | July | August |
+| --- | --- | --- | --- |
+| Finished product demand (units) | 500 | 450 | 600 |
+| Capacity of operation I (hr) | 800 | 700 | 550 |
+| Capacity of operation II (hr) | 1000 | 850 | 700 |
+
 
 Producing a unit of the product takes ${.6}\mathrm{{hr}}$ on operation I plus ${.8}\mathrm{{hr}}$ on operation II. Overproduction of either the semifinished product (operation I) or the finished product (operation II) in any month is allowed for use in a later month. The respective holding costs for operations I and II are \$.20 and \$.40 per unit per month. The production cost varies by operation and by month. For operation 1, the unit production cost is $\$ {10},\$ {12}$ , and $\$ {11}$ for June, July, and August. For operation 2, the corresponding unit production cost is \$15, \$18, and \$16. Develop an LP model to determine the optimal production schedule for the two operations over the 3-month horizon and find the optimum solution using AMPL, Solver, or TORA.
 
 2-54. Two products are manufactured sequentially on two machines. The time available on each machine is 8 hours per day and may be increased by up to 4 hours of overtime, if necessary, at an additional cost of \$110 per hour. The table below gives the production rate on the two machines as well as the price per unit of the two products. Develop an LP model to determine the optimum production schedule, and the recommended use of overtime, if any. Solve the problem using AMPL, Solver, or TORA.
 
-<table><tr><td rowspan="2"></td><td colspan="2">Production rate (units/hr)</td></tr><tr><td>Product 1</td><td>Product 2</td></tr><tr><td>Machine 1</td><td>5</td><td>5</td></tr><tr><td>Machine 2</td><td>8</td><td>4</td></tr><tr><td>Price per unit (\$)</td><td>120</td><td>128</td></tr></table>
+
+|  | Production rate (units/hr) - Product 1 | Product 2 |
+| --- | --- | --- |
+| Machine 1 | 5 | 5 |
+| Machine 2 | 8 | 4 |
+| Price per unit (\$) | 120 | 128 |
+
 
 *2-55. In the bus scheduling example suppose that buses can run either 8- or 12-hr shifts. If a bus runs for ${12}\mathrm{{hr}}$ , the driver must be paid for the extra hours at ${150}\%$ of the regular hourly pay. Do you recommend the use of 12-hr shifts? Solve the new model using AMPL, Solver, or TORA.
 
@@ -1930,13 +2133,28 @@ Producing a unit of the product takes ${.6}\mathrm{{hr}}$ on operation I plus ${
 
 2-62. The city council of Fayetteville is in the process of approving the construction of a new 180,000-ft ${}^{2}$ convention center. Two sites have been proposed, and both require exercising the "eminent domain" law to acquire the property. The following table provides data about proposed (contiguous) properties in both sites together with the acquisition cost.
 
-<table><tr><td rowspan="2">Property</td><td colspan="2">Site 1</td><td colspan="2">Site 2</td></tr><tr><td>Area (1000 ft ${}^{2}$ )</td><td>Cost (1000 \$)</td><td>Area (1000 ft ${}^{2}$ )</td><td>Cost (1000 \$)</td></tr><tr><td>1</td><td>20</td><td>1,000</td><td>80</td><td>2,800</td></tr><tr><td>2</td><td>50</td><td>2,100</td><td>60</td><td>1,900</td></tr><tr><td>3</td><td>50</td><td>2,350</td><td>50</td><td>2,800</td></tr><tr><td>4</td><td>30</td><td>1,850</td><td>70</td><td>2,500</td></tr><tr><td>5</td><td>60</td><td>2,950</td><td></td><td></td></tr></table>
+
+| Property | Site 1 - Area (1000 ft ${}^{2}$ ) | Cost (1000 \$) | Site 2 - Area (1000 ft ${}^{2}$ ) | Cost (1000 \$) |
+| --- | --- | --- | --- | --- |
+| 1 | 20 | 1,000 | 80 | 2,800 |
+| 2 | 50 | 2,100 | 60 | 1,900 |
+| 3 | 50 | 2,350 | 50 | 2,800 |
+| 4 | 30 | 1,850 | 70 | 2,500 |
+| 5 | 60 | 2,950 |  |  |
+
 
 Partial acquisition of property is allowed. At least 80% of property 4 must be acquired if site 1 is selected, and at least 60% of property 3 must be acquired if site 2 is selected. Although site 1 property is more expensive (on a per ${\mathrm{{ft}}}^{2}$ basis), the construction cost is less than at site 2, because the infrastructure at site 1 is in a much better shape. Construction cost is \$30 million at site 1 and \$32 million at site 2. Which site should be selected, and what properties should be acquired? Find the solution using AMPL, Solver, or TORA.
 
 *2-63. A city will undertake five urban renewal housing projects over the next 5 years. Each project has a different starting year and a different duration. The following table provides the basic data of the situation:
 
-<table><tr><td></td><td>Year 1</td><td>Year 2</td><td>Year 3</td><td>Year 4</td><td>Year 5</td><td>Cost (million \$)</td><td>Annual income (million \$)</td></tr><tr><td>Project 1</td><td rowspan="2">Start</td><td rowspan="4">Start</td><td>End</td><td></td><td></td><td>5.0</td><td>.05</td></tr><tr><td>Project 2</td><td></td><td></td><td>End</td><td>8.0</td><td>.07</td></tr><tr><td>Project 3</td><td>Start</td><td></td><td></td><td>End</td><td>15.0</td><td>.15</td></tr><tr><td>Project 4</td><td></td><td>Start</td><td>End</td><td></td><td>1.2</td><td>.02</td></tr><tr><td>Budget <br> (million \$)</td><td>3.0</td><td>6.0</td><td>7.0</td><td>7.0</td><td>7.0</td><td></td><td></td></tr></table>
+
+| Project 1 | Year 1 - Start | Year 2 - Start | Year 3 - End | Year 4 | Year 5 | Cost (million \$) - 5.0 | Annual income (million \$) - .05 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Project 2 | Start | Start |  |  | End | 8.0 | .07 |
+| Project 3 | Start | Start |  |  | End | 15.0 | .15 |
+| Project 4 |  | Start | Start | End |  | 1.2 | .02 |
+| Budget / (million \$) | 3.0 | 6.0 | 7.0 | 7.0 | 7.0 |  |  |
+
 
 Projects 1 and 4 must be finished completely within their durations. The remaining two projects can be finished partially within budget limitations, if necessary. However, each project must be at least 25% completed within its duration. At the end of each year, the completed section of a project is immediately occupied by tenants, and a proportional amount of income is realized. For example, if 40% of project 1 is completed in year 1 and 60% in year 3, the associated income over the 5-year planning horizon is .4 × \$50,000 (for year 2) + .4 × \$50,000 (for year 3) + (.4 + .6) × \$50,000 (for year 4) $+ \left( {{.4} + {.6}}\right)  \times  \$ {50},{000}$ (for year 5) $= \left( {4 \times  {.4}}\right)  + \left( {2 \times  {.6}}\right)  \times  \$ {50},{000}$ . Develop an LP model to determine the schedule for the projects that will maximize
 
@@ -1944,7 +2162,16 @@ the total income over the 5-year horizon, and find the solution using AMPL, Solv
 
 2-64. The city of Fayetteville is embarking on an urban renewal project that will include lower and middle-income row housing, upper-income luxury apartments, and public housing. The project also includes a public elementary school and retail facilities. The size of the elementary school (number of classrooms) is proportional to the number of pupils, and the retail space is proportional to the number of housing units. The following table provides the pertinent data of the situation:
 
-<table><tr><td></td><td>Lower income</td><td>Middle income</td><td>Upper income</td><td>Public housing</td><td>School room</td><td>Retail unit</td></tr><tr><td>Minimum number of units</td><td>100</td><td>125</td><td>75</td><td>300</td><td></td><td>0</td></tr><tr><td>Maximum number of units</td><td>200</td><td>190</td><td>260</td><td>600</td><td></td><td>25</td></tr><tr><td>Lot size per unit (acre)</td><td>.05</td><td>.07</td><td>.03</td><td>.025</td><td>.045</td><td>.1</td></tr><tr><td>Average number of pupils per unit</td><td>1.3</td><td>1.2</td><td>.5</td><td>1.4</td><td></td><td></td></tr><tr><td>Retail demand per unit (acre)</td><td>.023</td><td>.034</td><td>.046</td><td>.023</td><td>.034</td><td></td></tr><tr><td>Annual income per unit (\$)</td><td>7,000</td><td>12,000</td><td>20,000</td><td>5,000</td><td>-</td><td>15,000</td></tr></table>
+
+|  | Lower income | Middle income | Upper income | Public housing | School room | Retail unit |
+| --- | --- | --- | --- | --- | --- | --- |
+| Minimum number of units | 100 | 125 | 75 | 300 |  | 0 |
+| Maximum number of units | 200 | 190 | 260 | 600 |  | 25 |
+| Lot size per unit (acre) | .05 | .07 | .03 | .025 | .045 | .1 |
+| Average number of pupils per unit | 1.3 | 1.2 | .5 | 1.4 |  |  |
+| Retail demand per unit (acre) | .023 | .034 | .046 | .023 | .034 |  |
+| Annual income per unit (\$) | 7,000 | 12,000 | 20,000 | 5,000 | - | 15,000 |
+
 
 The new school can occupy a maximum of 2 acres. Class size is limited to 25 students per room. The operating annual cost per schoolroom is \$10,000. The project will be located on a 50-acre vacant property owned by the city. Additionally, the project can make use of an adjacent property occupied by 200 condemned slum homes. Each condemned home occupies .25 acre. The cost of buying and demolishing a slum unit is \$7000. Open space, streets, and parking lots consume 15% of total available land.
 
@@ -1952,13 +2179,22 @@ Develop a linear program to determine the optimum plan for the project, and find
 
 2-65. Realco owns 900 acres of undeveloped land on a scenic lake in the heart of the Ozark Mountains. In the past, little or no regulation was imposed upon new developments around the lake. The lake shores are now dotted with vacation homes, and septic tanks are in extensive use, most of them improperly installed. Over the years, seepage from the septic tanks led to severe water pollution. To curb further degradation of the lake, county officials have approved stringent ordinances applicable to all future developments: (1) Only single-, double-, and triple-family homes can be constructed, with single-family homes accounting for at least 50% of the total. (2) To limit the number of septic tanks, minimum lot sizes of 2, 3, and 5 acres are required for single-, double-, and triple-family homes, respectively. (3) Recreation areas of 1 acre each must be established at the rate of one area per 220 families. (4) To preserve the ecology of the lake, underground water may not be pumped out for house or garden use. The president of Realco is studying the possibility of developing the 800-acre property. The new development will include single-, double-, and triple-family homes. It is estimated that 15% of the acreage will be allocated to streets and utility easements. Realco estimates the returns from the different housing units as follows:
 
-<table><tr><td>Housing unit</td><td>Single</td><td>Double</td><td>Triple</td></tr><tr><td>Net return per unit (\$)</td><td>12,000</td><td>15,000</td><td>18,000</td></tr></table>
+
+| Housing unit | Single | Double | Triple |
+| --- | --- | --- | --- |
+| Net return per unit (\$) | 12,000 | 15,000 | 18,000 |
+
 
 The cost of connecting water service to the area is proportionate to the number of units constructed. However, the county charges a minimum of \$120,000 for the project. Additionally, the expansion of the water system beyond its present capacity is limited to
 
 220,000 gallons per day during peak periods. The following data summarize the water service connection cost as well as the water consumption, assuming an average size family:
 
-<table><tr><td>Housing unit</td><td>Single</td><td>Double</td><td>Triple</td><td>Recreation</td></tr><tr><td>Water service connection cost per unit (\$)</td><td>1000</td><td>1200</td><td>1400</td><td>800</td></tr><tr><td>Water consumption per unit (gal/day)</td><td>400</td><td>600</td><td>840</td><td>450</td></tr></table>
+
+| Housing unit | Single | Double | Triple | Recreation |
+| --- | --- | --- | --- | --- |
+| Water service connection cost per unit (\$) | 1000 | 1200 | 1400 | 800 |
+| Water consumption per unit (gal/day) | 400 | 600 | 840 | 450 |
+
 
 Develop an LP model to determine the optimal plan for Realco, and find the solution using AMPL, Solver, or TORA.
 
@@ -1976,7 +2212,16 @@ Develop an LP model to determine the optimal plan for Realco, and find the solut
 
 and the minimum demand for the final products. If the production is not sufficient to cover demand, the shortage must be made up from outside sources at a penalty. Surplus production will not be sold immediately and will incur storage cost. The following table provides the data of the situation:
 
-<table><tr><td rowspan="2">Crude</td><td colspan="3">Fraction yield per bbl</td><td rowspan="2">Price/bbl (\$)</td><td rowspan="2">bbl/day</td></tr><tr><td>Regular</td><td>Premium</td><td>Jet</td></tr><tr><td>Crude A</td><td>.20</td><td>.1</td><td>.25</td><td>30</td><td>2500</td></tr><tr><td>Crude B</td><td>.25</td><td>.3</td><td>.10</td><td>40</td><td>3000</td></tr><tr><td>Demand (bbl/day)</td><td>500</td><td>700</td><td>400</td><td></td><td></td></tr><tr><td>Revenue (\$/bbl)</td><td>50</td><td>70</td><td>120</td><td></td><td></td></tr><tr><td>Storage cost for surplus production (\$/bbl)</td><td>2</td><td>3</td><td>4</td><td></td><td></td></tr><tr><td>Penalty for unfilled demand (\$/bbl)</td><td>10</td><td>15</td><td>20</td><td></td><td></td></tr></table>
+
+| Crude | Fraction yield per bbl - Regular | Premium | Jet | Price/bbl (\$) | bbl/day |
+| --- | --- | --- | --- | --- | --- |
+| Crude A | .20 | .1 | .25 | 30 | 2500 |
+| Crude B | .25 | .3 | .10 | 40 | 3000 |
+| Demand (bbl/day) | 500 | 700 | 400 |  |  |
+| Revenue (\$/bbl) | 50 | 70 | 120 |  |  |
+| Storage cost for surplus production (\$/bbl) | 2 | 3 | 4 |  |  |
+| Penalty for unfilled demand (\$/bbl) | 10 | 15 | 20 |  |  |
+
 
 Develop an LP model to determine the optimal product mix for the refinery, and find the solution using AMPL, Solver, or TORA.
 
@@ -1990,19 +2235,45 @@ Develop an LP model to determine the optimal product mix for the refinery, and f
 
 Aluminum and silicon briquettes may be used in the smelting process to meet the desired specifications. The following tables set the specifications of the problem:
 
-<table><tr><td rowspan="2">Input item</td><td colspan="3">Contents (%)</td><td rowspan="2">Cost/ton (\$)</td><td rowspan="2">Available (tons/day)</td></tr><tr><td>Aluminum</td><td>Graphite</td><td>Silicon</td></tr><tr><td>Steel scrap</td><td>10</td><td>5</td><td>4</td><td>100</td><td>1000</td></tr><tr><td>Aluminum scrap</td><td>95</td><td>1</td><td>2</td><td>150</td><td>500</td></tr><tr><td>Cast iron scrap</td><td>0</td><td>15</td><td>8</td><td>75</td><td>2500</td></tr><tr><td>Aluminum briquette</td><td>100</td><td>0</td><td>0</td><td>900</td><td>Any amount</td></tr><tr><td>Silicon briquette</td><td>0</td><td>0</td><td>100</td><td>380</td><td>Any amount</td></tr></table>
 
-<table><tr><td rowspan="2">Ingredient</td><td colspan="2">Ingot I (%)</td><td colspan="2">Ingot II (%)</td></tr><tr><td>Minimum</td><td>Maximum</td><td>Minimum</td><td>Maximum</td></tr><tr><td>Aluminum</td><td>8.1</td><td>10.8</td><td>6.2</td><td>8.9</td></tr><tr><td>Graphite</td><td>1.5</td><td>3.0</td><td>4.1</td><td>$\infty$</td></tr><tr><td>Silicon</td><td>2.5</td><td>$\infty$</td><td>2.8</td><td>4.1</td></tr><tr><td>Demand (tons/day)</td><td></td><td>130</td><td>250</td><td></td></tr></table>
+| Input item | Contents (%) - Aluminum | Graphite | Silicon | Cost/ton (\$) | Available (tons/day) |
+| --- | --- | --- | --- | --- | --- |
+| Steel scrap | 10 | 5 | 4 | 100 | 1000 |
+| Aluminum scrap | 95 | 1 | 2 | 150 | 500 |
+| Cast iron scrap | 0 | 15 | 8 | 75 | 2500 |
+| Aluminum briquette | 100 | 0 | 0 | 900 | Any amount |
+| Silicon briquette | 0 | 0 | 100 | 380 | Any amount |
+
+
+
+| Ingredient | Ingot I (%) - Minimum | Maximum | Ingot II (%) - Minimum | Maximum |
+| --- | --- | --- | --- | --- |
+| Aluminum | 8.1 | 10.8 | 6.2 | 8.9 |
+| Graphite | 1.5 | 3.0 | 4.1 | $\infty$ |
+| Silicon | 2.5 | $\infty$ | 2.8 | 4.1 |
+| Demand (tons/day) |  | 130 | 250 |  |
+
 
 Develop an LP model to determine the optimal input mix the foundry should smelt, and find the solution using AMPL, Solver, or TORA.
 
 2-76. Two alloys, $A$ and $B$ , are made from four metals, I, II, III, and IV, according to the following specifications: 100 boxes, respectively. The shelf space in square inches for the respective boxes is 15, 25, 16, 20, and 22. The total available shelf space is ${5000}{\text{ in }}^{2}$ . The profit per unit is \$1.10,\$1.30,\$1.08, \$1.25, and \$1.20, respectively. Determine the optimal space allocation for the five cereals.
 
-<table><tr><td>Alloy</td><td>Specifications</td><td>Selling price (\$)</td></tr><tr><td>$A$</td><td>At most 80% of I <br> At most 30% of II <br> At least 50% of IV</td><td>200</td></tr><tr><td>$B$</td><td>Between 40% and 60% of II <br> At least 30% of III <br> At most 70% of IV</td><td>300</td></tr></table>
+
+| Alloy | Specifications | Selling price (\$) |
+| --- | --- | --- |
+| $A$ | At most 80% of I / At most 30% of II / At least 50% of IV | 200 |
+| $B$ | Between 40% and 60% of II / At least 30% of III / At most 70% of IV | 300 |
+
 
 The four metals are extracted from three ores according to the following data:
 
-<table><tr><td></td><td rowspan="2">Maximum quantity (tons)</td><td colspan="5">Constituents (%)</td><td rowspan="2">Price/ton (\$)</td></tr><tr><td>Ore</td><td>I</td><td>II</td><td>III</td><td>IV</td><td>Others</td></tr><tr><td>1</td><td>1000</td><td>20</td><td>10</td><td>30</td><td>30</td><td>10</td><td>30</td></tr><tr><td>2</td><td>2000</td><td>10</td><td>20</td><td>30</td><td>30</td><td>10</td><td>40</td></tr><tr><td>3</td><td>3000</td><td>5</td><td>5</td><td>70</td><td>20</td><td>0</td><td>50</td></tr></table>
+
+| Ore | Maximum quantity (tons) | Constituents (%) - I | II | III | IV | Others | Price/ton (\$) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 1000 | 20 | 10 | 30 | 30 | 10 | 30 |
+| 2 | 2000 | 10 | 20 | 30 | 30 | 10 | 40 |
+| 3 | 3000 | 5 | 5 | 70 | 20 | 0 | 50 |
+
 
 Develop an LP model to determine how much of each type of alloy should be produced, and find the solution using AMPL, Solver, or TORA. (Hint: Let ${x}_{kj}$ be tons of ore $i$ allocated to alloy $k$ , and define ${w}_{k}$ as tons of alloy $k$ produced.)
 
@@ -2010,19 +2281,37 @@ Develop an LP model to determine how much of each type of alloy should be produc
 
 2-78. Voting on Issues. In a particular county in the State of Arkansas, four election issues are on the ballot: Build new highways, increase gun control, increase farm subsidies, and increase gasoline tax. The county includes 100,000 urban voters, 250,000 suburban voters, and 50,000 rural voters, all with varying degrees of support for and opposition to, election issues. For example, rural voters are opposed to gun control and gas tax and in favor of road building and farm subsidies. The county is planning a TV advertising campaign with a budget of \$100,000 at a cost of \$1500 per ad. The following table summarizes the impact of a single ad in terms of the number of pro and con votes as a function of the different issues:
 
-<table><tr><td rowspan="2">Issue</td><td colspan="3">Expected number of pro $\left( +\right)$ and con (-) votes per ad</td></tr><tr><td>Urban</td><td>Suburban</td><td>Rural</td></tr><tr><td>New highways</td><td>-30,000</td><td>+60,000</td><td>+30,000</td></tr><tr><td>Gun control</td><td>+80,000</td><td>+30,000</td><td>-45,000</td></tr><tr><td>Smog control</td><td>+40,000</td><td>+10,000</td><td>0</td></tr><tr><td>Gas tax</td><td>+90,000</td><td>0</td><td>-25,000</td></tr></table>
+
+| Issue | Expected number of pro $\left( +\right)$ and con (-) votes per ad - Urban | Suburban | Rural |
+| --- | --- | --- | --- |
+| New highways | -30,000 | +60,000 | +30,000 |
+| Gun control | +80,000 | +30,000 | -45,000 |
+| Smog control | +40,000 | +10,000 | 0 |
+| Gas tax | +90,000 | 0 | -25,000 |
+
 
 An issue will be adopted if it garners at least 51% of the votes. Which issues will be approved by voters, and how many ads should be allocated to these issues?
 
 2-79. Assembly-Line Balancing. A product is assembled from three different parts. The parts are manufactured by two departments at different production rates as given in the following table:
 
-<table><tr><td rowspan="2">Department</td><td rowspan="2">Capacity (hr/wk)</td><td colspan="3">Production rate (units/hr)</td></tr><tr><td>Part 1</td><td>Part 2</td><td>Part 3</td></tr><tr><td>1</td><td>100</td><td>6</td><td>8</td><td>12</td></tr><tr><td>2</td><td>90</td><td>6</td><td>12</td><td>4</td></tr></table>
+
+| Department | Capacity (hr/wk) | Production rate (units/hr) - Part 1 | Part 2 | Part 3 |
+| --- | --- | --- | --- | --- |
+| 1 | 100 | 6 | 8 | 12 |
+| 2 | 90 | 6 | 12 | 4 |
+
 
 Determine the maximum number of final assembly units that can be produced weekly. (Hint: Assembly units = min \{units of part 1, units of part 2, and units of part 3\}. Maximize $z = \min \left\{  {{x}_{1},{x}_{2}}\right\}$ is equivalent to max $z$ subject to $z \leq  {x}_{1}$ and $z \leq  {x}_{2}$ .)
 
 2-80. Pollution Control. Three types of coal, C1, C2, and C3, are pulverized and mixed together to produce 50 tons per hour needed to power a plant for generating electricity. The burning of coal emits sulfur oxide (in parts per million) which must meet the EPA specifications of no more than 2000 parts per million. The following table summarizes the data of the situation:
 
-<table><tr><td></td><td>C1</td><td>C2</td><td>C3</td></tr><tr><td>Sulfur (parts per million)</td><td>2500</td><td>1500</td><td>1600</td></tr><tr><td>Pulverizer capacity (ton/hr)</td><td>30</td><td>30</td><td>30</td></tr><tr><td>Cost per ton</td><td>\$30</td><td>\$35</td><td>\$33</td></tr></table>
+
+|  | C1 | C2 | C3 |
+| --- | --- | --- | --- |
+| Sulfur (parts per million) | 2500 | 1500 | 1600 |
+| Pulverizer capacity (ton/hr) | 30 | 30 | 30 |
+| Cost per ton | \$30 | \$35 | \$33 |
+
 
 Determine the optimal mix of the coals.
 
@@ -2030,7 +2319,11 @@ Determine the optimal mix of the coals.
 
 2-82. Fitting a Straight Line into Empirical Data (Regression). In a 10-week typing class for beginners, the average speed per student (in words per minute) as a function of the number of weeks in class is given in the following table.
 
-<table><tr><td>Week, $x$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr><tr><td>Words per minute, $y$</td><td>5</td><td>9</td><td>15</td><td>19</td><td>21</td><td>24</td><td>26</td><td>30</td><td>31</td><td>35</td></tr></table>
+
+| Week, $x$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Words per minute, $y$ | 5 | 9 | 15 | 19 | 21 | 24 | 26 | 30 | 31 | 35 |
+
 
 Determine the coefficients $a$ and $b$ in the straight-line relationship, $\widehat{y} = {ax} + b$ , that best fit the given data. (Hint: Minimize the sum of the absolute value of the deviations between theoretical $\widehat{y}$ and empirical $y$ . Min $\left| w\right|$ is equivalent to $\min z$ subject to $z \geq  w$ and $z \geq   - w, z \geq  0$ . Alternatively, $\min \left| w\right|$ is equivalent to $\min \left( {{z}^{ + } + {z}^{ - }}\right)$ subject to $w = {z}^{ + } - {z}^{ - }$ with ${z}^{ + },{z}^{ - } \geq  0$ .)
 
@@ -2052,11 +2345,21 @@ $$
 
 The constants $a$ and $b$ are a function of the defense line and the north/south front as the following table shows:
 
-<table><tr><td rowspan="2"></td><td colspan="3">$a$</td><td colspan="3">$b$</td></tr><tr><td>I</td><td>II</td><td>III</td><td>I</td><td>II</td><td>III</td></tr><tr><td>North front</td><td>.5</td><td>.75</td><td>.55</td><td>8.8</td><td>7.9</td><td>10.2</td></tr><tr><td>South front</td><td>1.1</td><td>1.3</td><td>1.5</td><td>10.5</td><td>8.1</td><td>9.2</td></tr></table>
+
+|  | $a$ - I | II | III | $b$ - I | II | III |
+| --- | --- | --- | --- | --- | --- | --- |
+| North front | .5 | .75 | .55 | 8.8 | 7.9 | 10.2 |
+| South front | 1.1 | 1.3 | 1.5 | 10.5 | 8.1 | 9.2 |
+
 
 The Blue Army reserve units can be used in defense lines II and III only. The allocation of units by the Red Army to the three defense lines is given in the following table:
 
-<table><tr><td rowspan="2"></td><td colspan="3">Number of Red Army attack units</td></tr><tr><td>Defense line 1</td><td>Defense line 2</td><td>Defense line 3</td></tr><tr><td>North front</td><td>30</td><td>60</td><td>20</td></tr><tr><td>South front</td><td>30</td><td>40</td><td>20</td></tr></table>
+
+|  | Number of Red Army attack units - Defense line 1 | Defense line 2 | Defense line 3 |
+| --- | --- | --- | --- |
+| North front | 30 | 60 | 20 |
+| South front | 30 | 40 | 20 |
+
 
 How should Blue allocate its resources among the three defense lines and the north/south fronts?
 
@@ -2100,7 +2403,14 @@ $$
 
 Determine the most economical efficiency for the four plants using the following data (the fraction of BOD removed by decomposition is 6% for all four reaches):
 
-<table><tr><td></td><td>Reach 1-2 (i = 1)</td><td>Reach 2-3 (i = 2)</td><td>Reach 2-3 (i = 3)</td><td>Reach 3-4 (i = 4)</td></tr><tr><td>${Q}_{i}$ (gal/hr)</td><td>215,000</td><td>220,000</td><td>200,000</td><td>210,000</td></tr><tr><td>${p}_{i}\left( {\mathrm{{lb}}/\mathrm{{hr}}}\right)$</td><td>500</td><td>3,000</td><td>6,000</td><td>1,000</td></tr><tr><td>${b}_{i}$ (lb BOD/gal)</td><td>.00085</td><td>.0009</td><td>.0008</td><td>.0008</td></tr><tr><td>Treatment cost <br> (\$/lb BOD removed)</td><td>.20</td><td>.25</td><td>.15</td><td>.18</td></tr></table>
+
+|  | Reach 1-2 (i = 1) | Reach 2-3 (i = 2) | Reach 2-3 (i = 3) | Reach 3-4 (i = 4) |
+| --- | --- | --- | --- | --- |
+| ${Q}_{i}$ (gal/hr) | 215,000 | 220,000 | 200,000 | 210,000 |
+| ${p}_{i}\left( {\mathrm{{lb}}/\mathrm{{hr}}}\right)$ | 500 | 3,000 | 6,000 | 1,000 |
+| ${b}_{i}$ (lb BOD/gal) | .00085 | .0009 | .0008 | .0008 |
+| Treatment cost / (\$/lb BOD removed) | .20 | .25 | .15 | .18 |
+
 
 2-86. Loading Structure, Stark and Nichole (1972). The overhead crane in Figure 2.14 with two lifting yokes is used to transport mixed concrete to a yard for casting concrete barriers.
 
@@ -2114,10 +2424,24 @@ The concrete bucket hangs at midpoint from the yoke. The crane end rails can sup
 
 2-87. Allocation of Aircraft to Routes. Consider the problem of assigning aircraft to four routes according to the following data:
 
-<table><tr><td rowspan="2">Aircraft type</td><td rowspan="2">Capacity (passengers)</td><td rowspan="2">Number of aircraft</td><td colspan="4">Number of daily trips on route</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td>1</td><td>50</td><td>5</td><td>3</td><td>2</td><td>2</td><td>1</td></tr><tr><td>2</td><td>30</td><td>8</td><td>4</td><td>3</td><td>3</td><td>2</td></tr><tr><td>3</td><td>20</td><td>10</td><td>5</td><td>5</td><td>4</td><td>2</td></tr><tr><td>Daily number of customers</td><td></td><td></td><td>1000</td><td>2000</td><td>900</td><td>1200</td></tr></table>
+
+| Aircraft type | Capacity (passengers) | Number of aircraft | Number of daily trips on route - 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 50 | 5 | 3 | 2 | 2 | 1 |
+| 2 | 30 | 8 | 4 | 3 | 3 | 2 |
+| 3 | 20 | 10 | 5 | 5 | 4 | 2 |
+| Daily number of customers |  |  | 1000 | 2000 | 900 | 1200 |
+
 
 The associated costs, including the penalties for losing customers because of space unavailability, are:
 
-<table><tr><td rowspan="2">Aircraft type</td><td colspan="4">Operating cost (\$) per trip on route</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td>1</td><td>1000</td><td>1100</td><td>1200</td><td>1500</td></tr><tr><td>2</td><td>800</td><td>900</td><td>1,000</td><td>1000</td></tr><tr><td>3</td><td>600</td><td>800</td><td>800</td><td>900</td></tr><tr><td>Penalty (\$) per lost customer</td><td>40</td><td>50</td><td>45</td><td>70</td></tr></table>
+
+| Aircraft type | Operating cost (\$) per trip on route - 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- |
+| 1 | 1000 | 1100 | 1200 | 1500 |
+| 2 | 800 | 900 | 1,000 | 1000 |
+| 3 | 600 | 800 | 800 | 900 |
+| Penalty (\$) per lost customer | 40 | 50 | 45 | 70 |
+
 
 Determine the optimum allocation of aircraft to routes, and determine the associated number of trips.
