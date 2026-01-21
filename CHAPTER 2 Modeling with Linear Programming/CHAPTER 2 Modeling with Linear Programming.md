@@ -7,48 +7,61 @@ markmap:
 ---
 # [[#^chapter|CHAPTER 2: Modeling with Linear Programming]]
 
-## [[#^frontier|Real-Life Application: Fuel Tankering (Frontier Airlines)]]
+## [[#^frontier|Real-Life Application: Frontier Airlines]]
 
 ## [[#^twovar|2.1 Two-Variable LP Model]]
-### [[#^reddy|Example: Reddy Mikks (Paint Mix)]]
+### [[#^reddy|Example: Reddy Mikks]]
 #### [[#^components|Model Components]]
 ##### [[#^variables|Decision Variables]]
 ##### [[#^objective|Objective Function]]
-##### [[#^constraints|Constraints (Resources, Market, Nonnegativity)]]
+##### [[#^constraints|Constraints]]
+###### [[#^nonnegativity|Non-negativity]]
 #### [[#^model|Complete LP Formulation]]
+##### [[#^feasiblesol|Feasible vs Infeasible Solutions]]
+##### [[#^optimumsol|Optimum Solution]]
+##### [[#^properties|Linearity & Certainty]]
 
 ## [[#^graphical|2.2 Graphical LP Solution]]
 ### [[#^maximization|Maximization Case]]
-#### [[#^feasible|Step 1: Feasible Region (Half-Spaces)]]
-#### [[#^optimum|Step 2: Optimal Solution (Iso-Profit Lines)]]
-#### [[#^corner|Key Result: Optimum at a Corner Point]]
+#### [[#^feasible|Feasible Region]]
+#### [[#^optimum|Optimum Solution (Iso-Profit)]]
+#### [[#^corner|Corner Point Optimality]]
 ### [[#^minimization|Minimization Case]]
-#### [[#^diet|Example: Diet Problem]]
-#### [[#^weakineq|Why ≥ Matters (Don’t Pre-Guess with =)]] 
+#### [[#^diet|Diet Problem Example]]
+#### [[#^weakineq|Significance of Inequalities]]
 
-## [[#^computer|2.3 Computer Solution (Solver & AMPL)]]
-### [[#^solver|Excel Solver Workflow]]
-### [[#^ampl|AMPL Modeling Basics]]
-#### [[#^longhand|Rudimentary (Longhand) Model]]
-#### [[#^modeldata|Model vs Data Separation]]
+## [[#^computer|2.3 Computer Solution]]
+### [[#^solver|Excel Solver]]
+### [[#^ampl|AMPL]]
+#### [[#^longhand|Rudimentary Model]]
+#### [[#^modeldata|Algebraic Model (Data Separation)]]
 
-## [[#^applications|2.4 Linear Programming Applications]]
+## [[#^applications|2.4 LP Applications]]
 ### [[#^investment|Investment]]
-#### [[#^bankloan|Example: Bank Loan Model]]
-### [[#^production|Production Planning & Inventory]]
-#### [[#^singleperiod|Example: Single-Period Production]]
-#### [[#^multiperiod|Example: Multi-Period Production–Inventory]]
-#### [[#^smoothing|Example: Production Smoothing]]
+#### [[#^bankloan|Bank Loan Model]]
+##### [[#^bankobj|Objective: Net Return]]
+##### [[#^bankconst|Constraints: Policy & Ratios]]
+### [[#^production|Production & Inventory]]
+#### [[#^singleperiod|Single-Period Model]]
+##### [[#^singleobj|Objective: Minimize Penalty]]
+#### [[#^multiperiod|Multi-Period Model]]
+##### [[#^inventorybal|Inventory Balance Equation]]
+#### [[#^smoothing|Production Smoothing]]
+##### [[#^hiringfiring|Hiring & Firing Costs]]
+##### [[#^substitution|Variable Substitution]]
 ### [[#^workforce|Workforce Planning]]
-#### [[#^qantas|Real-Life Application: Qantas]]
-#### [[#^busscheduling|Example: Bus Scheduling]]
-### [[#^urban|Urban Development Planning]]
-#### [[#^urbanrenewal|Example: Urban Renewal]]
+#### [[#^qantas|Qantas Application]]
+#### [[#^busscheduling|Bus Scheduling (Overlapping Shifts)]]
+##### [[#^overlapping|Shift Definition]]
+### [[#^urban|Urban Development]]
+#### [[#^urbanrenewal|Urban Renewal Model]]
 ### [[#^blending|Blending & Refining]]
-#### [[#^crudeoil|Example: Crude Oil Refining & Gasoline Blending]]
+#### [[#^crudeoil|Crude Oil Refining]]
+##### [[#^octanecalc|Octane Number Calculation]]
 ### [[#^additional|Additional Applications]]
 
 ## [[#^bibliography|Bibliography]]
+
 ## [[#^problems|Problems]]
 ```
 
@@ -148,7 +161,7 @@ $$
 {x}_{2} \leq  2\text{ (Demand limit) }
 $$
 
-An implicit (or "understood-to-be") restriction requires (all) the variables, ${x}_{1}$ and ${x}_{2}$ , to assume zero or positive values only. The restrictions, expressed as ${x}_{1} \geq  0$ and ${x}_{2} \geq  0$ , are referred to as nonnegativity constraints.
+An implicit (or "understood-to-be") restriction requires (all) the variables, ${x}_{1}$ and ${x}_{2}$ , to assume zero or positive values only. The restrictions, expressed as ${x}_{1} \geq  0$ and ${x}_{2} \geq  0$ , are referred to as nonnegativity constraints. ^nonnegativity
 
 The complete Reddy Mikks model is ^model
 
@@ -178,11 +191,11 @@ $$
 {x}_{1},{x}_{2} \geq  0\left( 5\right)
 $$
 
-Any values of ${x}_{1}$ and ${x}_{2}$ that satisfy all five constraints constitute a feasible solution. Otherwise, the solution is infeasible. For example, the solution ${x}_{1} = 3$ tons per day and ${x}_{2} = 1$ ton per day is feasible because it does not violate any of the five constraints;a result that is confirmed by using substituting $\left( {{x}_{1} = 3,{x}_{2} = 1}\right)$ in the left-hand side of each constraint. In constraint (1), we have $6{x}_{1} + 4{x}_{2} = \left( {6 \times  3}\right)  + \left( {4 \times  1}\right)  = {22}$ , which is less than the right-hand side of the constraint $\left( { = {24}}\right)$ . Constraints 2 to 5 are checked in a similar manner (verify!). On the other hand, the solution ${x}_{1} = 4$ and ${x}_{2} = 1$ is infeasible because it does not satisfy at least one constraint. For example, in constraint $\left( 1\right) ,\left( {6 \times  4}\right)  + \left( {4 \times  1}\right)  = {28}$ , which is larger than the right-hand side $\left( { = {24}}\right)$ .
+Any values of ${x}_{1}$ and ${x}_{2}$ that satisfy all five constraints constitute a feasible solution. Otherwise, the solution is infeasible. For example, the solution ${x}_{1} = 3$ tons per day and ${x}_{2} = 1$ ton per day is feasible because it does not violate any of the five constraints;a result that is confirmed by using substituting $\left( {{x}_{1} = 3,{x}_{2} = 1}\right)$ in the left-hand side of each constraint. In constraint (1), we have $6{x}_{1} + 4{x}_{2} = \left( {6 \times  3}\right)  + \left( {4 \times  1}\right)  = {22}$ , which is less than the right-hand side of the constraint $\left( { = {24}}\right)$ . Constraints 2 to 5 are checked in a similar manner (verify!). On the other hand, the solution ${x}_{1} = 4$ and ${x}_{2} = 1$ is infeasible because it does not satisfy at least one constraint. For example, in constraint $\left( 1\right) ,\left( {6 \times  4}\right)  + \left( {4 \times  1}\right)  = {28}$ , which is larger than the right-hand side $\left( { = {24}}\right)$ . ^feasiblesol
 
-The goal of the problem is to find the optimum, the best feasible solution that maximizes the total profit $z$ . First, we need to show that the Reddy Mikks problem has an infinite number of feasible solutions, a property that is shared by all nontrivial LPs. Hence the problem cannot be solved by enumeration. The graphical method in Section 2.2 and its algebraic generalization in Chapter 3 show how the optimum can be determined in a finite number of steps.
+The goal of the problem is to find the optimum, the best feasible solution that maximizes the total profit $z$ . First, we need to show that the Reddy Mikks problem has an infinite number of feasible solutions, a property that is shared by all nontrivial LPs. Hence the problem cannot be solved by enumeration. The graphical method in Section 2.2 and its algebraic generalization in Chapter 3 show how the optimum can be determined in a finite number of steps. ^optimumsol
 
-Remarks. The objective and the constraint function in all LPs must be linear. Additionally, all the parameters (coefficients of the objective and constraint functions) of the model are known with certainty.
+Remarks. The objective and the constraint function in all LPs must be linear. Additionally, all the parameters (coefficients of the objective and constraint functions) of the model are known with certainty. ^properties
 
 ### 2.2 GRAPHICAL LP SOLUTION ^graphical
 
@@ -337,7 +350,7 @@ Figure 2.3 provides the graphical solution of the model. The second and third co
 
 FIGURE 2.3
 
-Graphical solution of the diet model the feasible half-spaces of these two constraints requires using a reference point other than $\left( {0,0}\right)$ [e.g., $\left( {{100},0}\right)$ or $\left( {0,{100}}\right) \rbrack$ .
+Graphical solution of the diet model the feasible half-spaces of these two constraints requires using a reference point other than $\left( {0,0}\right)$ e.g., $\left( {{100},0}\right)$ or $\left( {0,{100}}\right) \rbrack$.
 
 ![bo_d56m43v7aajc73800n2g_6_459_1259_1040_933_0.jpg](bo_d56m43v7aajc73800n2g_6_459_1259_1040_933_0.jpg)
 
@@ -724,7 +737,7 @@ $$
 The objective function combines interest revenue and bad debt as:
 
 $$
-\text{ Maximize }z = \text{ Total interest } - \text{ Bad debt }
+\text{ Maximize }z = \text{ Total interest } - \text{ Bad debt } ^bankobj
 $$
 
 $$
@@ -739,7 +752,7 @@ $$
 = {.026}{x}_{1} + {.0509}{x}_{2} + {.0864}{x}_{3} + {.06875}{x}_{4} + {.078}{x}_{5}
 $$
 
-The problem has five constraints:
+The problem has five constraints: ^bankconst
 
 1. Total funds should not exceed \$12 (million):
 
@@ -852,7 +865,7 @@ $$
 The company is penalized for not meeting demand. The objective then is to maximize net profit, defined as
 
 $$
-\text{ Net profit } = \text{ Total profit - Total penalty }
+\text{ Net profit } = \text{ Total profit - Total penalty } ^singleobj
 $$
 
 The total profit is ${30}{x}_{1} + {40}{x}_{2} + {20}{x}_{3} + {10}{x}_{4}$ . To compute the total penalty, the demand constraints can be written as
@@ -935,7 +948,7 @@ $$
 
 The constraints of the problem can be determined directly from the representation in Figure 2.9. For each period we have the following balance equation:
 
-Beginning inventory + Production amount - Ending inventory = Demand
+Beginning inventory + Production amount - Ending inventory = Demand ^inventorybal
 
 This is translated mathematically for the individual months as
 
@@ -1065,13 +1078,13 @@ $$
 \text{ Inventory holding cost } = {50}\left( {{I}_{1} + {I}_{2} + {I}_{3}}\right)
 $$
 
-Modeling the cost of hiring and firing is a bit involved. Given the costs of hiring and firing a temp are \$200 and \$400, respectively, we have
+Modeling the cost of hiring and firing is a bit involved. Given the costs of hiring and firing a temp are \$200 and \$400, respectively, we have ^hiringfiring
 
 $$
 \left( \begin{matrix} \text{ Cost of hiring } \\  \text{ and firing } \end{matrix}\right)  = {200}\left( \begin{matrix} \text{ Number of hired temps } \\  \text{ at the start of each month } \end{matrix}\right)  + {400}\left( \begin{matrix} \text{ Number of fired temps } \\  \text{ at the start of each month } \end{matrix}\right)
 $$
 
-If the variable ${S}_{i}$ is positive, hiring takes place in month $i$ . If it is negative, then firing occurs. This "qualitative" assessment can be translated mathematically by using the substitution
+If the variable ${S}_{i}$ is positive, hiring takes place in month $i$ . If it is negative, then firing occurs. This "qualitative" assessment can be translated mathematically by using the substitution ^substitution
 
 $$
 {S}_{i} = {S}_{i}^{ - } - {S}_{i}^{ + }\text{ , where }{S}_{i}^{ - },{S}_{i}^{ + } \geq  0
@@ -1167,7 +1180,7 @@ Mathematical Model: The variables of the model are the number of buses needed in
 
 The stated definition of the variables is somewhat "vague." We know that each bus will run for 8 consecutive hours, but we do not know when a shift should start. If we follow a normal three-shift schedule (8:01 a.m. to 4:00 p.m., 4:01 p.m. to 12:00 midnight, and 12:01 a.m. to 8:00 a.m.) and assume that ${x}_{1},{x}_{2}$ , and ${x}_{3}$ are the number of buses starting in the first, second, and third shifts, we can see in Figure 2.11 that ${x}_{1} \geq  {10},{x}_{2} \geq  {12}$ , and ${x}_{3} \geq  8$ . The corresponding minimum number of daily buses is ${x}_{1} + {x}_{2} + {x}_{3} = {10} + {12} + 8 = {30}$ .
 
-The given solution is acceptable only if the shifts must coincide with the normal three-shift schedule. However, it may be advantageous to allow the optimization process to choose the "best" starting time for a shift. A reasonable way to accomplish this goal is to allow a shift to start every $4\mathrm{{hr}}$ . The bottom of Figure 2.11 illustrates this idea with overlapping 8-hr shifts starting at 12:01 a.m., 4:01 a.m., 8:01 a.m., 12:01 p.m., 4:01 p.m., and 8:01 p.m. Thus, the variables are defined as
+The given solution is acceptable only if the shifts must coincide with the normal three-shift schedule. However, it may be advantageous to allow the optimization process to choose the "best" starting time for a shift. A reasonable way to accomplish this goal is to allow a shift to start every $4\mathrm{{hr}}$ . The bottom of Figure 2.11 illustrates this idea with overlapping 8-hr shifts starting at 12:01 a.m., 4:01 a.m., 8:01 a.m., 12:01 p.m., 4:01 p.m., and 8:01 p.m. Thus, the variables are defined as ^overlapping
 
 $$
 {x}_{1} = \text{ number of buses starting at 12:01 A.M. }
@@ -1528,7 +1541,7 @@ $$
 
 The octane number of a gasoline product is the weighted average of the octane numbers of the input streams used in the blending process and can be computed as
 
-$\left( \begin{array}{l} \text{ Average ON of } \\  \text{ regular gasoline } \end{array}\right)  =$
+$\left( \begin{array}{l} \text{ Average ON of } \\  \text{ regular gasoline } \end{array}\right)  =$ ^octanecalc
 
 Feedstock ON $\times$ feedstock bbl/day + Cracker unit ON $\times$ Cracker unit bbl/day
 
