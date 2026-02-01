@@ -1,16 +1,314 @@
-## CHAPTER 12 Deterministic Dynamic Programming
+```markmap
+---
+markmap:
+  height: 643
+---
+# [[#^chapter|CHAPTER 12: Deterministic Dynamic Programming]]
 
-## Real-Life Application—Optimization of Crosscutting and Log Allocation at Weyerhaeuser
+## [[#^application|Real-Life Application]]
+### [[#^weyerhaeuser|Weyerhaeuser: Log Crosscutting & Allocation]]
+#### [[#^weyerhaeuser|Mature trees crosscut into logs for different products]]
+#### [[#^weyerhaeuser|Objective: maximize revenue from log combinations]]
+#### [[#^weyerhaeuser|Result: annual profit increase ≥ $7 million since 1978]]
+
+## [[#^recursive|12.1 Recursive Nature of DP Computations]]
+
+### [[#^mainidea|Main Idea]]
+#### [[#^mainidea|Decompose problem into manageable subproblems]]
+#### [[#^mainidea|Recursive computations: optimum of one subproblem → input to next]]
+#### [[#^mainidea|Subproblems linked by common constraints]]
+#### [[#^mainidea|Constraint feasibility maintained at all iterations]]
+
+### [[#^shortest|Example 12.1-1: Shortest-Route Problem]]
+#### [[#^shortest|Find shortest route from node 1 to node 7]]
+#### [[#^shortest|Network with intermediate nodes 2-6]]
+#### [[#^stages|Decomposition into 3 stages]]
+##### [[#^stages|Stage 1: from node 1 to nodes 2,3,4]]
+##### [[#^stages|Stage 2: from nodes 2,3,4 to nodes 5,6]]
+##### [[#^stages|Stage 3: from nodes 5,6 to node 7]]
+#### [[#^computations|Computations: shortest cumulative distances]]
+##### [[#^computations|Stage 1 summary: distances to nodes 2,3,4]]
+##### [[#^computations|Stage 2: min of (distance to node + from node to next)]]
+##### [[#^computations|Stage 3: final shortest distance = 21 miles]]
+#### [[#^route|Optimal route: $1 \rightarrow 4 \rightarrow 5 \rightarrow 7$]]
+
+### [[#^properties|Basic Properties of DP Computations]]
+#### [[#^properties|Each stage: function of feasible routes of that stage only]]
+#### [[#^properties|Current stage linked to immediately preceding stage only]]
+#### [[#^properties|Based on summary of preceding stage]]
+
+### [[#^recursiveeq|Recursive Equation]]
+#### [[#^recursiveeq|$f_i(x_i)$ = shortest distance to node $x_i$ at stage $i$]]
+#### [[#^recursiveeq|$d(x_{i-1}, x_i)$ = distance from node $x_{i-1}$ to $x_i$]]
+#### [[#^recursiveeq|$f_0(x_0=1) = 0$ (base case)]]
+#### [[#^recursiveeq|$f_i(x_i) = \min\{d(x_{i-1}, x_i) + f_{i-1}(x_{i-1})\}$]]
+#### [[#^state|State: $x_i$ links successive stages]]
+#### [[#^state|Allows optimal future decisions independent of past]]
+
+### [[#^optimality|Principle of Optimality]]
+#### [[#^optimality|Future decisions = optimal regardless of past policy]]
+#### [[#^optimality|Example: Stage 3 uses shortest distances to nodes 5,6]]
+#### [[#^optimality|Does not specify HOW to optimize subproblems]]
+#### [[#^optimality|Breaks down problem into tractable subproblems]]
+
+### [[#^marriage|Aha! Moment: Marriage Problem]]
+#### [[#^marriage|Kepler's search for spouse (11 candidates)]]
+#### [[#^marriage|Secretary problem: interview sequentially, irrevocable decision]]
+#### [[#^marriage|Strategy: reject first $r-1$, then pick first better than rejected]]
+#### [[#^marriage|Optimal cutoff: $r \approx 0.37n + 1$]]
+#### [[#^marriage|Probability ≥ 37% for any $n > 1$]]
+#### [[#^marriage|Result: $P(r|n) \geq \frac{1}{e} \approx 0.37$]]
+#### [[#^marriage|Kepler married #5 ($0.37 \times 11 = 4.07$)]]
+
+## [[#^forwardbackward|12.2 Forward and Backward Recursion]]
+
+### [[#^forward|Forward Recursion]]
+#### [[#^forward|Stage 1 → Stage 3 (Example 12.1-1)]]
+#### [[#^forward|Appears more logical]]
+
+### [[#^backward|Backward Recursion]]
+#### [[#^backward|Stage 3 → Stage 1]]
+#### [[#^backward|Preferred in DP literature]]
+#### [[#^backward|More efficient computationally]]
+
+### [[#^tabular|Example 12.2-1: Tabular Form]]
+#### [[#^tabular|Same shortest-route problem]]
+#### [[#^tabular|Backward recursive equation]]
+#### [[#^tabular|Compact tabular computation]]
+
+## [[#^applications|12.3 Selected DP Applications]]
+
+### [[#^elements|Three Basic Elements]]
+#### [[#^elements|1. Definition of stages]]
+#### [[#^elements|2. Definition of alternatives at each stage]]
+#### [[#^elements|3. Definition of states for each stage]]
+#### [[#^elements|State definition most subtle]]
+#### [[#^elements|Key questions:]]
+##### [[#^elements|What relationships bind stages together?]]
+##### [[#^elements|What info needed for feasible decisions?]]
+
+### [[#^knapsack|12.3.1 Knapsack/Fly-Away Kit/Cargo-Loading Model]]
+
+#### [[#^knapsack|Problem Description]]
+##### [[#^knapsack|Maximize value of items in backpack/vessel]]
+##### [[#^knapsack|Limited capacity (weight constraint)]]
+##### [[#^knapsack|Items with unit revenue and weight]]
+
+#### [[#^knapsackmodel|General Model]]
+##### [[#^knapsackmodel|Maximize $z = r_1m_1 + r_2m_2 + \ldots + r_nm_n$]]
+##### [[#^knapsackmodel|Subject to: $w_1m_1 + w_2m_2 + \ldots + w_nm_n \leq W$]]
+##### [[#^knapsackmodel|$m_i$: nonnegative integers (units of item $i$)]]
+##### [[#^knapsackmodel|$r_i$: unit revenue, $w_i$: unit weight]]
+
+#### [[#^knapsackelements|DP Elements]]
+##### [[#^knapsackelements|Stage $i$: item $i$]]
+##### [[#^knapsackelements|Alternatives: $m_i = 0,1,\ldots,\lfloor W/w_i\rfloor$]]
+##### [[#^knapsackelements|State $x_i$: total weight for stages $i,i+1,\ldots,n$]]
+
+#### [[#^knapsackrec|Recursive Equation]]
+##### [[#^knapsackrec|$f_i(x_i)$ = max return for stages $i,\ldots,n$ given state $x_i$]]
+##### [[#^knapsackrec|$f_{n+1}(x_{n+1}) \equiv 0$]]
+##### [[#^knapsackrec|$f_i(x_i) = \max\{r_im_i + f_{i+1}(x_i - w_im_i)\}$]]
+##### [[#^knapsackrec|Two-step procedure:]]
+###### [[#^knapsackrec|Step 1: Express $f_i(x_i)$ as function of $f_{i+1}$]]
+###### [[#^knapsackrec|Step 2: Express $x_{i+1} = x_i - w_im_i$]]
+
+#### [[#^example|Example 12.3-1: 4-ton vessel]]
+##### [[#^example|3 items: unit weights (2,3,1), revenues (31,47,14)]]
+##### [[#^example|Capacity: $W = 4$ tons]]
+##### [[#^example|Optimal solution: $(m_1^*, m_2^*, m_3^*) = (2,0,0)$]]
+##### [[#^example|Revenue: $62,000]]
+
+#### [[#^sensitivity|Sensitivity Analysis]]
+##### [[#^sensitivity|If $W = 3$ tons: $(0,1,0)$ with $47,000]]
+##### [[#^sensitivity|Tableau allows different capacity analysis]]
+
+#### [[#^excel|Excel Moment]]
+##### [[#^excel|File: excelKnapsack.xls]]
+##### [[#^excel|Algorithm for single-constraint knapsack]]
+##### [[#^excel|Input: stage data, output: optimum solution]]
+##### [[#^excel|Value -1111111 indicates infeasible]]
+
+### [[#^workforce|12.3.2 Workforce Size Model]]
+
+#### [[#^workforce|Problem]]
+##### [[#^workforce|Minimize labor cost over $n$ weeks]]
+##### [[#^workforce|Hire/fire workers to meet weekly demand $b_i$]]
+##### [[#^workforce|Costs: excess labor $C_1$, hiring $C_2$]]
+
+#### [[#^workforcemodel|DP Model]]
+##### [[#^workforcemodel|Stage $i$: week $i$]]
+##### [[#^workforcemodel|Alternatives: $x_i$ (number of laborers in week $i$)]]
+##### [[#^workforcemodel|State: $x_{i-1}$ (laborers in week $i-1$)]]
+##### [[#^workforcemodel|$f_i(x_{i-1}) = \min\{C_1(x_i-b_i) + C_2(x_i-x_{i-1}) + f_{i+1}(x_i)\}$]]
+
+#### [[#^workforceexample|Example 12.3-2: 5-week project]]
+##### [[#^workforceexample|Minimum workers: $(5,7,8,4,6)$]]
+##### [[#^workforceexample|Excess cost: $300/worker/week]]
+##### [[#^workforceexample|Hiring cost: $400 + $200/worker]]
+##### [[#^workforceexample|Optimal: $(5,8,8,6,6)$ workers]]
+##### [[#^workforceexample|Total cost: $3,300]]
+
+### [[#^replacement|12.3.3 Equipment Replacement Model]]
+
+#### [[#^replacement|Problem]]
+##### [[#^replacement|Determine most economical replacement age]]
+##### [[#^replacement|Keep or replace machine at start of each year]]
+##### [[#^replacement|Revenue $r(t)$, cost $c(t)$, salvage $s(t)$]]
+##### [[#^replacement|New machine cost: $I$]]
+
+#### [[#^replacementmodel|DP Model]]
+##### [[#^replacementmodel|Stage $i$: year $i$]]
+##### [[#^replacementmodel|Alternatives: keep (K) or replace (R)]]
+##### [[#^replacementmodel|State: age $t$ of machine at start of year $i$]]
+##### [[#^replacementmodel|$f_i(t)$ = max net income for years $i,\ldots,n$]]
+
+#### [[#^replacementeq|Recursive Equations]]
+##### [[#^replacementeq|Final year: $f_n(t) = \max\{r(t)-c(t)+s(t+1), r(0)+s(t)+s(1)-I-c(0)\}$]]
+##### [[#^replacementeq|Other years: $f_i(t) = \max\{r(t)-c(t)+f_{i+1}(t+1), r(0)+s(t)-I-c(0)+f_{i+1}(1)\}$]]
+
+#### [[#^replacementexample|Example 12.3-3: 3-year-old machine]]
+##### [[#^replacementexample|Planning horizon: 4 years]]
+##### [[#^replacementexample|Current age: 3 years]]
+##### [[#^replacementexample|6-year-old must be replaced]]
+##### [[#^replacementexample|New machine cost: $100,000]]
+##### [[#^replacementexample|Alternative optimal policies]]
+###### [[#^replacementexample|$(R, K, K, R)$ or $(R, R, K, K)$]]
+##### [[#^replacementexample|Total revenue: $55,300]]
+
+### [[#^investment|12.3.4 Investment Model]]
+
+#### [[#^investment|Problem]]
+##### [[#^investment|Invest $P_1, P_2, \ldots, P_n$ over $n$ years]]
+##### [[#^investment|Two banks: rates $r_1, r_2$ with bonuses $q_{i1}, q_{i2}$]]
+##### [[#^investment|Bonuses reinvested next year]]
+##### [[#^investment|Deposits remain until end of year $n$]]
+
+#### [[#^investmentmodel|DP Model]]
+##### [[#^investmentmodel|Stage $i$: year $i$]]
+##### [[#^investmentmodel|Alternatives: $I_i$ (First Bank), $\bar{I}_i$ (Second Bank)]]
+##### [[#^investmentmodel|State $x_i$: capital available at start of year $i$]]
+##### [[#^investmentmodel|$x_1 = P_1$]]
+##### [[#^investmentmodel|$x_i = P_i + q_{i-1,1}I_{i-1} + q_{i-1,2}(x_{i-1} - I_{i-1})$]]
+
+#### [[#^investmentrec|Recursive Equation]]
+##### [[#^investmentrec|$s_i$: accumulated sum from investments in year $i$]]
+##### [[#^investmentrec|Maximize $z = s_1 + s_2 + \ldots + s_n$]]
+##### [[#^investmentrec|$s_i = I_i\alpha_1^{n+1-i} + (x_i - I_i)\alpha_2^{n+1-i}$]]
+##### [[#^investmentrec|$\alpha_k = (1 + r_k)$]]
+##### [[#^investmentrec|$f_i(x_i) = \max\{s_i + f_{i+1}(x_{i+1})\}$]]
+
+#### [[#^investmentexample|Example 12.3-4: 4-year investment]]
+##### [[#^investmentexample|$P_1 = $4000, P_2=P_3=P_4 = $2000$]]
+##### [[#^investmentexample|First Bank: 8% interest, bonuses (1.8%, 1.7%, 2.1%, 2.5%)]]
+##### [[#^investmentexample|Second Bank: 7.8% interest, bonuses 0.5% higher]]
+##### [[#^investmentexample|Optimal strategy]]
+###### [[#^investmentexample|Year 1: invest $4000 in First Bank]]
+###### [[#^investmentexample|Year 2: invest $2072 in First Bank]]
+###### [[#^investmentexample|Year 3: invest $2035.22 in Second Bank]]
+###### [[#^investmentexample|Year 4: invest $2052.92 in Second Bank]]
+##### [[#^investmentexample|Total: $12,691.66]]
+
+### [[#^inventory|12.3.5 Inventory Models]]
+
+#### [[#^inventory|Applications]]
+##### [[#^inventory|DP important in inventory control]]
+##### [[#^inventory|Chapter 13: deterministic models]]
+##### [[#^inventory|Chapter 16: probabilistic models]]
+##### [[#^inventory|Chapter 24: probabilistic DP applications]]
+
+## [[#^dimensionality|12.4 Problem of Dimensionality]]
+
+### [[#^dimensionality|Issue]]
+#### [[#^dimensionality|State usually single element]]
+#### [[#^dimensionality|Multiple constraints → multidimensional state]]
+#### [[#^dimensionality|Example: knapsack with weight AND volume]]
+#### [[#^dimensionality|Increase = "curse of dimensionality"]]
+#### [[#^dimensionality|More state variables = more computations]]
+
+### [[#^lineardp|Relationship with Linear Programming]]
+#### [[#^lineardp|DP can solve LP problems]]
+#### [[#^lineardp|Example 12.4-1: two-product problem]]
+
+### [[#^dimensionalityexample|Example 12.4-1: Acme Manufacturing]]
+#### [[#^dimensionalityexample|Two products, capacity 430 minutes]]
+#### [[#^dimensionalityexample|Constraints: time ($2x_1 + x_2 \leq 430$), demand ($x_2 \leq 230$)]]
+#### [[#^dimensionalityexample|Profits: $x_1$ ($2/unit), $x_2$ ($5/unit)]]
+#### [[#^dimensionalityexample|Two-dimensional state: $(v_1, w_1)$ = resources used]]
+#### [[#^dimensionalityexample|Solution: $x_1 = 100, x_2 = 230, z = $1350$]]
+
+## [[#^casestudy|Case Study: Weyerhaeuser Log Mill]]
+
+### [[#^casestudy|Tool: DP]]
+### [[#^casestudy|Application: Log mill operation]]
+
+### [[#^situation|Description]]
+#### [[#^situation|Trees crosscut into logs for different mills]]
+#### [[#^situation|Log specifications depend on end product]]
+#### [[#^situation|Trees up to 100 ft, many cutting combinations]]
+#### [[#^situation|Different revenues from different cutting patterns]]
+
+### [[#^mathmodel|Mathematical Model]]
+#### [[#^mathmodel|No "average tree" solution]]
+#### [[#^mathmodel|Apply to individual trees]]
+#### [[#^mathmodel|Usable length $L$ = multiple of minimum $K$]]
+#### [[#^mathmodel|Logs: $K$ to $NK$ feet]]
+#### [[#^mathmodel|$R_m(i,j)$: revenue at mill $m$ from log of length $jK$]]
+#### [[#^mathmodel|Cutting cost $c_{ij}$]]
+
+### [[#^dprec|DP Model]]
+#### [[#^dprec|$f(i)$: max revenue when remaining stem length = $iK$]]
+#### [[#^dprec|$f(0) \equiv 0$]]
+#### [[#^dprec|$f(i) = \max\{R_m(i,j) - c_{ij} + f(i-j)\}$]]
+#### [[#^dprec|$j = 1,\ldots,\min(i,N)$; $m = 1,\ldots,M$]]
+
+### [[#^examplecomp|Example Computation]]
+#### [[#^examplecomp|Two mills, $L = 12$ ft, $K = 2$ ft]]
+#### [[#^examplecomp|$I = 6, N = 5$, cut cost $c = $0.15]]
+#### [[#^examplecomp|Spreadsheet solution (excelCase8.xls)]]
+#### [[#^examplecomp|Optimal cuts at $i = 2, 3, 4$]]
+#### [[#^examplecomp|Total value: $9.85]]
+
+### [[#^practical|Practical Considerations]]
+#### [[#^practical|VISION computer system]]
+#### [[#^practical|Database of sample tree stems]]
+#### [[#^practical|Graphic stem display]]
+#### [[#^practical|Operator cuts vs. DP solution]]
+#### [[#^practical|Training tool]]
+#### [[#^practical|User-friendly, DP transparent]]
+
+## [[#^bibliography|Bibliography]]
+### [[#^bibliography|Bertsekas (1987)]
+### [[#^bibliography|Denardo (1982)]
+### [[#^bibliography|Dreyfus & Law (1977)]
+### [[#^bibliography|Sntedovich (1991)]
+
+## [[#^problems|Problems]]
+### [[#^problems|Section 12.1: 12-1 to 12-2]
+### [[#^problems|Section 12.2: 12-3 to 12-5]
+### [[#^problems|Section 12.3.1: 12-6 to 12-18]
+### [[#^problems|Section 12.3.2: 12-19 to 12-22]
+### [[#^problems|Section 12.3.3: 12-23 to 12-27]
+### [[#^problems|Section 12.3.4: 12-28 to 12-30]
+### [[#^problems|Section 12.4: 12-31 to 12-32]
+```
+
+
+---
+
+## CHAPTER 12 Deterministic Dynamic Programming ^chapter
+
+## Real-Life Application—Optimization of Crosscutting and Log Allocation at Weyerhaeuser ^application ^weyerhaeuser
 
 Mature trees are harvested and crosscut into logs to manufacture different end products (construction lumber, plywood, wafer boards, or paper). Log specifications (e.g., length and end diameters) differ depending on the mill where the logs are processed. With harvested trees measuring up to 100 ft in length, the number of crosscut combinations meeting mill requirements can be large, and the manner in which a tree is disassembled into logs can affect revenues. The objective is to determine the crosscut combinations that maximize the total revenue. The study uses dynamic programming to optimize the process. The proposed system was first implemented in 1978 with an annual increase in profit of at least \$7 million. Details of the case are presented at the end of the chapter.
 
-### 12.1 RECURSIVE NATURE OF DYNAMIC PROGRAMMING (DP) COMPUTATIONS
+### 12.1 RECURSIVE NATURE OF DYNAMIC PROGRAMMING (DP) COMPUTATIONS ^recursive
 
 The main idea of DP is to decompose the problem into (more manageable) subproblems. Computations are then carried out recursively where the optimum solution of one subproblem is used as an input to the next subproblem. The optimum solution for the entire problem is at hand when the last subproblem is solved. The manner in which the recursive computations are carried out depends on how the original problem is decomposed. In particular, the subproblems are normally linked by common constraints. The feasibility of these common constraints is maintained at all iterations.
 
 ---
 
-## Example 12.1-1 (Shortest-Route Problem)
+## Example 12.1-1 (Shortest-Route Problem) ^shortest
 
 Suppose that we want to select the shortest highway route between two cities. The network in Figure 12.1 provides the possible routes between the starting city at node 1 and the destination city at node 7. The routes pass through intermediate cities designated by nodes 2 to 6.
 
@@ -28,7 +326,7 @@ To solve the problem by DP, first decompose it into stages as delineated by the 
 
 The general idea for determining the shortest route is to compute the shortest (cumulative) distances to all the terminal nodes of a stage and then use these distances as input data to the immediately succeeding stage. Starting from node 1, stage 1 reaches three end nodes (2, 3, and 4), and its computations are simple.
 
-Stage 1 Summary.
+Stage 1 Summary. ^computations
 
 Shortest distance from node 1 to node 2 = 7 miles (from node 1)
 
@@ -82,15 +380,15 @@ Stage 3 Summary.
 
 Shortest distance from node 1 to node 7 = 21 miles (from node 5)
 
-Stage 3 summary shows that the shortest distance between nodes 1 and 7 is 21 miles. To determine the optimal route, start at stage 3 summary, where node 7 links to node 5; stage 2 summary links node 4 to node 5; and stage 1 summary links node 4 to node 1. Thus, the shortest route is $1 \rightarrow  4 \rightarrow  5 \rightarrow  7$ .
+Stage 3 summary shows that the shortest distance between nodes 1 and 7 is 21 miles. To determine the optimal route, start at stage 3 summary, where node 7 links to node 5; stage 2 summary links node 4 to node 5; and stage 1 summary links node 4 to node 1. Thus, the shortest route is $1 \rightarrow  4 \rightarrow  5 \rightarrow  7$ . ^route
 
-The example reveals the basic properties of DP computations:
+The example reveals the basic properties of DP computations: ^properties
 
 1. The computations at each stage are a function of the feasible routes of that stage, and only that stage.
 
 2. A current stage is linked to the immediately preceding stage only (without regard to earlier stages) based on the shortest-distance summary of the immediately preceding stage.
 
-Recursive Equation. This section shows how the recursive computations in Example 12.1-1 can be expressed mathematically. Let ${f}_{i}\left( {x}_{i}\right)$ be the shortest distance to node ${x}_{i}$ at stage $i$ , and define $d\left( {{x}_{i - 1},{x}_{i}}\right)$ as the distance from node ${x}_{i - 1}$ to node ${x}_{i}$ . The DP recursive equation is defined as
+Recursive Equation. This section shows how the recursive computations in Example 12.1-1 can be expressed mathematically. Let ${f}_{i}\left( {x}_{i}\right)$ be the shortest distance to node ${x}_{i}$ at stage $i$ , and define $d\left( {{x}_{i - 1},{x}_{i}}\right)$ as the distance from node ${x}_{i - 1}$ to node ${x}_{i}$ . The DP recursive equation is defined as ^recursiveeq
 
 $$
 {f}_{0}\left( {{x}_{0} = 1}\right)  = 0
@@ -100,17 +398,17 @@ $$
 {f}_{i}\left( {x}_{i}\right)  = \mathop{\min }\limits_{\substack{\text{ all feasible } \\  \left( {{x}_{i - 1},{x}_{i}}\right) \text{ routes } }}\left\{  {d\left( {{x}_{i - 1},{x}_{i}}\right)  + {f}_{i - 1}\left( {x}_{i - 1}\right) }\right\}  , i = 1,2,3
 $$
 
-All distances are measured from 0 by setting ${f}_{0}\left( {{x}_{0} = 1}\right)  = 0$ . The main recursive equation expresses the shortest distance ${f}_{i}\left( {x}_{i}\right)$ at stage $i$ as a function of the next node, ${x}_{i}$ . In DP terminology, ${x}_{i}$ is referred to as the state at stage $i$ . The state links successive stages in a manner that permits making optimal feasible decisions at a future stage independently of the decisions already made in all preceding stages.
+All distances are measured from 0 by setting ${f}_{0}\left( {{x}_{0} = 1}\right)  = 0$ . The main recursive equation expresses the shortest distance ${f}_{i}\left( {x}_{i}\right)$ at stage $i$ as a function of the next node, ${x}_{i}$ . In DP terminology, ${x}_{i}$ is referred to as the state at stage $i$ . The state links successive stages in a manner that permits making optimal feasible decisions at a future stage independently of the decisions already made in all preceding stages. ^state
 
 The definition of the state leads to the following unifying framework for DP.
 
-Principle of Optimality. Future decisions for all future stages constitute an optimal policy regardless of the policy adopted in all preceding stages.
+Principle of Optimality. Future decisions for all future stages constitute an optimal policy regardless of the policy adopted in all preceding stages. ^optimality
 
 The implementation of the principle of optimality is evident in the computations in Example 12.1-1. In stage 3, the recursive computations at node 7 use the shortest distance to nodes 5 and 6 (i.e., the states of stage 2) without concern about how nodes 5 and 6 are reached from the starting node 1.
 
 The principle of optimality does not address the details of how a subproblem is optimized. The reason is the generic nature of the subproblem. It can be linear or nonlinear, and the number of alternative can be finite or infinite. All the principle of optimality does is "break down" the original problem into more computationally tractable subproblems.
 
-## Aha! Moment: Solving Marriage Problem . . . with Dynamic Programming!
+## Aha! Moment: Solving Marriage Problem . . . with Dynamic Programming! ^marriage
 
 The German mathematician Johannes Kepler (1571-1630), arguably one of the greatest astronomers ever, was faced with a personal problem: He was seeking a compatible spouse and a stepmother for his young children after his wife died. A marriage broker presented him with 11 candidates, and over a span of two years he interviewed them one at a time. He rejected some for lack of compatibility but could not make up his mind regarding the remaining ones, who in turn, tired of waiting, withdrew their names. After much agonized vacillation, he re-wooed the fifth woman he interviewed, and the union was a happy one.
 
@@ -128,15 +426,15 @@ This remarkable simple result says that for $r \approx  {.37n} + 1$ , there is a
 
 The proposed solution was actually realized in Kepler's case when he married candidate number 5 (note that ${.37} \times  {11} = {4.07}$ ). In all likelihood, however, the outcome is purely coincidental because Kepler did not quite follow the rules of the proposed problem. Not to mention that, per published accounts, Kepler first tried to woo candidate number 4 but was unsuccessful. Nevertheless, the conjecture is a story worth telling!
 
-### 12.2 FORWARD AND BACKWARD RECURSION
+### 12.2 FORWARD AND BACKWARD RECURSION ^forwardbackward
 
-Example 12.1-1 uses forward recursion in which the computations proceed from stage 1 to stage 3. The same example can be solved by backward recursion, starting at stage 3 and ending at stage 1.
+Example 12.1-1 uses forward recursion in which the computations proceed from stage 1 to stage 3. The same example can be solved by backward recursion, starting at stage 3 and ending at stage 1. ^forward
 
-Naturally, both the forward and backward recursions yield the same optimum. Although the forward procedure appears more logical, DP literature mostly uses backward recursion. The reason for this preference is that, in general, backward recursion can be more efficient computationally.
+Naturally, both the forward and backward recursions yield the same optimum. Although the forward procedure appears more logical, DP literature mostly uses backward recursion. The reason for this preference is that, in general, backward recursion can be more efficient computationally. ^backward
 
 We will demonstrate the use of backward recursion by applying it to Example 12.1-1. The demonstration will also provide the opportunity to present the DP computations in a compact tabular form.
 
-## Example 12.2-1
+## Example 12.2-1 ^tabular
 
 The backward recursive equation for Example 12.2-1 is
 
@@ -160,21 +458,39 @@ ${}^{2}$ Thomas S. Ferguson,"Who Solved the Secretary Problem?" Statistical Scie
 
 Stage 3. Node $7\left( {{x}_{4} = 7}\right)$ is connected to nodes 5 and 6 $\left( {{x}_{3} = 5}\right.$ and 6 $)$ with exactly one route each. The following table summarizes stage 3 computations:
 
-<table><tr><td rowspan="2">${x}_{3}$</td><td>$d\left( {{x}_{3},{x}_{4}}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{4} = 7$</td><td>${f}_{3}\left( {x}_{3}\right)$</td><td>${x}_{4}^{ * }$</td></tr><tr><td>5</td><td>9</td><td>9</td><td>7</td></tr><tr><td>6</td><td>6</td><td>6</td><td>7</td></tr></table>
+
+| ${x}_{3}$ | $d\left( {{x}_{3},{x}_{4}}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{4} = 7$ | ${f}_{3}\left( {x}_{3}\right)$ | ${x}_{4}^{ * }$ |
+| 5 | 9 | 9 | 7 |
+| 6 | 6 | 6 | 7 |
+
 
 Stage 2. Route $\left( {2,6}\right)$ does not exist. Given ${f}_{3}\left( {x}_{3}\right)$ from stage 3, we can compare the feasible alternatives as the following table shows:
 
-<table><tr><td rowspan="2">${x}_{2}$</td><td colspan="2">$d\left( {{x}_{2},{x}_{3}}\right)  + {f}_{3}\left( {x}_{3}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{3} = 5$</td><td>${x}_{3} = 6$</td><td>${f}_{2}\left( {x}_{2}\right)$</td><td>${x}_{3}^{ * }$</td></tr><tr><td>2</td><td>${12} + 9 = {21}$</td><td>-</td><td>21</td><td>5</td></tr><tr><td>3</td><td>$8 + 9 = {17}$</td><td>$9 + 6 = {15}$</td><td>15</td><td>6</td></tr><tr><td>4</td><td>$7 + 9 = {16}$</td><td>${13} + 6 = {19}$</td><td>16</td><td>5</td></tr></table>
+
+| ${x}_{2}$ | $d\left( {{x}_{2},{x}_{3}}\right) + {f}_{3}\left( {x}_{3}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{3} = 5$ | ${x}_{3} = 6$ | ${f}_{2}\left( {x}_{2}\right)$ | ${x}_{3}^{ * }$ |
+| 2 | ${12} + 9 = {21}$ | - | 21 | 5 |
+| 3 | $8 + 9 = {17}$ | $9 + 6 = {15}$ | 15 | 6 |
+| 4 | $7 + 9 = {16}$ | ${13} + 6 = {19}$ | 16 | 5 |
+
 
 The optimum solution of stage 2 reads as follows: For cities 2 and 4, the shortest routes pass through city 5, and for city 3, the shortest route passes through city 6.
 
 Stage 1. From node 1, we have three alternative routes: $\left( {1,2}\right) ,\left( {1,3}\right)$ , and $\left( {1,4}\right)$ . Using ${f}_{2}\left( {x}_{2}\right)$ from stage 2, we get
 
-<table><tr><td rowspan="2">${x}_{1}$</td><td colspan="3">$d\left( {{x}_{1},{x}_{2}}\right)  + {f}_{2}\left( {x}_{2}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{2} = 2$</td><td>${x}_{2} = 3$</td><td>${x}_{2} = 4$</td><td>${f}_{1}\left( {x}_{1}\right)$</td><td>${x}_{2}^{ * }$</td></tr><tr><td>1</td><td>$7 + {21} = {28}$</td><td>$8 + {15} = {23}$</td><td>$5 + {16} = {21}$</td><td>21</td><td>4</td></tr></table>
+
+| ${x}_{1}$ | $d\left( {{x}_{1},{x}_{2}}\right) + {f}_{2}\left( {x}_{2}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{2} = 2$ | ${x}_{2} = 3$ | ${x}_{2} = 4$ | ${f}_{1}\left( {x}_{1}\right)$ | ${x}_{2}^{ * }$ |
+| 1 | $7 + {21} = {28}$ | $8 + {15} = {23}$ | $5 + {16} = {21}$ | 21 | 4 |
+
 
 Stage 1 solution links city 1 to city 4. Next, stage 2 solution links city 4 to city 5. Finally, stage 3 solution connects city 5 to city 7 . The optimum route is $1 \rightarrow  4 \rightarrow  5 \rightarrow  7$ , and the associated distance is 21 miles.
 
-### 12.3 SELECTED DP APPLICATIONS
+### 12.3 SELECTED DP APPLICATIONS ^applications
 
 This section presents four applications, each with a new idea in the implementation of DP. All the examples use the backward recursive equation because of its prevalence in the literature.
 
@@ -186,7 +502,7 @@ As you study each application, pay special attention to the three basic elements
 
 3. Definition of the states for each stage
 
-Of the three elements, the definition of the state is usually the most subtle. The applications presented here show that the definition of the state varies depending on the situation being modeled. Nevertheless, as you investigate each application, you will find it helpful to consider the following questions:
+Of the three elements, the definition of the state is usually the most subtle. The applications presented here show that the definition of the state varies depending on the situation being modeled. Nevertheless, as you investigate each application, you will find it helpful to consider the following questions: ^elements
 
 1. What relationships bind the stages together?
 
@@ -194,11 +510,11 @@ Of the three elements, the definition of the state is usually the most subtle. T
 
 You can enhance your understanding of the concept of the state by questioning the validity of the way it is defined here. Try another definition that may appear "more logical" to you, and use it in the recursive computations. You will soon discover that the definitions presented here are correct. Meanwhile, the associated mental process should give you a better understanding of the role of states in the development of DP recursive equation.
 
-#### 12.3.1 Knapsack/Fly-Away Kit/Cargo-Loading Model
+#### 12.3.1 Knapsack/Fly-Away Kit/Cargo-Loading Model ^knapsack
 
 The knapsack model classically deals with determining the most valuable items a combat soldier carries in a backpack. The problem represents a general resource allocation model in which limited resources are used by a number of economic activities. The objective is to maximize the total return. ${}^{3}$
 
-The (backward) recursive equation is developed for the general problem of allocating $n$ items to a knapsack with weight capacity $W$ . Let ${m}_{i}$ be the number of units of item $i$ in the knapsack, and define ${r}_{i}$ and ${w}_{i}$ as the unit revenue and weight of item $i$ . The general problem can be represented as
+The (backward) recursive equation is developed for the general problem of allocating $n$ items to a knapsack with weight capacity $W$ . Let ${m}_{i}$ be the number of units of item $i$ in the knapsack, and define ${r}_{i}$ and ${w}_{i}$ as the unit revenue and weight of item $i$ . The general problem can be represented as ^knapsackmodel
 
 $$
 \text{ Maximize }z = {r}_{1}{m}_{1} + {r}_{2}{m}_{2} + \ldots  + {r}_{n}{m}_{n}
@@ -214,7 +530,7 @@ $$
 {m}_{1},{m}_{2},\ldots ,{m}_{n}\text{ nonnegative integers }
 $$
 
-The three elements of the model are
+The three elements of the model are ^knapsackelements
 
 1. Stage $i$ is represented by item $i, i = 1,2,\ldots , n$ .
 
@@ -234,7 +550,7 @@ $$
 {f}_{i}\left( {x}_{i}\right)  = \text{ maximum return for stages }i, i + 1\text{ , and }n\text{ , given state }{x}_{i}
 $$
 
-The most convenient way to construct the recursive equation is a two-step procedure:
+The most convenient way to construct the recursive equation is a two-step procedure: ^knapsackrec
 
 Step 1. Express ${f}_{i}\left( {x}_{i}\right)$ as a function of ${f}_{i}\left( {x}_{i + 1}\right)$ as follows:
 
@@ -256,11 +572,17 @@ $$
 {x}_{i} \leq  W
 $$
 
-## Example 12.3-1
+## Example 12.3-1 ^example
 
 A 4-ton vessel can be loaded with one or more of three items. The following table gives the unit weight, ${w}_{i}$ , in tons and the unit revenue in thousands of dollars, ${r}_{i}$ , for item $i$ . The goal is to determine the number of units of each item that will maximize the total return.
 
-<table><tr><td>Item $i$</td><td>${w}_{i}$</td><td>${r}_{i}$</td></tr><tr><td>1</td><td>2</td><td>31</td></tr><tr><td>2</td><td>3</td><td>47</td></tr><tr><td>3</td><td>1</td><td>14</td></tr></table>
+
+| Item $i$ | ${w}_{i}$ | ${r}_{i}$ |
+| --- | --- | --- |
+| 1 | 2 | 31 |
+| 2 | 3 | 47 |
+| 3 | 1 | 14 |
+
 
 Because the unit weight ${w}_{i}$ and the maximum weight $W$ are integers, the state ${x}_{i}$ assumes integer values only.
 
@@ -278,19 +600,46 @@ ${}^{4}$ The definition of the state can be multidimensional. For example, the v
 
 The following tableau summarizes the computations for stage 3:
 
-<table><tr><td rowspan="2">${x}_{3}$</td><td colspan="5">${14}{m}_{3}$</td><td colspan="2">Optimum solution</td></tr><tr><td>${m}_{3} = 0$</td><td>${m}_{3} = 1$</td><td>${m}_{3} = 2$</td><td>${m}_{3} = 3$</td><td>${m}_{3} = 4$</td><td>${f}_{3}\left( {x}_{3}\right)$</td><td>${m}_{3}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td></tr><tr><td>1</td><td>0</td><td>14</td><td>-</td><td>-</td><td>-</td><td>14</td><td>1</td></tr><tr><td>2</td><td>0</td><td>14</td><td>28</td><td>-</td><td>-</td><td>28</td><td>2</td></tr><tr><td>3</td><td>0</td><td>14</td><td>28</td><td>42</td><td>-</td><td>42</td><td>3</td></tr><tr><td>4</td><td>0</td><td>14</td><td>28</td><td>42</td><td>56</td><td>56</td><td>4</td></tr></table>
+
+| ${x}_{3}$ | ${14}{m}_{3}$ | Optimum solution |
+| --- | --- | --- |
+| ${m}_{3} = 0$ | ${m}_{3} = 1$ | ${m}_{3} = 2$ | ${m}_{3} = 3$ | ${m}_{3} = 4$ | ${f}_{3}\left( {x}_{3}\right)$ | ${m}_{3}^{ * }$ |
+| 0 | 0 | - | - | - | - | 0 | 0 |
+| 1 | 0 | 14 | - | - | - | 14 | 1 |
+| 2 | 0 | 14 | 28 | - | - | 28 | 2 |
+| 3 | 0 | 14 | 28 | 42 | - | 42 | 3 |
+| 4 | 0 | 14 | 28 | 42 | 56 | 56 | 4 |
+
 
 Stage 2. $\max \left\{  {m}_{2}\right\}   = \left\lbrack  \frac{4}{3}\right\rbrack   = 1$ , or ${m}_{3} = 0,1,{f}_{2}\left( {x}_{2}\right)  = \mathop{\max }\limits_{{m = 0,1}}\left\{  {{47}{m}_{2} + {f}_{3}\left( {{x}_{2} - 3{m}_{2}}\right) }\right\}$
 
-<table><tr><td rowspan="2">${x}_{2}$</td><td colspan="2">${47}{m}_{2} + {f}_{3}\left( {{x}_{2} - 3{m}_{2}}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${m}_{2} = 0$</td><td>${m}_{2} = 1$</td><td>${f}_{2}\left( {x}_{2}\right)$</td><td>${m}_{2}^{ * }$</td></tr><tr><td>0</td><td>$0 + 0 = 0$</td><td>-</td><td>0</td><td>0</td></tr><tr><td>1</td><td>$0 + {14} = {14}$</td><td>-</td><td>14</td><td>0</td></tr><tr><td>2</td><td>$0 + {28} = {28}$</td><td>-</td><td>28</td><td>0</td></tr><tr><td>3</td><td>$0 + {42} = {42}$</td><td>${47} + 0 = {47}$</td><td>47</td><td>1</td></tr><tr><td>4</td><td>$0 + {56} = {56}$</td><td>${47} + {14} = {61}$</td><td>61</td><td>1</td></tr></table>
+
+| ${x}_{2}$ | ${47}{m}_{2} + {f}_{3}\left( {{x}_{2} - 3{m}_{2}}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${m}_{2} = 0$ | ${m}_{2} = 1$ | ${f}_{2}\left( {x}_{2}\right)$ | ${m}_{2}^{ * }$ |
+| 0 | $0 + 0 = 0$ | - | 0 | 0 |
+| 1 | $0 + {14} = {14}$ | - | 14 | 0 |
+| 2 | $0 + {28} = {28}$ | - | 28 | 0 |
+| 3 | $0 + {42} = {42}$ | ${47} + 0 = {47}$ | 47 | 1 |
+| 4 | $0 + {56} = {56}$ | ${47} + {14} = {61}$ | 61 | 1 |
+
 
 Stage 1. $\max \left\{  {m}_{1}\right\}   = \left\lbrack  \frac{4}{2}\right\rbrack   = 2$ or ${m}_{1} = 0,1,2,{f}_{1}\left( {x}_{1}\right)  = \mathop{\max }\limits_{{{m}_{3} = 0,1,2}}\left\{  {{31}{m}_{2} + {f}_{2}\left( {{x}_{1} - 2{m}_{1}}\right) }\right\}$
 
-<table><tr><td rowspan="2">${x}_{1}$</td><td colspan="3">${31}{m}_{1} + {f}_{2}\left( {{x}_{1} - 2{m}_{1}}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${m}_{1} = 0$</td><td>${m}_{1} = 1$</td><td>${m}_{1} = 2$</td><td>${f}_{1}\left( {x}_{1}\right)$</td><td>${m}_{1}^{ * }$</td></tr><tr><td>0</td><td>$0 + 0 = 0$</td><td>-</td><td>-</td><td>0</td><td>0</td></tr><tr><td>1</td><td>$0 + {14} = {14}$</td><td>-</td><td>-</td><td>14</td><td>0</td></tr><tr><td>2</td><td>$0 + {28} = {28}$</td><td>${31} + 0 = {31}$</td><td>-</td><td>31</td><td>1</td></tr><tr><td>3</td><td>$0 + {47} = {47}$</td><td>${31} + {14} = {45}$</td><td>-</td><td>47</td><td>0</td></tr><tr><td>4</td><td>$0 + {61} = {61}$</td><td>${31} + {28} = {59}$</td><td>${62} + 0 = {62}$</td><td>62</td><td>2</td></tr></table>
+
+| ${x}_{1}$ | ${31}{m}_{1} + {f}_{2}\left( {{x}_{1} - 2{m}_{1}}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${m}_{1} = 0$ | ${m}_{1} = 1$ | ${m}_{1} = 2$ | ${f}_{1}\left( {x}_{1}\right)$ | ${m}_{1}^{ * }$ |
+| 0 | $0 + 0 = 0$ | - | - | 0 | 0 |
+| 1 | $0 + {14} = {14}$ | - | - | 14 | 0 |
+| 2 | $0 + {28} = {28}$ | ${31} + 0 = {31}$ | - | 31 | 1 |
+| 3 | $0 + {47} = {47}$ | ${31} + {14} = {45}$ | - | 47 | 0 |
+| 4 | $0 + {61} = {61}$ | ${31} + {28} = {59}$ | ${62} + 0 = {62}$ | 62 | 2 |
+
 
 The optimum solution is determined in the following manner: Given $W = 4$ tons, from stage $1,{x}_{1} = 4$ gives the optimum alternative ${m}_{1}^{ * } = 2 -$ meaning that 2 units of item 1 will be loaded on the vessel. This allocation leaves ${x}_{2} = {x}_{1} - 2{m}_{2}^{ * } = 4 - 2 \times  2 = 0$ for stages 2 and 3. From stage $2,{x}_{2} = 0$ yields ${m}_{2}^{ * } = 0$ , which leaves ${x}_{3} = {x}_{2} - 3{m}_{2} = 0 - 3 \times  0 = 0$ units for stage 3. Next, from stage $3,{x}_{3} = 0$ gives ${m}_{2}^{ * } = 0$ . Thus, the complete optimal solution is ${m}_{1}^{ * } = 2$ , ${m}_{2}^{ * } = 0$ , and ${m}_{3}^{ * } = 0$ . The associated return is ${f}_{1}\left( 4\right)  = \$ {62},{000}$ .
 
-In the table for stage 1, we actually need to compute the row for ${x}_{1} = 4$ only, because this is the last stage to be considered. However, the computations for ${x}_{1} = 0,1,2$ , and 3 are included to allow carrying out sensitivity analysis. For example, what happens if the vessel capacity is 3 tons in place of 4 tons? The new optimum solution can be determined as
+In the table for stage 1, we actually need to compute the row for ${x}_{1} = 4$ only, because this is the last stage to be considered. However, the computations for ${x}_{1} = 0,1,2$ , and 3 are included to allow carrying out sensitivity analysis. For example, what happens if the vessel capacity is 3 tons in place of 4 tons? The new optimum solution can be determined as ^sensitivity
 
 $$
 \left( {{x}_{1} = 3}\right)  \rightarrow  \left( {{m}_{1}^{ * } = 0}\right)  \rightarrow  \left( {{x}_{2} = 3}\right)  \rightarrow  \left( {{m}_{2}^{ * } = 1}\right)  \rightarrow  \left( {{x}_{3} = 0}\right)  \rightarrow  \left( {{m}_{3}^{ * } = 0}\right)
@@ -298,7 +647,7 @@ $$
 
 Thus the optimum is $\left( {{m}_{1}^{ * },{m}_{2}^{ * },{m}_{3}^{ * }}\right)  = \left( {0,1,0}\right)$ , and the optimum revenue is ${f}_{1}\left( 3\right)  = \$ {47},{000}$ .
 
-## Excel Moment
+## Excel Moment ^excel
 
 The nature of DP computations makes it impossible to develop a general computer code that can handle all DP problems. Perhaps this explains the persistent absence of commercial DP software.
 
@@ -310,7 +659,16 @@ Figure 12.4 shows the stage computations generated by the algorithm for Example 
 
 Starting with stage 3, and using the notation and data in Example 12.3-1, the input cells are updated as the following list shows:
 
-<table><tr><td>Cell(s)</td><td>Data</td></tr><tr><td>D3</td><td>Number of stages, $N = 3$</td></tr><tr><td>G3</td><td>Resource limit, $W = 4$</td></tr><tr><td>C4</td><td>Current stage $= 3$</td></tr><tr><td>E4</td><td>${w}_{3} = 1$</td></tr><tr><td>G4</td><td>${r}_{3} = {14}$</td></tr><tr><td>D6:H6</td><td>${m}_{3} = \left( {0,1,2,3,4}\right)$</td></tr></table>
+
+| Cell(s) | Data |
+| --- | --- |
+| D3 | Number of stages, $N = 3$ |
+| G3 | Resource limit, $W = 4$ |
+| C4 | Current stage $= 3$ |
+| E4 | ${w}_{3} = 1$ |
+| G4 | ${r}_{3} = {14}$ |
+| D6:H6 | ${m}_{3} = \left( {0,1,2,3,4}\right)$ |
+
 
 Note that the feasible values of ${m}_{3}$ are $0,1,\ldots$ , and $4\left( { = \left\lbrack  \frac{W}{{w}_{3}}\right\rbrack   = \left\lbrack  \frac{4}{1}\right\rbrack  }\right)$ , as in Example 12.3-1. The spreadsheet automatically checks the validity of the values the user enters and issues self-explanatory messages in row 5: "yes," "no," and "delete."
 
@@ -320,19 +678,82 @@ As stage 3 data are entered and verified, the spreadsheet "comes alive" and gene
 
 Excel starting screen of the general DP knapsack model (file excelKnapsack.xls)
 
-<table><tr><td>4</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>0</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td></tr><tr><td>1</td><td colspan="15">Dynamic Programming (Backward) Knapsack Model</td></tr><tr><td>2</td><td colspan="9">Input Data and Stage Calculations</td><td colspan="6">Ouput Solution Summary</td></tr><tr><td>3</td><td colspan="3">Number of stages, N=</td><td></td><td colspan="2">Res. limit, W=</td><td></td><td colspan="2" rowspan="5">Stage Optimum Solution</td><td>X</td><td>f</td><td>m</td><td>✘</td><td>f</td><td>m</td></tr><tr><td>4</td><td colspan="2">Current stage=</td><td></td><td>w=</td><td></td><td>r=</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>5</td><td colspan="3">Are m values correct?</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>6</td><td rowspan="2"></td><td colspan="2">m=</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>7</td><td colspan="2">r*m=</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>8</td><td></td><td colspan="2">w*m=</td><td></td><td></td><td></td><td></td><td>f</td><td>m</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>9</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>
+
+| 4 | A | B | C | D | E | F | G | 0 | P | Q | R | S | T | U | V |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Dynamic Programming (Backward) Knapsack Model |
+| 2 | Input Data and Stage Calculations | Ouput Solution Summary |
+| 3 | Number of stages, N= |  | Res. limit, W= |  | Stage Optimum Solution | X | f | m | ✘ | f | m |
+| 4 | Current stage= |  | w= |  | r= |  |  |  |  |  |  |  |
+| 5 | Are m values correct? |  |  |  |  |  |  |  |  |  |  |
+| 6 |  | m= |  |  |  |  |  |  |  |  |  |  |
+| 7 | r*m= |  |  |  |  |  |  |  |  |  |  |
+| 8 |  | w*m= |  |  |  |  | f | m |  |  |  |  |  |  |
+| 9 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| 10 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+
 
 Stage 3:
 
-<table><tr><td></td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>0</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td></tr><tr><td>1</td><td colspan="16">Dynamic Programming (Backward) Knapsack Model</td></tr><tr><td>2</td><td colspan="10">Input Data and Stage Calculations</td><td colspan="6">Ouput Solution Summary</td></tr><tr><td>3</td><td colspan="3">Number of stages.N=</td><td>3</td><td colspan="2">Res. limit. W=</td><td>4</td><td></td><td colspan="2" rowspan="5">Stage <br> Optimum <br> Solution</td><td>✘</td><td>f</td><td>m</td><td>✘</td><td>f</td><td>m</td></tr><tr><td>4</td><td colspan="2">Current stage=</td><td>3</td><td>w3=</td><td>1</td><td>r3=</td><td>14</td><td></td><td colspan="3">Stage 3</td><td></td><td></td><td></td></tr><tr><td>5</td><td colspan="3">Are m3 values correct?</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>0</td><td>0</td><td>0</td><td></td><td></td><td></td></tr><tr><td>6</td><td></td><td colspan="2">m3=</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td>14</td><td>1</td><td></td><td></td><td></td></tr><tr><td>7</td><td>Stage4</td><td colspan="2">r3*m3=</td><td>0</td><td>14</td><td>28</td><td>42</td><td>56</td><td>2</td><td>28</td><td>2</td><td></td><td></td><td></td></tr><tr><td>8</td><td>f4</td><td colspan="2">w3*m3=</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>13</td><td>m3</td><td>3</td><td>42</td><td>3</td><td></td><td></td><td></td></tr><tr><td>9</td><td></td><td>x3=</td><td>0</td><td>0</td><td>111111</td><td>111111</td><td>111111</td><td>111111</td><td>0</td><td>0</td><td>4</td><td>56</td><td>4</td><td></td><td></td><td></td></tr><tr><td>10</td><td></td><td>x3=</td><td>1</td><td>0</td><td>14</td><td>111111</td><td>111111</td><td>111111</td><td>14</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>11</td><td></td><td>x3=</td><td>2</td><td>0</td><td>14</td><td>28</td><td>111111</td><td>1111111</td><td>28</td><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>12</td><td></td><td>x3=</td><td>3</td><td>0</td><td>14</td><td>28</td><td>42</td><td>111111</td><td>42</td><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>13</td><td></td><td>x3=</td><td>4</td><td>0</td><td>14</td><td>28</td><td>42</td><td>56</td><td>56</td><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>
+
+|  | A | B | C | D | E | F | G | H | 0 | P | Q | R | S | T | U | V |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Dynamic Programming (Backward) Knapsack Model |
+| 2 | Input Data and Stage Calculations | Ouput Solution Summary |
+| 3 | Number of stages.N= | 3 | Res. limit. W= | 4 |  | Stage Optimum Solution | ✘ | f | m | ✘ | f | m |
+| 4 | Current stage= | 3 | w3= | 1 | r3= | 14 |  | Stage 3 |  |  |  |
+| 5 | Are m3 values correct? | yes | yes | yes | yes | yes | 0 | 0 | 0 |  |  |  |
+| 6 |  | m3= | 0 | 1 | 2 | 3 | 4 | 1 | 14 | 1 |  |  |  |
+| 7 | Stage4 | r3*m3= | 0 | 14 | 28 | 42 | 56 | 2 | 28 | 2 |  |  |  |
+| 8 | f4 | w3*m3= | 0 | 1 | 2 | 3 | 4 | 13 | m3 | 3 | 42 | 3 |  |  |  |
+| 9 |  | x3= | 0 | 0 | 111111 | 111111 | 111111 | 111111 | 0 | 0 | 4 | 56 | 4 |  |  |  |
+| 10 |  | x3= | 1 | 0 | 14 | 111111 | 111111 | 111111 | 14 | 1 |  |  |  |  |  |  |
+| 11 |  | x3= | 2 | 0 | 14 | 28 | 111111 | 1111111 | 28 | 2 |  |  |  |  |  |  |
+| 12 |  | x3= | 3 | 0 | 14 | 28 | 42 | 111111 | 42 | 3 |  |  |  |  |  |  |
+| 13 |  | x3= | 4 | 0 | 14 | 28 | 42 | 56 | 56 | 4 |  |  |  |  |  |  |
+
 
 Stage 2:
 
-<table><tr><td></td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>0</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td></tr><tr><td>1</td><td colspan="16">Dynamic Programming (Backward) Knapsack Model</td></tr><tr><td>2</td><td colspan="10">Input Data and Stage Calculations</td><td colspan="6">Ouput Solution Summary</td></tr><tr><td>3</td><td colspan="3">Number of stages, $N =$</td><td>3</td><td colspan="2">Res. limit, W=</td><td>4</td><td></td><td rowspan="5" colspan="2">Stage <br> Optimum <br> Solution</td><td>✘</td><td>f</td><td>m</td><td>✘</td><td>f</td><td>m</td></tr><tr><td>4</td><td colspan="2">Current stage=</td><td>2</td><td>w2 =</td><td>3</td><td>r2=</td><td>47</td><td></td><td colspan="3">Stage 3</td><td colspan="3">Stage 2</td></tr><tr><td>5</td><td colspan="3">Are m2 values correct?</td><td>yes</td><td>yes</td><td>delete</td><td>delete</td><td>delete</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>6</td><td rowspan="2">Stage3</td><td colspan="2">m2=</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td>14</td><td>1</td><td>1</td><td>14</td><td>0</td></tr><tr><td>7</td><td colspan="2">r2*m2=</td><td>0</td><td>47</td><td></td><td></td><td></td><td>2</td><td>28</td><td>2</td><td>2</td><td>28</td><td>0</td></tr><tr><td>8</td><td>f3</td><td colspan="2">w2*m2=</td><td>0</td><td>3</td><td></td><td></td><td></td><td>f2</td><td>m2</td><td>3</td><td>42</td><td>3</td><td>3</td><td>47</td><td>1</td></tr><tr><td>9</td><td>0</td><td>x2=</td><td>0</td><td>0</td><td>111111</td><td></td><td></td><td></td><td>0</td><td>0</td><td>4</td><td>56</td><td>4</td><td>4</td><td>61</td><td>1</td></tr><tr><td>10</td><td>14</td><td>x2=</td><td>1</td><td>14</td><td>111111</td><td></td><td></td><td></td><td>14</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>11</td><td>28</td><td>x2=</td><td>2</td><td>28</td><td>111111</td><td></td><td></td><td></td><td>28</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>12</td><td>42</td><td>x2=</td><td>3</td><td>42</td><td>47</td><td></td><td></td><td></td><td>47</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>13</td><td>56</td><td>x2=</td><td>4</td><td>56</td><td>61</td><td></td><td></td><td></td><td>61</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>
+
+|  | A | B | C | D | E | F | G | H | 0 | P | Q | R | S | T | U | V |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Dynamic Programming (Backward) Knapsack Model |
+| 2 | Input Data and Stage Calculations | Ouput Solution Summary |
+| 3 | Number of stages, $N =$ | 3 | Res. limit, W= | 4 |  | Stage Optimum Solution | ✘ | f | m | ✘ | f | m |
+| 4 | Current stage= | 2 | w2 = | 3 | r2= | 47 |  | Stage 3 | Stage 2 |
+| 5 | Are m2 values correct? | yes | yes | delete | delete | delete | 0 | 0 | 0 | 0 | 0 | 0 |
+| 6 | Stage3 | m2= | 0 | 1 | 2 | 3 | 4 | 1 | 14 | 1 | 1 | 14 | 0 |
+| 7 | r2*m2= | 0 | 47 |  |  |  | 2 | 28 | 2 | 2 | 28 | 0 |
+| 8 | f3 | w2*m2= | 0 | 3 |  |  |  | f2 | m2 | 3 | 42 | 3 | 3 | 47 | 1 |
+| 9 | 0 | x2= | 0 | 0 | 111111 |  |  |  | 0 | 0 | 4 | 56 | 4 | 4 | 61 | 1 |
+| 10 | 14 | x2= | 1 | 14 | 111111 |  |  |  | 14 | 0 |  |  |  |  |  |  |
+| 11 | 28 | x2= | 2 | 28 | 111111 |  |  |  | 28 | 0 |  |  |  |  |  |  |
+| 12 | 42 | x2= | 3 | 42 | 47 |  |  |  | 47 | 1 |  |  |  |  |  |  |
+| 13 | 56 | x2= | 4 | 56 | 61 |  |  |  | 61 | 1 |  |  |  |  |  |  |
+
 
 Stage 1:
 
-<table><tr><td>清</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>0</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td></tr><tr><td>1</td><td colspan="16">Dynamic Programming (Backward) Knapsack Model</td></tr><tr><td>2</td><td colspan="10">Input Data and Stage Calculations</td><td colspan="6">Ouput Solution Summary</td></tr><tr><td>3</td><td colspan="3">Number of stages, N=</td><td>3</td><td colspan="2">Res. limit, W=</td><td>4</td><td></td><td colspan="2" rowspan="5">Stage <br> Optimum <br> Solution</td><td>✘</td><td>f</td><td>m</td><td>✘</td><td>f</td><td>m</td></tr><tr><td>4</td><td colspan="2">Current stage=</td><td>1</td><td>w1=</td><td>2</td><td>r1=</td><td>31</td><td></td><td colspan="3">Stage 3</td><td colspan="3">Stage 2</td></tr><tr><td>5</td><td colspan="3">Are m1 values correct?</td><td>yes</td><td>yes</td><td>yes</td><td>delete</td><td>delete</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>6</td><td rowspan="2">Stage2</td><td colspan="2">m1=</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>1</td><td>14</td><td>1</td><td>1</td><td>14</td><td>0</td></tr><tr><td>7</td><td colspan="2">r1*m1=</td><td>0</td><td>31</td><td>62</td><td></td><td></td><td>2</td><td>28</td><td>2</td><td>2</td><td>28</td><td>0</td></tr><tr><td>8</td><td>f2</td><td colspan="2">w1*m1=</td><td>0</td><td>2</td><td>4</td><td></td><td></td><td>f1</td><td>m1</td><td>3</td><td>42</td><td>3</td><td>3</td><td>47</td><td>1</td></tr><tr><td>9</td><td>0</td><td>x1=</td><td>0</td><td>0</td><td>111111</td><td>1111111</td><td></td><td></td><td>0</td><td>0</td><td>4</td><td>56</td><td>4</td><td>4</td><td>61</td><td>1</td></tr><tr><td>10</td><td>14</td><td>x1=</td><td>1</td><td>14</td><td>111111</td><td>111111</td><td></td><td></td><td>14</td><td>0</td><td></td><td></td><td></td><td colspan="3">Stage 1</td></tr><tr><td>11</td><td>26</td><td>x1=</td><td>2</td><td>28</td><td>31</td><td>111111</td><td></td><td></td><td>31</td><td>1</td><td></td><td></td><td></td><td>0</td><td>0</td><td>0</td></tr><tr><td>12</td><td>47</td><td>x1=</td><td>3</td><td>47</td><td>45</td><td>111111</td><td></td><td></td><td>47</td><td>0</td><td></td><td></td><td></td><td>1</td><td>14</td><td>0</td></tr><tr><td>13</td><td>61</td><td>x1=</td><td>4</td><td>61</td><td>59</td><td>62</td><td></td><td></td><td>62</td><td>2</td><td></td><td></td><td></td><td>2</td><td>31</td><td>1</td></tr><tr><td>14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>3</td><td>47</td><td>0</td></tr><tr><td>15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>4</td><td>62</td><td>2</td></tr></table>
+
+| 清 | A | B | C | D | E | F | G | H | 0 | P | Q | R | S | T | U | V |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Dynamic Programming (Backward) Knapsack Model |
+| 2 | Input Data and Stage Calculations | Ouput Solution Summary |
+| 3 | Number of stages, N= | 3 | Res. limit, W= | 4 |  | Stage Optimum Solution | ✘ | f | m | ✘ | f | m |
+| 4 | Current stage= | 1 | w1= | 2 | r1= | 31 |  | Stage 3 | Stage 2 |
+| 5 | Are m1 values correct? | yes | yes | yes | delete | delete | 0 | 0 | 0 | 0 | 0 | 0 |
+| 6 | Stage2 | m1= | 0 | 1 | 2 | 3 | 4 | 1 | 14 | 1 | 1 | 14 | 0 |
+| 7 | r1*m1= | 0 | 31 | 62 |  |  | 2 | 28 | 2 | 2 | 28 | 0 |
+| 8 | f2 | w1*m1= | 0 | 2 | 4 |  |  | f1 | m1 | 3 | 42 | 3 | 3 | 47 | 1 |
+| 9 | 0 | x1= | 0 | 0 | 111111 | 1111111 |  |  | 0 | 0 | 4 | 56 | 4 | 4 | 61 | 1 |
+| 10 | 14 | x1= | 1 | 14 | 111111 | 111111 |  |  | 14 | 0 |  |  |  | Stage 1 |
+| 11 | 26 | x1= | 2 | 28 | 31 | 111111 |  |  | 31 | 1 |  |  |  | 0 | 0 | 0 |
+| 12 | 47 | x1= | 3 | 47 | 45 | 111111 |  |  | 47 | 0 |  |  |  | 1 | 14 | 0 |
+| 13 | 61 | x1= | 4 | 61 | 59 | 62 |  |  | 62 | 2 |  |  |  | 2 | 31 | 1 |
+| 14 |  |  |  |  |  |  |  |  |  |  |  |  |  | 3 | 47 | 0 |
+| 15 |  |  |  |  |  |  |  |  |  |  |  |  |  | 4 | 62 | 2 |
+
 
 FIGURE 12.4
 
@@ -348,7 +769,7 @@ Step 3. Change cell C4 to 2, and enter the new values of ${w}_{2},{r}_{2}$ , and
 
 Step 2 places ${f}_{i + 1}\left( {{x}_{i} - {w}_{i}{m}_{i}}\right)$ in column A in preparation for calculating ${f}_{i}\left( {x}_{i}\right)$ at stage $i$ (see the recursive formula for the knapsack problem in Example 12.3-1). A similar procedure is repeated for stage 1. When stage 1 is complete, the solution summary can be used to read the optimum solution, as was explained in Example 12.3-1. Note that the organization of the output solution summary area (columns Q:V) is free formatted, and you can organize its contents in any manner you desire.
 
-#### 12.3.2 Workforce Size Model
+#### 12.3.2 Workforce Size Model ^workforce
 
 Labor needs in construction projects can be met through hiring and firing of workers. Both activities incur cost. The goal is to minimize the total cost of labor needed for the project.
 
@@ -356,7 +777,7 @@ Assume that the duration of the project is $n$ weeks and that the minimum labor 
 
 The cost of maintaining a workforce ${x}_{i}$ larger than the minimum ${b}_{i}$ in week $i$ incurs excess cost ${C}_{1}\left( {{x}_{i} - {b}_{i}}\right)$ . If ${x}_{i} > {x}_{i - 1}$ , hiring occurs at the additional cost of ${C}_{2}\left( {{x}_{i} - {x}_{i - 1}}\right)$ .
 
-The elements of the DP model are defined as follows:
+The elements of the DP model are defined as follows: ^workforcemodel
 
 1. Stage $i$ is represented by week $i, i = 1,2,\ldots , n$ .
 
@@ -376,7 +797,7 @@ $$
 
 The computations start at stage $n$ and terminate at stage 1 .
 
-## Example 12.3-2
+## Example 12.3-2 ^workforceexample
 
 A contractor estimates that the size of the workforce needed over the next 5 weeks is 5, 7, 8, 4, and 6 workers, respectively. Excess labor kept on the force will cost \$300 per worker per week, and new hiring in any week will incur a fixed cost of \$400 plus \$200 per worker per week.
 
@@ -398,23 +819,54 @@ The cost functions ${C}_{1}$ and ${C}_{2}$ are in hundreds of dollars.
 
 Stage 5. $\left( {{b}_{5} = 6}\right)$
 
-<table><tr><td rowspan="2">${x}_{4}$</td><td>${C}_{1}\left( {{x}_{5} - 6}\right)  + {C}_{2}\left( {{x}_{5} - {x}_{4}}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{5} = 6$</td><td>${f}_{5}\left( {x}_{4}\right)$</td><td>${x}_{5}^{ * }$</td></tr><tr><td>4</td><td>$3\left( 0\right)  + 4 + 2\left( 2\right)  = 8$</td><td>8</td><td>6</td></tr><tr><td>5</td><td>$3\left( 0\right)  + 4 + 2\left( 1\right)  = 6$</td><td>6</td><td>6</td></tr><tr><td>6</td><td>$3\left( 0\right)  + 0 \; = 0$</td><td>0</td><td>6</td></tr></table>
+
+| ${x}_{4}$ | ${C}_{1}\left( {{x}_{5} - 6}\right) + {C}_{2}\left( {{x}_{5} - {x}_{4}}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{5} = 6$ | ${f}_{5}\left( {x}_{4}\right)$ | ${x}_{5}^{ * }$ |
+| 4 | $3\left( 0\right) + 4 + 2\left( 2\right) = 8$ | 8 | 6 |
+| 5 | $3\left( 0\right) + 4 + 2\left( 1\right) = 6$ | 6 | 6 |
+| 6 | $3\left( 0\right) + 0 \; = 0$ | 0 | 6 |
+
 
 Stage 4. $\left( {{b}_{4} = 4}\right)$
 
-<table><tr><td rowspan="2">${x}_{3}$</td><td colspan="3">${C}_{1}\left( {{x}_{4} - 4}\right)  + {C}_{2}\left( {{x}_{4} - {x}_{3}}\right)  + {f}_{5}\left( {x}_{4}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{4} = 4$</td><td>${x}_{4} = 5$</td><td>${x}_{4} = 6$</td><td>${f}_{4}\left( {x}_{3}\right)$</td><td>${x}_{4}^{ * }$</td></tr><tr><td>8</td><td>$3\left( 0\right)  + 0 + 8 = 8$</td><td>$3\left( 1\right)  + 0 + 6 = 9$</td><td>$3\left( 2\right)  + 0 + 0 = 6$</td><td>6</td><td>6</td></tr></table>
+
+| ${x}_{3}$ | ${C}_{1}\left( {{x}_{4} - 4}\right) + {C}_{2}\left( {{x}_{4} - {x}_{3}}\right) + {f}_{5}\left( {x}_{4}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{4} = 4$ | ${x}_{4} = 5$ | ${x}_{4} = 6$ | ${f}_{4}\left( {x}_{3}\right)$ | ${x}_{4}^{ * }$ |
+| 8 | $3\left( 0\right) + 0 + 8 = 8$ | $3\left( 1\right) + 0 + 6 = 9$ | $3\left( 2\right) + 0 + 0 = 6$ | 6 | 6 |
+
 
 Stage 3. $\left( {{b}_{3} = 8}\right)$
 
-<table><tr><td rowspan="2">${x}_{2}$</td><td>${C}_{1}\left( {{x}_{3} - 8}\right)  + {C}_{2}\left( {{x}_{3} - {x}_{2}}\right)  + {f}_{4}\left( {x}_{3}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{3} = 8$</td><td>${f}_{3}\left( {x}_{2}\right)$</td><td>${x}_{6}^{ * }$</td></tr><tr><td>7</td><td>$3\left( 0\right)  + 4 + 2\left( 1\right)  + 6 = {12}$</td><td>12</td><td>8</td></tr><tr><td>8</td><td>$3\left( 0\right)  + 0 \; + 6 = 6$</td><td>6</td><td>8</td></tr></table>
+
+| ${x}_{2}$ | ${C}_{1}\left( {{x}_{3} - 8}\right) + {C}_{2}\left( {{x}_{3} - {x}_{2}}\right) + {f}_{4}\left( {x}_{3}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{3} = 8$ | ${f}_{3}\left( {x}_{2}\right)$ | ${x}_{6}^{ * }$ |
+| 7 | $3\left( 0\right) + 4 + 2\left( 1\right) + 6 = {12}$ | 12 | 8 |
+| 8 | $3\left( 0\right) + 0 \; + 6 = 6$ | 6 | 8 |
+
 
 Stage 2. $\left( {{b}_{2} = 7}\right)$
 
-<table><tr><td rowspan="2">${x}_{1}$</td><td colspan="2">${C}_{1}\left( {{x}_{2} - 7}\right)  + {C}_{2}\left( {{x}_{3} - {x}_{2}}\right)  + {f}_{3}\left( {x}_{2}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{2} = 7$</td><td>${x}_{2} = 8$</td><td>${f}_{2}\left( {x}_{1}\right)$</td><td>${x}_{2}^{ * }$</td></tr><tr><td>5</td><td>$3\left( 0\right)  + 4 + 2\left( 2\right)  + {12} = {20}$</td><td>$3\left( 1\right)  + 4 + 2\left( 3\right)  + 6 = {19}$</td><td>19</td><td>8</td></tr><tr><td>6</td><td>$3\left( 0\right)  + 4 + 2\left( 1\right)  + {12} = {18}$</td><td>$3\left( 1\right)  + 4 + 2\left( 2\right)  + 6 = {17}$</td><td>17</td><td>8</td></tr><tr><td>7</td><td>$3\left( 0\right)  + 0 \; + {12} = {12}$</td><td>$3\left( 1\right)  + 4 + 2\left( 1\right)  + 6 = {15}$</td><td>12</td><td>7</td></tr><tr><td>8</td><td>$3\left( 0\right)  + 0 \; + {12} = {12}$</td><td>$3\left( 1\right)  + 0 \; + 6 = 9$</td><td>9</td><td>8</td></tr></table>
+
+| ${x}_{1}$ | ${C}_{1}\left( {{x}_{2} - 7}\right) + {C}_{2}\left( {{x}_{3} - {x}_{2}}\right) + {f}_{3}\left( {x}_{2}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{2} = 7$ | ${x}_{2} = 8$ | ${f}_{2}\left( {x}_{1}\right)$ | ${x}_{2}^{ * }$ |
+| 5 | $3\left( 0\right) + 4 + 2\left( 2\right) + {12} = {20}$ | $3\left( 1\right) + 4 + 2\left( 3\right) + 6 = {19}$ | 19 | 8 |
+| 6 | $3\left( 0\right) + 4 + 2\left( 1\right) + {12} = {18}$ | $3\left( 1\right) + 4 + 2\left( 2\right) + 6 = {17}$ | 17 | 8 |
+| 7 | $3\left( 0\right) + 0 \; + {12} = {12}$ | $3\left( 1\right) + 4 + 2\left( 1\right) + 6 = {15}$ | 12 | 7 |
+| 8 | $3\left( 0\right) + 0 \; + {12} = {12}$ | $3\left( 1\right) + 0 \; + 6 = 9$ | 9 | 8 |
+
 
 Stage 1. $\left( {{b}_{1} = 5}\right)$
 
-<table><tr><td rowspan="2">${x}_{0}$</td><td colspan="4">${C}_{1}\left( {{x}_{1} - 5}\right)  + {C}_{2}\left( {{x}_{1} - {x}_{0}}\right)  + {f}_{2}\left( {x}_{1}\right)$</td><td colspan="2">Optimum solution</td></tr><tr><td>${x}_{1} = 5$</td><td>${x}_{1} = 6$</td><td>${x}_{1} = 7$</td><td>${x}_{1} = 8$</td><td>${f}_{1}\left( {x}_{0}\right)$</td><td>${x}_{1}^{ * }$</td></tr><tr><td>0</td><td>$3\left( 0\right)  + 4 + 2\left( 5\right)$ <br> $+ {19} = {33}$</td><td>$3\left( 1\right)  + 4 + 2\left( 6\right)$ <br> $+ {17} = {36}$</td><td>$3\left( 2\right)  + 4 + 2\left( 7\right)$ <br> $+ {12} = {36}$</td><td>$3\left( 2\right)  + 4 + 2\left( 8\right)$ <br> $+ 9 = {35}$</td><td>33</td><td>5</td></tr></table>
+
+| ${x}_{0}$ | ${C}_{1}\left( {{x}_{1} - 5}\right) + {C}_{2}\left( {{x}_{1} - {x}_{0}}\right) + {f}_{2}\left( {x}_{1}\right)$ | Optimum solution |
+| --- | --- | --- |
+| ${x}_{1} = 5$ | ${x}_{1} = 6$ | ${x}_{1} = 7$ | ${x}_{1} = 8$ | ${f}_{1}\left( {x}_{0}\right)$ | ${x}_{1}^{ * }$ |
+| 0 | $3\left( 0\right) + 4 + 2\left( 5\right)$ $+ {19} = {33}$ | $3\left( 1\right) + 4 + 2\left( 6\right)$ $+ {17} = {36}$ | $3\left( 2\right) + 4 + 2\left( 7\right)$ $+ {12} = {36}$ | $3\left( 2\right) + 4 + 2\left( 8\right)$ $+ 9 = {35}$ | 33 | 5 |
+
 
 The optimum solution is determined as
 
@@ -424,17 +876,25 @@ $$
 
 The solution can be translated to the following plan:
 
-<table><tr><td>Week $i$</td><td>Minimum labor force $\left( {b}_{\mathrm{i}}\right)$</td><td>Actual labor force $\left( {x}_{\mathrm{i}}\right)$</td><td>Decision</td><td>Cost</td></tr><tr><td>1</td><td>5</td><td>5</td><td>Hire 5 workers</td><td>$4 + 2 \times  5 = {14}$</td></tr><tr><td>2</td><td>7</td><td>8</td><td>Hire 3 workers</td><td>$4 + 2 \times  3 + 1 \times  3 = {13}$</td></tr><tr><td>3</td><td>8</td><td>8</td><td>No change</td><td>0</td></tr><tr><td>4</td><td>4</td><td>6</td><td>Fire 2 workers</td><td>$3 \times  2 = 6$</td></tr><tr><td>5</td><td>6</td><td>6</td><td>No change</td><td>0</td></tr></table>
+
+| Week $i$ | Minimum labor force $\left( {b}_{\mathrm{i}}\right)$ | Actual labor force $\left( {x}_{\mathrm{i}}\right)$ | Decision | Cost |
+| --- | --- | --- | --- | --- |
+| 1 | 5 | 5 | Hire 5 workers | $4 + 2 \times 5 = {14}$ |
+| 2 | 7 | 8 | Hire 3 workers | $4 + 2 \times 3 + 1 \times 3 = {13}$ |
+| 3 | 8 | 8 | No change | 0 |
+| 4 | 4 | 6 | Fire 2 workers | $3 \times 2 = 6$ |
+| 5 | 6 | 6 | No change | 0 |
+
 
 The total cost is ${f}_{1}\left( 0\right)  = \$ {3300}$ .
 
-#### 12.3.3 Equipment Replacement Model
+#### 12.3.3 Equipment Replacement Model ^replacement
 
 Machines that stay longer in service incur higher maintenance cost and may be replaced after a number of years in operation. The situation deals with determining the most economical age of a machine.
 
 Suppose that the machine replacement problem spans $n$ years. At the start of each year, a machine is either kept in service an extra year or replaced with a new one. Let $r\left( t\right) , c\left( t\right)$ , and $s\left( t\right)$ represent the yearly revenue, operating cost, and salvage value, respectively, of a $t$ -year-old machine. The cost of acquiring a new machine in any year is $I$ .
 
-The elements of the DP model are as follows:
+The elements of the DP model are as follows: ^investmentmodel
 
 1. Stage $i$ is represented by year $i, i = 1,2,\ldots , n$ .
 
@@ -446,7 +906,7 @@ Given that the machine is $t$ years old at the start of year $i$ , define
 
 ${f}_{i}\left( t\right)  =$ maximum net income for years $i, i + 1,\ldots$ , and $n$
 
-The recursive equation is
+The recursive equation is ^replacementeq
 
 $$
 {f}_{n}\left( t\right)  = \max \left\{  \begin{array}{ll} r\left( t\right)  - c\left( t\right)  + s\left( {t + 1}\right) , & \text{ if KEEP } \\  r\left( 0\right)  + s\left( t\right)  + s\left( 1\right)  - I - c\left( 0\right) , & \text{ if REPLACE } \end{array}\right.
@@ -456,11 +916,21 @@ $$
 {f}_{i}\left( t\right)  = \max \left\{  \begin{array}{ll} r\left( t\right)  - c\left( t\right)  + {f}_{i + 1}\left( {t + 1}\right) , & \text{ if KEEP } \\  r\left( 0\right)  + s\left( t\right)  - I - c\left( 0\right)  + {f}_{i + 1}\left( 1\right) , & \text{ if REPLACE } \end{array}\right\}  , i = 1,2,\ldots , n - 1
 $$
 
-## Example 12.3-3
+## Example 12.3-3 ^replacementexample
 
 A company needs to determine the optimal replacement policy for a current 3-year-old machine over the next 4 years $\left( {n = 4}\right)$ . A 6-year-old machine must be replaced. The cost of a new machine is \$100,000. The following table gives the data of the problem:
 
-<table><tr><td>Age, $t$ (yr)</td><td>Revenue, $r\left( t\right) \left( \$ \right)$</td><td>Operating cost, $c\left( t\right) \left( \$ \right)$</td><td>Salvage value, $s\left( t\right) \left( \$ \right)$</td></tr><tr><td>0</td><td>20,000</td><td>200</td><td>-</td></tr><tr><td>1</td><td>19,000</td><td>600</td><td>80,000</td></tr><tr><td>2</td><td>18,500</td><td>1200</td><td>60,000</td></tr><tr><td>3</td><td>17,200</td><td>1500</td><td>50,000</td></tr><tr><td>4</td><td>15,500</td><td>1700</td><td>30,000</td></tr><tr><td>5</td><td>14,000</td><td>1800</td><td>10,000</td></tr><tr><td>6</td><td>12,200</td><td>2200</td><td>5000</td></tr></table>
+
+| Age, $t$ (yr) | Revenue, $r\left( t\right) \left( \$ \right)$ | Operating cost, $c\left( t\right) \left( \$ \right)$ | Salvage value, $s\left( t\right) \left( \$ \right)$ |
+| --- | --- | --- | --- |
+| 0 | 20,000 | 200 | - |
+| 1 | 19,000 | 600 | 80,000 |
+| 2 | 18,500 | 1200 | 60,000 |
+| 3 | 17,200 | 1500 | 50,000 |
+| 4 | 15,500 | 1700 | 30,000 |
+| 5 | 14,000 | 1800 | 10,000 |
+| 6 | 12,200 | 2200 | 5000 |
+
 
 The determination of the feasible values for the age of the machine at each stage is somewhat tricky. Figure 12.5 summarizes the network representing the problem. At the start of year 1, we have a 3-year-old machine. We can either replace it $\left( R\right)$ or keep it $\left( K\right)$ for another year. If replacement occurs, the new machine will be 1 year old at the start of year 2; otherwise, the kept machine will be 4 years old. The same logic applies at the start of years 2 to 4. If a 1-year-old machine is replaced at the start of years 2, 3, and 4, its replacement will be 1 year old at the start of the following year. Also, at the start of year 4, a 6-year-old machine must be replaced, and at the end of year 4 (end of the planning horizon), we salvage $\left( S\right)$ the machine.
 
@@ -476,19 +946,45 @@ The solution of the network in Figure 12.5 is equivalent to finding the longest 
 
 Stage 4.
 
-<table><tr><td rowspan="2">$t$</td><td>$K$</td><td>$R$</td><td colspan="2">Optimum solution</td></tr><tr><td>$r\left( t\right)  + s\left( {t + 1}\right)  - c\left( t\right)$</td><td>$r\left( 0\right)  + s\left( t\right)  + s\left( 1\right)  - c\left( 0\right)  - I$</td><td>${f}_{4}\left( t\right)$</td><td>Decision</td></tr><tr><td>1</td><td>${19.0} + {60} - {.6} = {78.4}$</td><td>${20} + {80} + {80} - {.2} - {100} = {79.8}$</td><td>79.8</td><td>$R$</td></tr><tr><td>2</td><td>${18.5} + {50} - {1.2} = {67.3}$</td><td>${20} + {60} + {80} - {.2} - {100} = {59.8}$</td><td>67.3</td><td>$K$</td></tr><tr><td>3</td><td>${17.2} + {30} - {1.5} = {45.7}$</td><td>${20} + {50} + {80} - {.2} - {100} = {49.8}$</td><td>49.8</td><td>$R$</td></tr><tr><td>6</td><td>(Must replace)</td><td>${20} + 5 + {80} - {.2} - {100} = {4.8}$</td><td>4.8</td><td>$R$</td></tr></table>
+
+| $t$ | $K$ | $R$ | Optimum solution |
+| --- | --- | --- | --- |
+| $r\left( t\right) + s\left( {t + 1}\right) - c\left( t\right)$ | $r\left( 0\right) + s\left( t\right) + s\left( 1\right) - c\left( 0\right) - I$ | ${f}_{4}\left( t\right)$ | Decision |
+| 1 | ${19.0} + {60} - {.6} = {78.4}$ | ${20} + {80} + {80} - {.2} - {100} = {79.8}$ | 79.8 | $R$ |
+| 2 | ${18.5} + {50} - {1.2} = {67.3}$ | ${20} + {60} + {80} - {.2} - {100} = {59.8}$ | 67.3 | $K$ |
+| 3 | ${17.2} + {30} - {1.5} = {45.7}$ | ${20} + {50} + {80} - {.2} - {100} = {49.8}$ | 49.8 | $R$ |
+| 6 | (Must replace) | ${20} + 5 + {80} - {.2} - {100} = {4.8}$ | 4.8 | $R$ |
+
 
 Stage 3.
 
-<table><tr><td rowspan="2">$t$</td><td>$K$</td><td>$R$</td><td colspan="2">Optimum solution</td></tr><tr><td>$r\left( t\right)  - c\left( t\right)  + {f}_{4}\left( {t + 1}\right)$</td><td>$r\left( 0\right)  + s\left( t\right)  - c\left( 0\right)  - I + {f}_{4}\left( 1\right)$</td><td>${f}_{3}\left( t\right)$</td><td>Decision</td></tr><tr><td>1</td><td>${19.0} - {.6} + {67.3} = {85.7}$</td><td>${20} + {80} - {.2} - {100} + {79.8} = {79.6}$</td><td>85.7</td><td>$K$</td></tr><tr><td>2</td><td>${18.5} - {1.2} + {49.8} = {67.1}$</td><td>${20} + {60} - {.2} - {100} + {79.8} = {59.6}$</td><td>67.1</td><td>$K$</td></tr><tr><td>5</td><td>${14.0} - {1.8} + {4.8} = {17.0}$</td><td>${20} + {10} - {.2} - {100} + {79.8} = {9.6}$</td><td>17.0</td><td>$R$</td></tr></table>
+
+| $t$ | $K$ | $R$ | Optimum solution |
+| --- | --- | --- | --- |
+| $r\left( t\right) - c\left( t\right) + {f}_{4}\left( {t + 1}\right)$ | $r\left( 0\right) + s\left( t\right) - c\left( 0\right) - I + {f}_{4}\left( 1\right)$ | ${f}_{3}\left( t\right)$ | Decision |
+| 1 | ${19.0} - {.6} + {67.3} = {85.7}$ | ${20} + {80} - {.2} - {100} + {79.8} = {79.6}$ | 85.7 | $K$ |
+| 2 | ${18.5} - {1.2} + {49.8} = {67.1}$ | ${20} + {60} - {.2} - {100} + {79.8} = {59.6}$ | 67.1 | $K$ |
+| 5 | ${14.0} - {1.8} + {4.8} = {17.0}$ | ${20} + {10} - {.2} - {100} + {79.8} = {9.6}$ | 17.0 | $R$ |
+
 
 Stage 2.
 
-<table><tr><td rowspan="2">$t$</td><td>$K$</td><td>$R$</td><td colspan="2">Optimum solution</td></tr><tr><td>$r\left( t\right)  - c\left( t\right)  + {f}_{3}\left( {t + 1}\right)$</td><td>$R\left( 0\right)  + s\left( t\right)  - c\left( 0\right)  - I + {f}_{3}\left( 1\right)$</td><td>${f}_{2}\left( t\right)$</td><td>Decision</td></tr><tr><td>1</td><td>19.0 - .6 + 67.1 = 85.5</td><td>${20} + {80} - {.2} - {100} + {85.7} = {85.5}$</td><td>85.5</td><td>$K$ or $R$</td></tr><tr><td>4</td><td>15.5 - 1.7 + 17.0 = 30.8</td><td>${20} + {30} - {.2} - {100} + {85.7} = {35.5}$</td><td>35.5</td><td>$R$</td></tr></table>
+
+| $t$ | $K$ | $R$ | Optimum solution |
+| --- | --- | --- | --- |
+| $r\left( t\right) - c\left( t\right) + {f}_{3}\left( {t + 1}\right)$ | $R\left( 0\right) + s\left( t\right) - c\left( 0\right) - I + {f}_{3}\left( 1\right)$ | ${f}_{2}\left( t\right)$ | Decision |
+| 1 | 19.0 - .6 + 67.1 = 85.5 | ${20} + {80} - {.2} - {100} + {85.7} = {85.5}$ | 85.5 | $K$ or $R$ |
+| 4 | 15.5 - 1.7 + 17.0 = 30.8 | ${20} + {30} - {.2} - {100} + {85.7} = {35.5}$ | 35.5 | $R$ |
+
 
 Stage 1.
 
-<table><tr><td></td><td>$K$</td><td>$R$</td><td colspan="2">Optimum solution</td></tr><tr><td>$t$</td><td>$r\left( t\right)  - c\left( t\right)  + {f}_{2}\left( {t + 1}\right)$</td><td>$R\left( 0\right)  + s\left( t\right)  - c\left( 0\right)  - I + {f}_{2}\left( 1\right)$</td><td>${f}_{1}\left( t\right)$</td><td>Decision</td></tr><tr><td>3</td><td>17.2 - 1.5 + 35.5 = 51.2</td><td>${20} + {50} - {.2} - {100} + {85.5} = {55.3}$</td><td>55.3</td><td>$R$</td></tr></table>
+
+|  | $K$ | $R$ | Optimum solution |
+| --- | --- | --- | --- |
+| $t$ | $r\left( t\right) - c\left( t\right) + {f}_{2}\left( {t + 1}\right)$ | $R\left( 0\right) + s\left( t\right) - c\left( 0\right) - I + {f}_{2}\left( 1\right)$ | ${f}_{1}\left( t\right)$ | Decision |
+| 3 | 17.2 - 1.5 + 35.5 = 51.2 | ${20} + {50} - {.2} - {100} + {85.5} = {55.3}$ | 55.3 | $R$ |
+
 
 Figure 12.6 summarizes the optimal solution. At the start of year 1, given $t = 3$ , the optimal decision is to replace the machine. Thus, the new machine will be 1 year old at the start of year 2, and $t = 1$ at the start of year 2 calls for either keeping or replacing the machine. If it is replaced, the new machine will be 1 year old at the start of year 3; otherwise, the kept machine will be 2 years old. The process is continued in this manner until year 4 is reached.
 
@@ -500,11 +996,11 @@ Solution of Example 12.3-3
 
 The alternative optimal policies starting in year 1 are $\left( {R, K, K, R}\right)$ and $\left( {R, R, K, K}\right)$ . The total cost is \$55,300.
 
-#### 12.3.4 Investment Model
+#### 12.3.4 Investment Model ^investment
 
 Suppose that you want to invest the amounts ${P}_{1},{P}_{2},\ldots ,{P}_{n}$ at the start of each of the next $n$ years. You have two investment opportunities in two banks: First Bank pays an interest rate ${r}_{1}$ , and Second Bank pays ${r}_{2}$ , both compounded annually. To encourage deposits, both banks pay bonuses on new investments in the form of a percentage of the amount invested. The respective bonus percentages for First Bank and Second Bank are ${q}_{i1}$ and ${q}_{i2}$ for year $i$ . Bonuses are paid at the end of the year in which the investment is made and may be reinvested in either bank in the immediately succeeding year. This means that only bonuses and fresh new money may be invested in either bank. However, once an investment is deposited, it must remain in the bank until the end of year $n$ .
 
-The elements of the DP model are as follows:
+The elements of the DP model are as follows: ^investmentmodel
 
 1. Stage $i$ is represented by year $i, i = 1,2,\ldots , n$ .
 
@@ -554,7 +1050,7 @@ $$
 
 The terms ${q}_{n1}$ and ${q}_{n2}$ in ${s}_{n}$ are added because the bonuses for year $n$ are part of the final accumulated sum of money from the investment.
 
-The backward DP recursive equation is thus given as
+The backward DP recursive equation is thus given as ^investmentrec
 
 $$
 {f}_{n + 1}\left( {x}_{n + 1}\right)  \equiv  0
@@ -566,7 +1062,7 @@ $$
 
 As given previously, ${x}_{i + 1}$ is defined in terms of ${x}_{i}$ .
 
-## Example 12.3-4
+## Example 12.3-4 ^investmentexample
 
 Suppose that you want to invest \$4000 now and \$2000 at the start of years 2 to 4 . The interest rate offered by First Bank is 8% compounded annually, and the bonuses over the next 4 years are 1.8%, 1.7%, 2.1%, and 2.5%, respectively. The annual interest rate offered by Second Bank is .2% lower than that of First Bank, but its bonus is .5% higher. The objective is to maximize the accumulated capital at the end of 4 years.
 
@@ -606,7 +1102,12 @@ $$
 
 The function ${s}_{4}$ is linear in ${I}_{4}$ in the range $0 \leq  {I}_{4} \leq  {x}_{4}$ , and its maximum occurs at ${I}_{4} = 0$ because of the negative coefficient of ${I}_{4}$ . Thus, the optimum solution for stage 5 can be summarized as
 
-<table><tr><td rowspan="2">State</td><td colspan="2">Optimum solution</td></tr><tr><td>${f}_{4}\left( {x}_{4}\right)$</td><td>${I}_{4}^{ * }$</td></tr><tr><td>${x}_{4}$</td><td>${1.108}{x}_{4}$</td><td>0</td></tr></table>
+
+| State | Optimum solution |
+| --- | --- |
+| ${f}_{4}\left( {x}_{4}\right)$ | ${I}_{4}^{ * }$ |
+| ${x}_{4}$ | ${1.108}{x}_{4}$ | 0 |
+
 
 Stage 3.
 
@@ -634,7 +1135,12 @@ $$
 = \mathop{\max }\limits_{{0 \leq  {I}_{3} \leq  {x}_{3}}}\left\{  {{2216} - {.00122}{I}_{3} + {1.1909}{x}_{3}}\right\}
 $$
 
-<table><tr><td rowspan="2">State</td><td colspan="2">Optimum solution</td></tr><tr><td>${f}_{3}\left( {x}_{3}\right)$</td><td>${I}_{3}^{ * }$</td></tr><tr><td>${x}_{3}$</td><td>${2216} + {1.1909}{x}_{3}$</td><td>0</td></tr></table>
+
+| State | Optimum solution |
+| --- | --- |
+| ${f}_{3}\left( {x}_{3}\right)$ | ${I}_{3}^{ * }$ |
+| ${x}_{3}$ | ${2216} + {1.1909}{x}_{3}$ | 0 |
+
 
 Stage 2.
 
@@ -662,7 +1168,12 @@ $$
 = \mathop{\max }\limits_{{0 \leq  {I}_{2} \leq  {x}_{2}}}\left\{  {{4597.8} + {.0010305}{I}_{2} + {1.27893}{x}_{2}}\right\}
 $$
 
-<table><tr><td rowspan="2">State</td><td colspan="2">Optimum solution</td></tr><tr><td>${f}_{2}\left( {x}_{2}\right)$</td><td>${I}_{2}^{ * }$</td></tr><tr><td>${x}_{2}$</td><td>${4597.8} + {1.27996}{x}_{2}$</td><td>${x}_{2}$</td></tr></table>
+
+| State | Optimum solution |
+| --- | --- |
+| ${f}_{2}\left( {x}_{2}\right)$ | ${I}_{2}^{ * }$ |
+| ${x}_{2}$ | ${4597.8} + {1.27996}{x}_{2}$ | ${x}_{2}$ |
+
 
 Stage 1.
 
@@ -690,7 +1201,12 @@ $$
 = \mathop{\max }\limits_{{0 \leq  {I}_{1} \leq  {x}_{1}}}\left\{  {{7157.7} + {.00365}{I}_{1} + {1.37984}{x}_{1}}\right\}
 $$
 
-<table><tr><td rowspan="2">State</td><td colspan="2">Optimum solution</td></tr><tr><td>${f}_{1}\left( {x}_{1}\right)$</td><td>${I}_{1}^{ * }$</td></tr><tr><td>${x}_{1} = \$ {4000}$</td><td>7157.7 + 1.38349 ${x}_{1}$</td><td>\$4,000</td></tr></table>
+
+| State | Optimum solution |
+| --- | --- |
+| ${f}_{1}\left( {x}_{1}\right)$ | ${I}_{1}^{ * }$ |
+| ${x}_{1} = \$ {4000}$ | 7157.7 + 1.38349 ${x}_{1}$ | \$4,000 |
+
 
 Working backward and noting that ${I}_{1}^{ * } = {4000},{I}_{2}^{ * } = {x}_{2},{I}_{3}^{ * } = {I}_{4}^{ * } = 0$ , we get
 
@@ -712,23 +1228,30 @@ $$
 
 The optimum solution is thus summarized as
 
-<table><tr><td>Year</td><td>Optimum solution</td><td>Decision</td><td>Accumulation</td></tr><tr><td>1</td><td>${I}_{1}^{ * } = {x}_{1}$</td><td>Invest ${x}_{1} = \$ {4000}$ in First Bank</td><td>${s}_{1} = \$ {5441.80}$</td></tr><tr><td>2</td><td>${I}_{2}^{ * } = {x}_{2}$</td><td>Invest ${x}_{2} = \$ {2072}$ in First Bank</td><td>${s}_{2} = \$ {2610.13}$</td></tr><tr><td>3</td><td>${I}_{3}^{ * } = 0$</td><td>Invest ${x}_{3} = \$ {2035.22}$ in Second Bank</td><td>${s}_{3} = \$ {2365.13}$</td></tr><tr><td>4</td><td>${I}_{4}^{ * } = 0$</td><td>Invest ${x}_{4} = \$ {2052.92}$ in Second Bank</td><td>${s}_{4} = \$ {2274.64}$</td></tr></table>
+
+| Year | Optimum solution | Decision | Accumulation |
+| --- | --- | --- | --- |
+| 1 | ${I}_{1}^{ * } = {x}_{1}$ | Invest ${x}_{1} = \$ {4000}$ in First Bank | ${s}_{1} = \$ {5441.80}$ |
+| 2 | ${I}_{2}^{ * } = {x}_{2}$ | Invest ${x}_{2} = \$ {2072}$ in First Bank | ${s}_{2} = \$ {2610.13}$ |
+| 3 | ${I}_{3}^{ * } = 0$ | Invest ${x}_{3} = \$ {2035.22}$ in Second Bank | ${s}_{3} = \$ {2365.13}$ |
+| 4 | ${I}_{4}^{ * } = 0$ | Invest ${x}_{4} = \$ {2052.92}$ in Second Bank | ${s}_{4} = \$ {2274.64}$ |
+
 
 Total accumulation $= {f}_{1}\left( {x}_{1}\right)  = {7157.7} + {1.38349}\left( {4000}\right)  = \$ {12},{691.66}\left( { = {s}_{1} + {s}_{2} + {s}_{3} + {s}_{4}}\right)$
 
-#### 12.3.5 Inventory Models
+#### 12.3.5 Inventory Models ^inventory
 
 DP has important applications in the area of inventory control. Chapters 13 and 16 present some of these applications. The models in Chapter 13 are deterministic, and those in Chapter 16 are probabilistic. Other probabilistic DP applications are given in Chapter 24 on the website.
 
-### 12.4 PROBLEM OF DIMENSIONALITY
+### 12.4 PROBLEM OF DIMENSIONALITY ^dimensionality
 
 In all the DP models presented in this chapter, the state at any stage is represented by a single element. For example, in the knapsack model (Section 12.3.1), the only restriction is the weight of the item. More realistically in this case, the volume of the knapsack may also be another viable restriction, in which case the state at any stage is said to be two dimensional: weight and volume.
 
 The increase in the number of state variables increases the computations at each stage. This is particularly clear in DP tabular computations because the number of rows in each tableau corresponds to all possible combinations of state variables. This computational difficulty is sometimes referred to in the literature as the curse of dimensionality.
 
-The following example is chosen to demonstrate the problem of dimensionality. It also serves to show the relationship between linear and dynamic programming.
+The following example is chosen to demonstrate the problem of dimensionality. It also serves to show the relationship between linear and dynamic programming. ^lineardp
 
-## Example 12.4-1
+## Example 12.4-1 ^dimensionalityexample
 
 Acme Manufacturing produces two products. The daily capacity of the manufacturing process is 430 minutes. Product 1 requires 2 minutes per unit, and product 2 requires 1 minute per unit. There is no limit on the amount produced of product 1, but the maximum daily demand for product 2 is 230 units. The unit profit of product 1 is \$2 and that of product 2 is \$5. Find the optimal solution by DP.
 
@@ -752,7 +1275,7 @@ $$
 {x}_{1},{x}_{2} \geq  0
 $$
 
-The elements of the DP model are as follows:
+The elements of the DP model are as follows: ^investmentmodel
 
 1. Stage $i$ corresponds to product $i, i = 1,2$ .
 
@@ -772,7 +1295,12 @@ $$
 
 Thus, $\max \left\{  {5{x}_{2}}\right\}$ occurs at ${x}_{2} = \min \left\{  {{v}_{2},{w}_{2}}\right\}$ , and the solution for stage 2 is
 
-<table><tr><td rowspan="2">State</td><td colspan="2">Optimum solution</td></tr><tr><td>${f}_{2}\left( {{v}_{2},{w}_{2}}\right)$</td><td>${x}_{2}$</td></tr><tr><td>$\left( {{v}_{2},{w}_{2}}\right)$</td><td>$5\min \left\{  {{v}_{2},{w}_{2}}\right\}$</td><td>$\min \left\{  {{v}_{2},{w}_{2}}\right\}$</td></tr></table>
+
+| State | Optimum solution |
+| --- | --- |
+| ${f}_{2}\left( {{v}_{2},{w}_{2}}\right)$ | ${x}_{2}$ |
+| $\left( {{v}_{2},{w}_{2}}\right)$ | $5\min \left\{ {{v}_{2},{w}_{2}}\right\}$ | $\min \left\{ {{v}_{2},{w}_{2}}\right\}$ |
+
 
 Stage 1.
 
@@ -802,7 +1330,12 @@ $$
 
 You can verify graphically that the optimum value of ${f}_{1}\left( {{430},{230}}\right)$ occurs at ${x}_{1} = {100}$ . Thus, we get
 
-<table><tr><td rowspan="2">State</td><td colspan="2">Optimum solution</td></tr><tr><td>${f}_{1}\left( {{v}_{1},{w}_{1}}\right)$</td><td>${x}_{1}$</td></tr><tr><td>(430,230)</td><td>1,350</td><td>100</td></tr></table>
+
+| State | Optimum solution |
+| --- | --- |
+| ${f}_{1}\left( {{v}_{1},{w}_{1}}\right)$ | ${x}_{1}$ |
+| (430,230) | 1,350 | 100 |
+
 
 To determine the optimum value of ${x}_{2}$ , we note that
 
@@ -826,7 +1359,7 @@ $$
 {x}_{1} = {100}\text{ units, }{x}_{2} = {230}\text{ units, }z = \$ {1350}
 $$
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^bibliography
 
 Bertsekas, D., Dynamic Programming: Deterministic and Stochastic Models, Prentice Hall, Upper Saddle River, NJ, 1987.
 
@@ -982,9 +1515,16 @@ Step 2: After inspecting the stem on the screen, the operator can "cut" the stem
 
 In VISION, DP optimization is transparent totally to the user. In addition, the interactive graphic nature of the output makes the system ideal for training operators and improving their decision-making skills. The design of the system shows how complex mathematical models can be imbedded within a user-friendly computer system.
 
-## PROBLEMS
+## PROBLEMS ^problems
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>12.1</td><td>12-1 to 12-2</td><td>12.3.3</td><td>12-23 to 12-27</td></tr><tr><td>12.2</td><td>12-3 to 12-5</td><td>12.3.4</td><td>12-28 to 12-30</td></tr><tr><td>12.3.1</td><td>12-6 to 12-18</td><td>12.4</td><td>12-31 to 12-32</td></tr><tr><td>12.3.2</td><td>12-19 to 12-22</td><td></td><td></td></tr></table>
+
+| Section | Assigned Problems | Section | Assigned Problems |
+| --- | --- | --- | --- |
+| 12.1 | 12-1 to 12-2 | 12.3.3 | 12-23 to 12-27 |
+| 12.2 | 12-3 to 12-5 | 12.3.4 | 12-28 to 12-30 |
+| 12.3.1 | 12-6 to 12-18 | 12.4 | 12-31 to 12-32 |
+| 12.3.2 | 12-19 to 12-22 |  |  |
+
 
 *12-1. Solve Example 12.1-1, assuming the following routes are used:
 
@@ -1036,7 +1576,13 @@ Network for Problem 12-5
 
 12-8. In the cargo-loading model of Example 12.3-1, suppose that the revenue per item includes a constant amount that is realized only if the item is chosen, as the following table shows:
 
-<table><tr><td>Item</td><td>Revenue</td></tr><tr><td>1</td><td>$\left\{  \begin{array}{l}  - 5 + {31}{m}_{1}, \\  0, \end{array}\right.$ if ${m}_{1} > 0$ otherwise</td></tr><tr><td>2</td><td>$\left\{  \begin{array}{l}  - {15} + {47}{m}_{2}, \\  0, \end{array}\right.$ if ${m}_{2} > 0$ otherwise</td></tr><tr><td>3</td><td>$\left\{  \begin{array}{l}  - 4 + {14}{m}_{3}, \\  0, \end{array}\right.$ if ${m}_{3} > 0$ otherwise</td></tr></table>
+
+| Item | Revenue |
+| --- | --- |
+| 1 | $\left\{ \begin{array}{l} - 5 + {31}{m}_{1}, \\ 0, \end{array}\right.$ if ${m}_{1} > 0$ otherwise |
+| 2 | $\left\{ \begin{array}{l} - {15} + {47}{m}_{2}, \\ 0, \end{array}\right.$ if ${m}_{2} > 0$ otherwise |
+| 3 | $\left\{ \begin{array}{l} - 4 + {14}{m}_{3}, \\ 0, \end{array}\right.$ if ${m}_{3} > 0$ otherwise |
+
 
 Find the optimal solution using DP. (Hint: You can use the Excel file excelSetupKnap-sack.xls to check your calculations.)
 
@@ -1044,7 +1590,15 @@ Find the optimal solution using DP. (Hint: You can use the Excel file excelSetup
 
 *12-10. A student must select 10 electives from four different departments, with at least one course from each department. The 10 courses are allocated to the four departments in a manner that maximizes "knowledge." The student measures knowledge on a 100-point scale and comes up with the following chart:
 
-<table><tr><td rowspan="2">Department</td><td colspan="7">Number of courses</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>≥7</td></tr><tr><td>I</td><td>25</td><td>50</td><td>60</td><td>80</td><td>100</td><td>100</td><td>100</td></tr><tr><td>II</td><td>20</td><td>70</td><td>90</td><td>100</td><td>100</td><td>100</td><td>100</td></tr><tr><td>III</td><td>40</td><td>60</td><td>80</td><td>100</td><td>100</td><td>100</td><td>100</td></tr><tr><td>IV</td><td>10</td><td>20</td><td>30</td><td>40</td><td>50</td><td>60</td><td>70</td></tr></table>
+
+| Department | Number of courses |
+| --- | --- |
+| 1 | 2 | 3 | 4 | 5 | 6 | ≥7 |
+| I | 25 | 50 | 60 | 80 | 100 | 100 | 100 |
+| II | 20 | 70 | 90 | 100 | 100 | 100 | 100 |
+| III | 40 | 60 | 80 | 100 | 100 | 100 | 100 |
+| IV | 10 | 20 | 30 | 40 | 50 | 60 | 70 |
+
 
 How should the student select the courses?
 
@@ -1058,15 +1612,38 @@ ${}^{8}$ In Problems 12-6 to 12-18, you are encouraged where applicable to verif
 
 *12-12. Habitat for Humanity is a wonderful (U.S.-based) international charity organization that builds homes for needy families using volunteer labor and donated building materials. An eligible family can choose from three home sizes: 1000, 1100, and ${1200}{\mathrm{{ft}}}^{2}$ . Each size requires a certain number of labor volunteers. The Fayetteville, Arkansas, chapter has received five applications for the upcoming 6 months. The committee in charge assigns a score to each application based on several factors. A higher score signifies higher need. For the next 6 months, the chapter can count on a maximum of 23 volunteers. The following data summarize the scores for the applications and the required number of volunteers. Which applications should the committee approve?
 
-<table><tr><td>Application</td><td>House size $\left( {\mathrm{{ft}}}^{2}\right)$</td><td>Score</td><td>Number of volunteers</td></tr><tr><td>1</td><td>1200</td><td>78</td><td>7</td></tr><tr><td>2</td><td>1000</td><td>64</td><td>4</td></tr><tr><td>3</td><td>1100</td><td>68</td><td>6</td></tr><tr><td>4</td><td>1000</td><td>62</td><td>5</td></tr><tr><td>5</td><td>1200</td><td>85</td><td>8</td></tr></table>
+
+| Application | House size $\left( {\mathrm{{ft}}}^{2}\right)$ | Score | Number of volunteers |
+| --- | --- | --- | --- |
+| 1 | 1200 | 78 | 7 |
+| 2 | 1000 | 64 | 4 |
+| 3 | 1100 | 68 | 6 |
+| 4 | 1000 | 62 | 5 |
+| 5 | 1200 | 85 | 8 |
+
 
 12-13. Sheriff Bassam is up for reelection in Washington County. The funds available for the campaign are about \$10,000. Although the reelection committee would like to launch the campaign in all five precincts of the county, limited funds dictate otherwise. The table given below lists the voting population and the amount of funds needed to launch an effective campaign in each precinct. A precinct can receive either all its allotted funds or none. How should the funds be allocated?
 
-<table><tr><td>Precinct</td><td>Population</td><td>Required funds (\$)</td></tr><tr><td>1</td><td>3100</td><td>3500</td></tr><tr><td>2</td><td>2600</td><td>2500</td></tr><tr><td>3</td><td>3500</td><td>4000</td></tr><tr><td>4</td><td>2800</td><td>3000</td></tr><tr><td>5</td><td>2400</td><td>2000</td></tr></table>
+
+| Precinct | Population | Required funds (\$) |
+| --- | --- | --- |
+| 1 | 3100 | 3500 |
+| 2 | 2600 | 2500 |
+| 3 | 3500 | 4000 |
+| 4 | 2800 | 3000 |
+| 5 | 2400 | 2000 |
+
 
 12-14. An electronic device consists of three components. The three components are in series so that the failure of one component causes the failure of the device. The reliability (probability of no failure) of the device can be improved by installing one or two standby units in each component. The table listed below charts the reliability, $r$ , and the cost, $c$ . The total capital available for the construction of the device is $\$ {10},{000}$ . How should the device be constructed? (Hint: The objective is to maximize the reliability, ${r}_{1}{r}_{2}{r}_{3}$ , of the device. This means that the decomposition of the objective function is multiplicative rather than additive.)
 
-<table><tr><td rowspan="2">Number of parallel units</td><td colspan="2">Component 1</td><td colspan="2">Component 2</td><td colspan="2">Component 3</td></tr><tr><td>${r}_{1}$</td><td>${c}_{1}\left( \$ \right)$</td><td>${r}_{2}$</td><td>${c}_{2}\left( \$ \right)$</td><td>${r}_{3}$</td><td>${c}_{3}\left( s\right)$</td></tr><tr><td>1</td><td>.6</td><td>1000</td><td>.7</td><td>3000</td><td>.5</td><td>2000</td></tr><tr><td>2</td><td>.8</td><td>2000</td><td>.8</td><td>5000</td><td>.7</td><td>4000</td></tr><tr><td>3</td><td>.9</td><td>3000</td><td>.9</td><td>6000</td><td>.9</td><td>5000</td></tr></table>
+
+| Number of parallel units | Component 1 | Component 2 | Component 3 |
+| --- | --- | --- | --- |
+| ${r}_{1}$ | ${c}_{1}\left( \$ \right)$ | ${r}_{2}$ | ${c}_{2}\left( \$ \right)$ | ${r}_{3}$ | ${c}_{3}\left( s\right)$ |
+| 1 | .6 | 1000 | .7 | 3000 | .5 | 2000 |
+| 2 | .8 | 2000 | .8 | 5000 | .7 | 4000 |
+| 3 | .9 | 3000 | .9 | 6000 | .9 | 5000 |
+
 
 12-15. Solve the following model by DP:
 
