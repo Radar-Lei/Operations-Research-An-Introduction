@@ -1,16 +1,116 @@
-## CHAPTER 10 Heuristic Programming
+```markmap
+---
+markmap:
+  height: 650
+---
+# [[#^chapterten|CHAPTER 10 Heuristic Programming]]
+## [[#^fedexcase|Real-Life Application: FedEx Bid Lines via Simulated Annealing]]
+### [[#^fedexsetting|Problem Setting]]
+### [[#^fedexobjective|Objective: Minimize Required Bid Lines]]
+### [[#^fedexsa|Why Simulated Annealing]]
+## [[#^tenone|10.1 Introduction]]
+### [[#^heuristicsintro|What Is a Heuristic]]
+### [[#^greedylocal|Greedy Local Search and Local Optima]]
+### [[#^metaintro|Metaheuristics: Escaping Local Traps]]
+### [[#^chapterroadmap|Chapter Roadmap]]
+## [[#^franklin|Aha Moment: Franklin Rule]]
+### [[#^franklincontext|Franklin as Early OR Thinker]]
+### [[#^franklinprocon|Pro–Con List and Pairwise Elimination]]
+### [[#^franklinalgebra|Moral or Prudential Algebra]]
+## [[#^greedysection|10.2 Greedy (Local Search) Heuristics]]
+### [[#^greedyproblem|Single-Variable Problem Template]]
+### [[#^greedyprocess|Iterative Neighborhood Improvement]]
+### [[#^neighborhood|Neighborhood Design Tradeoff]]
+### [[#^discretesection|10.2.1 Discrete Variable Heuristic]]
+#### [[#^greedyexamplea|Example: Immediate Neighborhood Gets Local Minimum]]
+#### [[#^tablegreedya|Table: Immediate-Neighborhood Iterations]]
+#### [[#^greedyimprove|Improving Solution Quality]]
+#### [[#^randomwalkexample|Example: Random-Walk with Expanded Neighborhood]]
+#### [[#^tablerandomwalk|Table: Random-Walk Iterations]]
+### [[#^continuoussection|10.2.2 Continuous Variable Heuristic]]
+#### [[#^uniformdisp|Uniform Displacement Rule]]
+#### [[#^normaldisp|Normal Displacement Rule]]
+#### [[#^continuousexample|Example: Polynomial Minimization on [0,4]]]
+#### [[#^tableuniform|Table: Uniform-Sampling Iterations]]
+#### [[#^tablenormal|Table: Normal-Sampling Iterations]]
+#### [[#^multivariable|Extension to Multiple Variables]]
+#### [[#^excelcontinuous|Excel Moment: Continuous Random-Walk Heuristic]]
+## [[#^metasection|10.3 Metaheuristic]]
+### [[#^metatermination|Common Termination Benchmarks]]
+### [[#^tabusection|10.3.1 Tabu Search]]
+#### [[#^tabuexamplea|Example: Single-Variable Tabu Search Basics]]
+#### [[#^tabletabua|Table: Tabu Search Iterations]]
+#### [[#^tabuexampleb|Example: Job Sequencing with Tabu Tenure]]
+#### [[#^tablejobsdataa|Table: Job Sequencing Data]]
+#### [[#^tablecostcalc|Cost Computation for a Sequence]]
+#### [[#^tabletabujobs|Table: Tabu Search Iterations for Sequencing]]
+#### [[#^tabufinetune|Fine-Tuning: Aspiration and Search Control]]
+#### [[#^tabusummary|Summary of Tabu Search Algorithm]]
+### [[#^sasection|10.3.2 Simulated Annealing]]
+#### [[#^satemperature|Temperature Schedule]]
+#### [[#^saaccept|Acceptance Probability for Inferior Moves]]
+#### [[#^tablesaexample|Table: SA Iterations on Single Variable]]
+#### [[#^saexamplea|Example: Walkthrough of SA Computations]]
+#### [[#^saexampleb|Example: Job Sequencing with SA]]
+#### [[#^tablejobsdatab|Table: Job Sequencing Data]]
+#### [[#^tablesajobs|Table: SA Iterations for Sequencing]]
+#### [[#^sasummary|Summary of Simulated Annealing Algorithm]]
+### [[#^gasection|10.3.3 Genetic Algorithm]]
+#### [[#^gageneral|Encoding, Population, and Fitness]]
+#### [[#^gaexamplea|Example: GA on Single-Variable Domain]]
+#### [[#^tablesampling|Table: Sampling Distribution]]
+#### [[#^tablepopulation|Table: Starting Population]]
+#### [[#^gacrossover|Crossover Rules]]
+#### [[#^gamutation|Mutation and Feasibility Handling]]
+#### [[#^gacontinuous|Handling Continuous Variables with Binary Strings]]
+#### [[#^gaexampleb|Example: Job Sequencing Chromosome as Sequence]]
+#### [[#^tablejobsdatac|Table: 5-Job Data]]
+#### [[#^gajobencoding|One-Point Crossover Example for Sequences]]
+#### [[#^gasummary|Summary of Genetic Algorithm]]
+#### [[#^tablegajobs|Table: GA Iterations for Sequencing]]
+## [[#^ilpsection|10.4 Metaheuristics for Integer Linear Programs]]
+### [[#^ilpmodel|General ILP Form]]
+### [[#^ilpstart|Starting Solution via Rounded LP Optimum]]
+### [[#^ilpneighborhood|Neighborhood: Change One Variable by ±1]]
+### [[#^ilpinfeasibility|Infeasibility Measure]]
+### [[#^ilptabu|10.4.1 ILP Tabu Algorithm]]
+#### [[#^ilpexamplea|Example: ILP Tabu Search Walkthrough]]
+#### [[#^tableilptabu|Table: ILP Tabu Iterations]]
+### [[#^ilpsa|10.4.2 ILP Simulated Annealing Algorithm]]
+#### [[#^ilpsaaccept|Acceptance Rule for Inferior Feasible Moves]]
+#### [[#^ilpexampleb|Example: ILP SA Iterations]]
+#### [[#^tableilpsa|Table: ILP SA Iterations]]
+### [[#^ilpga|10.4.3 ILP Genetic Algorithm]]
+#### [[#^tablebinary|Table: Binary Coding Example]]
+#### [[#^tableranges|Table: Random Initial Population Ranges]]
+#### [[#^ilpexamplec|Example: ILP GA with Crossover and Mutation]]
+#### [[#^tableilpga|Table: ILP GA Starting Population]]
+## [[#^cpsection|10.5 Introduction to Constraint Programming]]
+### [[#^cppropagation|Constraint Propagation and Domain Tightening]]
+### [[#^cptree|Search Tree Strategy]]
+### [[#^oplcode|ILOG OPL Model Sketch]]
+## [[#^bibliography|Bibliography]]
+## [[#^problems|Problems]]
+### [[#^tableproblems|Problems by Section Table]]
+```
 
-## Real-Life Application: FedEx Generates Bid Lines Using Simulated Annealing
+## CHAPTER 10 Heuristic Programming ^chapterten
 
-FedEx delivers millions of items throughout the world daily using a fleet of more than 500 aircraft and more than 3000 pilots. Bid lines (roundtrips), starting and ending at one of nine crew domiciles (or hubs), must satisfy numerous Federal Aviation Administration and FedEx regulations and, to the extent possible, personal preferences based on pilots' seniority. The main objective is to minimize the required number of bid lines (i.e., required manning). The complexity of the constraints precludes the implementation of an integer programming model. Instead, a simulated annealing heuristic is used to solve the problem. ${}^{1}$
+## Real-Life Application: FedEx Generates Bid Lines Using Simulated Annealing ^fedexcase
 
-### 10.1 INTRODUCTION
+FedEx delivers millions of items throughout the world daily using a fleet of more than 500 aircraft and more than 3000 pilots. Bid lines (roundtrips), starting and ending at one of nine crew domiciles (or hubs), must satisfy numerous Federal Aviation Administration and FedEx regulations and, to the extent possible, personal preferences based on pilots' seniority. ^fedexsetting
 
-Heuristics are designed to find good, approximate solutions to difficult combinatorial problems that otherwise cannot be solved by available optimization algorithms. A heuristic is a direct search technique that uses favorable rules of thumb to locate improved solutions. The advantage of heuristics is that they usually find (good) solutions quickly. The disadvantage is that the quality of the solution (relative to the optimum) is generally unknown.
+The main objective is to minimize the required number of bid lines (i.e., required manning). ^fedexobjective
 
-Early generations of heuristics are based on the greedy search rule that mandates making improvement in the value of the objective function with each search move. The search ends at a local optimum where no further improvements are possible.
+The complexity of the constraints precludes the implementation of an integer programming model. Instead, a simulated annealing heuristic is used to solve the problem. ${}^{1}$ ^fedexsa
 
-In the 1980s, a new generation of metaheuristics sought to improve the quality of the heuristic solutions by allowing the search to escape entrapment at local optima. The realized advantage comes at the expense of increased computations.
+### 10.1 INTRODUCTION ^tenone
+
+Heuristics are designed to find good, approximate solutions to difficult combinatorial problems that otherwise cannot be solved by available optimization algorithms. A heuristic is a direct search technique that uses favorable rules of thumb to locate improved solutions. The advantage of heuristics is that they usually find (good) solutions quickly. The disadvantage is that the quality of the solution (relative to the optimum) is generally unknown. ^heuristicsintro
+
+Early generations of heuristics are based on the greedy search rule that mandates making improvement in the value of the objective function with each search move. The search ends at a local optimum where no further improvements are possible. ^greedylocal
+
+In the 1980s, a new generation of metaheuristics sought to improve the quality of the heuristic solutions by allowing the search to escape entrapment at local optima. The realized advantage comes at the expense of increased computations. ^metaintro
 
 ---
 
@@ -18,25 +118,25 @@ ${}^{1}$ Details of the study can be found in Camplell, K., B. Durfee, and G. Hi
 
 ---
 
-Section 10.2 deals with the greedy heuristic. Section 10.3 presents three prominent metaheuristics: tabu, simulated annealing, and genetic. Section 10.4 applies metaheuris-tics to the general integer programming problem. The chapter concludes in Section 10.5 with a brief discussion of the related constrained-based search known as constraint programming.
+Section 10.2 deals with the greedy heuristic. Section 10.3 presents three prominent metaheuristics: tabu, simulated annealing, and genetic. Section 10.4 applies metaheuris-tics to the general integer programming problem. The chapter concludes in Section 10.5 with a brief discussion of the related constrained-based search known as constraint programming. ^chapterroadmap
 
-## Aha! Moment: Earliest Decision-Making Heuristic-The Franklin Rule
+## Aha! Moment: Earliest Decision-Making Heuristic-The Franklin Rule ^franklin
 
-Some argue that Benjamin Franklin (1705-1790) is the first ever operations researcher, and he might well have been, at least in the Americas. He was a person of diverse superior talents, but his association with OR (at best informal) originates from a letter ${}^{2}$ he wrote in 1772 to the famed English natural philosopher and scientist Joseph Priestley (discoverer of oxygen), in which he outlined a first-ever publicized description of a decision-making heuristic using the pro and con list. He described the heuristic, now dubbed the Franklin Rule, in the following manner:
+Some argue that Benjamin Franklin (1705-1790) is the first ever operations researcher, and he might well have been, at least in the Americas. He was a person of diverse superior talents, but his association with OR (at best informal) originates from a letter ${}^{2}$ he wrote in 1772 to the famed English natural philosopher and scientist Joseph Priestley (discoverer of oxygen), in which he outlined a first-ever publicized description of a decision-making heuristic using the pro and con list. He described the heuristic, now dubbed the Franklin Rule, in the following manner: ^franklincontext
 
 In the Affair of so much Importance to you, wherein you ask my Advice, I cannot for want of sufficient Premises, advise you what to determine, but if you please I will tell you how.
 
 When these difficult Cases occur, they are difficult chiefly because while we have them under Consideration all the Reasons pro and con are not present to the Mind at the same time; but sometimes one Set present themselves, and at other times another, the first being out of Sight. Hence the various Purposes or Inclinations that alternately prevail, and the Uncertainty that perplexes us.
 
-To get over this, my Way is, to divide half a Sheet of Paper by a Line into two Columns, writing over the one Pro, and over the other Con. Then during three or four Days Consideration I put down under the different Heads short Hints of the different Motives that at different Times occur to me for or against the Measure. When I have thus got them all together in one View, I endeavour to estimate their respective Weights; and where I find two, one on each side, that seem equal, I strike them both out: If I find a Reason pro equal to some two Reasons con, I strike out the three. If I judge some two Reasons con equal to some three Reasons pro, I strike out the five; and thus proceeding I find at length where the Ballance lies; and if after a Day or two of farther Consideration nothing new that is of Importance occurs on either side, I come to a Determination accordingly.
+To get over this, my Way is, to divide half a Sheet of Paper by a Line into two Columns, writing over the one Pro, and over the other Con. Then during three or four Days Consideration I put down under the different Heads short Hints of the different Motives that at different Times occur to me for or against the Measure. When I have thus got them all together in one View, I endeavour to estimate their respective Weights; and where I find two, one on each side, that seem equal, I strike them both out: If I find a Reason pro equal to some two Reasons con, I strike out the three. If I judge some two Reasons con equal to some three Reasons pro, I strike out the five; and thus proceeding I find at length where the Ballance lies; and if after a Day or two of farther Consideration nothing new that is of Importance occurs on either side, I come to a Determination accordingly. ^franklinprocon
 
-And tho' the Weight of Reasons cannot be taken with the Precision of Algebraic Quantities, yet when each is thus considered separately and comparatively, and the whole lies before me, I think I can judge better, and am less likely to take a rash Step; and in fact I have found great Advantage from this kind of Equation, in what may be called Moral or Prudential Algebra.
+And tho' the Weight of Reasons cannot be taken with the Precision of Algebraic Quantities, yet when each is thus considered separately and comparatively, and the whole lies before me, I think I can judge better, and am less likely to take a rash Step; and in fact I have found great Advantage from this kind of Equation, in what may be called Moral or Prudential Algebra. ^franklinalgebra
 
-### 10.2 GREEDY (LOCAL SEARCH) HEURISTICS
+### 10.2 GREEDY (LOCAL SEARCH) HEURISTICS ^greedysection
 
 The main ideas of the greedy heuristic are explained via a single-variable problem. These ideas are subsequently extended to cover multiple variables.
 
-Define the optimization problem with a solution space $S$ as
+Define the optimization problem with a solution space $S$ as ^greedyproblem
 
 $$
 \text{ Minimize }z = F\left( x\right) , x \in  S
@@ -48,17 +148,17 @@ ${}^{2}$ W. Bell Jr., ed. "Benjamin Franklin’s 1772 letter to Joseph Priestley
 
 ---
 
-The iterative process of a greedy heuristic starts from a (random) feasible point and then attempts to move to a better solution point in the neighborhood of the current solution point. Specifically, at iteration $k$ , given the solution point ${x}_{k}$ , the heuristic examines all the feasible points in the neighborhood $N\left( {x}_{k}\right)$ in search of a better solution. The search ends when no further improvements are possible.
+The iterative process of a greedy heuristic starts from a (random) feasible point and then attempts to move to a better solution point in the neighborhood of the current solution point. Specifically, at iteration $k$ , given the solution point ${x}_{k}$ , the heuristic examines all the feasible points in the neighborhood $N\left( {x}_{k}\right)$ in search of a better solution. The search ends when no further improvements are possible. ^greedyprocess
 
-The definition of $N\left( {x}_{k}\right)$ is important in the design of the heuristic. For example, for integer $x, N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 1,{x}_{k} + 1}\right\}$ defines the immediate neighborhood of ${x}_{k}$ . Alternatively, an expanded neighborhood can include additional neighboring solution points. The first definition involves less local search computations but could impair the quality of the final solution. The second definition (expanded neighborhood) requires more local search computations, but could lead to improvement in the quality of the solution.
+The definition of $N\left( {x}_{k}\right)$ is important in the design of the heuristic. For example, for integer $x, N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 1,{x}_{k} + 1}\right\}$ defines the immediate neighborhood of ${x}_{k}$ . Alternatively, an expanded neighborhood can include additional neighboring solution points. The first definition involves less local search computations but could impair the quality of the final solution. The second definition (expanded neighborhood) requires more local search computations, but could lead to improvement in the quality of the solution. ^neighborhood
 
 Sections 10.2.1 and 10.2.2 apply the greedy heuristic to discrete and continuous single variables. Extension of the heuristic to multiple variables is discussed at the end of Section 10.2.2.
 
-#### 10.2.1 Discrete Variable Heuristic
+#### 10.2.1 Discrete Variable Heuristic ^discretesection
 
 This section presents two examples that use the greedy heuristic for estimating the optimum of a single discrete-variable function. The first example uses the immediate neighborhood and the second one expands the domain to include more solution points.
 
-Example 10.2-1
+Example 10.2-1 ^greedyexamplea
 
 Consider the function $F\left( x\right)$ given in Figure 10.1 and define the optimization problem as
 
@@ -74,15 +174,20 @@ FIGURE 10.1
 
 Function $F\left( x\right) , x \in  S = \{ 1,2,\ldots ,8\}$ , with local minimum at $x = 3$ and global minimum at $x = 7$
 
-TABLE 10.1 Greedy Heuristic Applied to $F\left( x\right)$ in Figure 10.1 Starting at ${x}_{0} = 1$ with $N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 1,{x}_{k} + 1}\right\}$
+TABLE 10.1 Greedy Heuristic Applied to $F\left( x\right)$ in Figure 10.1 Starting at ${x}_{0} = 1$ with $N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 1,{x}_{k} + 1}\right\}$ ^tablegreedya
 
-<table><tr><td>Iteration $k$</td><td>${x}_{k}$</td><td>$N\left( {x}_{k}\right)$</td><td>$F\left( {{x}_{k} - 1}\right)$</td><td>$F\left( {{x}_{k} + 1}\right)$</td><td>Action</td></tr><tr><td>(Start) 0</td><td>1</td><td></td><td></td><td></td><td>Set ${x}^{ * } = 1, F\left( {x}^{ * }\right)  = {90}$ , and ${x}_{k + 1} = 1$</td></tr><tr><td>1</td><td>1</td><td>$\{  - ,2\}$</td><td>-</td><td>60</td><td>$F\left( {{x}_{k} + 1}\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 2, F\left( {x}^{ * }\right)  = {60},{x}_{k + 1} = 2$</td></tr><tr><td>2</td><td>2</td><td>\{1,3\}</td><td>90</td><td>50</td><td>$F\left( {{x}_{k} + 1}\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 3, F\left( {x}^{ * }\right)  = {50},{x}_{k + 1} = 3$</td></tr><tr><td>(End) 3</td><td>3</td><td>\{2,4\}</td><td>60</td><td>80</td><td>$F\left( {{x}_{k} - 1}\right)$ and $F\left( {{x}_{k} + 1}\right)  > F\left( {x}^{ * }\right)$ : Local minimum reached, stop</td></tr></table>
+| Iteration $k$ | ${x}_{k}$ | $N\left( {x}_{k}\right)$ | $F\left( {{x}_{k} - 1}\right)$ | $F\left( {{x}_{k} + 1}\right)$ | Action |
+|---|---:|---|---:|---:|---|
+| (Start) 0 | 1 |  |  |  | Set ${x}^{ * } = 1, F\left( {x}^{ * }\right)  = {90}$ , and ${x}_{k + 1} = 1$ |
+| 1 | 1 | $\{  - ,2\}$ | - | 60 | $F\left( {{x}_{k} + 1}\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 2, F\left( {x}^{ * }\right)  = {60},{x}_{k + 1} = 2$ |
+| 2 | 2 | $\{1,3\}$ | 90 | 50 | $F\left( {{x}_{k} + 1}\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 3, F\left( {x}^{ * }\right)  = {50},{x}_{k + 1} = 3$ |
+| (End) 3 | 3 | $\{2,4\}$ | 60 | 80 | $F\left( {{x}_{k} - 1}\right)$ and $F\left( {{x}_{k} + 1}\right)  > F\left( {x}^{ * }\right)$ : Local minimum reached, stop |
 
 Search result: ${x}^{ * } = 3, F\left( {x}^{ * }\right)  = {50}$ , occurs at iteration 2.
 
 Table 10.1 provides the iterations of the heuristic using immediate neighborhood, $N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 1,{x}_{k} + 1}\right\}$ . The random number $R = {.1002}$ selects the starting point $x = 1$ from among all the feasible points $x = 1,2,\ldots$ , and 8 . At iteration $1, N\left( 1\right)  = \{ 2\}$ because $x = 0$ is infeasible. The search ends at iteration 3 because $F\left( x\right)  > F\left( {{x}^{ * } = 3}\right)$ for all $x \in  N\left( 3\right)$ . This means that the search stops at the local minimum ${x}^{ * } = 3$ with $F\left( {x}^{ * }\right)  = {50}$ .
 
-Table 10.1 shows that the greedy search stops at a local minimum $(x = 3$ in Figure 10.1). We can improve the quality of the solution in two ways:
+Table 10.1 shows that the greedy search stops at a local minimum $(x = 3$ in Figure 10.1). We can improve the quality of the solution in two ways: ^greedyimprove
 
 1. Repeat the heuristic using random starting points.
 
@@ -92,21 +197,28 @@ The application of the first idea is straightforward and requires no further exp
 
 Expanded neighborhood search can be based on evaluating all the neighborhood points, a strategy that increases the computational burden. Alternatively, we can determine the next search move by random selection from the neighborhood. Specifically, at iteration $k$ , the next move, ${x}_{k + 1}$ , is selected from $N\left( {x}_{k}\right)$ with probability $1/m$ , where $m$ is the number of elements in the neighborhood set. Sampling from the same neighborhood is repeated, if necessary, until an improved solution is found or until a specified number of iterations has been reached The random selection rule describes what is known as a random-walk heuristic.
 
-## Example 10.2-2 (Random-Walk Heuristic)
+## Example 10.2-2 (Random-Walk Heuristic) ^randomwalkexample
 
 This example applies once again to $F\left( x\right)$ in Figure 10.1. We arbitrarily define the expanded neighborhood set $N\left( {x}_{k}\right)$ as $\left\{  {1,2,\ldots ,{x}_{k} - 1,{x}_{k} + 1,\ldots ,8}\right\}$ . The search starts at ${x}_{0} = 1$ and can continue for any number of iterations (the longer the more likely it is to find a better solution). In this example, the search is limited to 5 iterations to conserve space. Denote ${x}_{k}^{\prime }$ [selected from $N\left( {x}_{k}\right)$ ] as a possible next move. It is accepted as the new search move only if it improves the solution. If it does not, a new random selection from $N\left( {x}_{k}\right)$ is attempted.
 
 Table 10.2 details the application of the random-walk heuristic. In contrast with immediate-neighborhood heuristic in Example 10.2-1, the random-walk heuristic produces the solution $x = 7$ and $F\left( x\right)  = {40}$ at iteration 4, which accidentally happens to be better than the one obtained in Example 10.2-1.
 
-TABLE 10.2 Random-Walk Heuristic Applied to $F\left( x\right)$ in Figure 10.1 Starting at ${x}_{0} = 1$
+TABLE 10.2 Random-Walk Heuristic Applied to $F\left( x\right)$ in Figure 10.1 Starting at ${x}_{0} = 1$ ^tablerandomwalk
 
-<table><tr><td>Iteration $k$</td><td>${x}_{k}$</td><td>$F\left( {x}_{k}\right)$</td><td>$N\left( {x}_{k}\right)$</td><td>${R}_{k}$</td><td>${x}_{k}^{\prime }$</td><td>$F\left( {x}_{k}^{\prime }\right)$</td><td>Action</td></tr><tr><td>(Start) 0</td><td>1</td><td>90</td><td></td><td></td><td></td><td></td><td>${x}^{ * } = 1, F\left( {x}^{ * }\right)  = {90}$</td></tr><tr><td>1</td><td>1</td><td>90</td><td>$\{ 2,3,4,5,6,7,8\}$</td><td>.4128</td><td>4</td><td>80</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 4, F\left( {x}^{ * }\right)  = {80},{x}_{k + 1} = 4$</td></tr><tr><td>2</td><td>4</td><td>80</td><td>$\{ 1,2,3,5,6,7,8\}$</td><td>.2039</td><td>2</td><td>60</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 2, F\left( {x}^{ * }\right)  = {60},{x}_{k + 1} = 2$</td></tr><tr><td>3</td><td>2</td><td>60</td><td>$\{ 1,3,4,5,6,7,8\}$</td><td>.0861</td><td>1</td><td>100</td><td>$F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample from $N\left( {x}_{k}\right)$</td></tr><tr><td>4</td><td>2</td><td>60</td><td>$\{ 1,3,4,5,6,7,8\}$</td><td>.5839</td><td>6</td><td>40</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 6, F\left( {x}^{ * }\right)  = {40},{x}_{k + 1} = 6$</td></tr><tr><td>(End) 5</td><td>6</td><td>40</td><td>$\{ 1,2,3,4,5,7,8\}$</td><td>.5712</td><td>4</td><td>80</td><td>$F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample from $N\left( {x}_{k}\right)$</td></tr></table>
+| Iteration $k$ | ${x}_{k}$ | $F\left( {x}_{k}\right)$ | $N\left( {x}_{k}\right)$ | ${R}_{k}$ | ${x}_{k}^{\prime }$ | $F\left( {x}_{k}^{\prime }\right)$ | Action |
+|---|---:|---:|---|---:|---:|---:|---|
+| (Start) 0 | 1 | 90 |  |  |  |  | ${x}^{ * } = 1, F\left( {x}^{ * }\right)  = {90}$ |
+| 1 | 1 | 90 | $\{ 2,3,4,5,6,7,8\}$ | .4128 | 4 | 80 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 4, F\left( {x}^{ * }\right)  = {80},{x}_{k + 1} = 4$ |
+| 2 | 4 | 80 | $\{ 1,2,3,5,6,7,8\}$ | .2039 | 2 | 60 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 2, F\left( {x}^{ * }\right)  = {60},{x}_{k + 1} = 2$ |
+| 3 | 2 | 60 | $\{ 1,3,4,5,6,7,8\}$ | .0861 | 1 | 100 | $F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample from $N\left( {x}_{k}\right)$ |
+| 4 | 2 | 60 | $\{ 1,3,4,5,6,7,8\}$ | .5839 | 6 | 40 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)$ : Set ${x}^{ * } = 6, F\left( {x}^{ * }\right)  = {40},{x}_{k + 1} = 6$ |
+| (End) 5 | 6 | 40 | $\{ 1,2,3,4,5,7,8\}$ | .5712 | 4 | 80 | $F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample from $N\left( {x}_{k}\right)$ |
 
 Best solution: $x = 6, F\left( x\right)  = {40}$ , occurs at iteration 4 .
 
 Note the behavior of the heuristic. At iteration 3, the possible random move ${x}_{k}^{\prime } = 1$ from $N\left( {{x}_{3} = 2}\right)  = \{ 1,3,4,5,6,7,8\}$ does not improve the solution. Hence, at iteration 4 another random move is attempted from the same neighborhood. This time the move produces the superior solution ${x}^{ * } = 6$ .
 
-#### 10.2.2 Continuous Variable Heuristic
+#### 10.2.2 Continuous Variable Heuristic ^continuoussection
 
 The optimization problem is defined as
 
@@ -118,7 +230,7 @@ The continuous random-walk heuristic differs from that of the discrete case (Exa
 
 The next move, ${x}_{k + 1}$ , is computed as a random (positive or negative) displacement above or below ${x}_{k}$ . There are two ways to achieve this result:
 
-1. The displacement is based on a uniform distribution in the range $\left( {-\frac{U - L}{2},\frac{U - L}{2}}\right)$ . Given $R$ is a $\left( {0,1}\right)$ random number, then
+1. The displacement is based on a uniform distribution in the range $\left( {-\frac{U - L}{2},\frac{U - L}{2}}\right)$ . Given $R$ is a $\left( {0,1}\right)$ random number, then ^uniformdisp
 
 $$
 {x}_{k + 1} = {x}_{k} + \left( {-\left( \frac{U - L}{2}\right)  + R\left( {U - L}\right) }\right)
@@ -128,7 +240,7 @@ $$
 = {x}_{k} + \left( {R - {.5}}\right) \left( {U - L}\right)
 $$
 
-2. The displacement is based on a normal distribution with mean ${x}_{k}$ and standard deviation $\frac{U - L}{6}$ (the estimate of the standard deviation is based on the assumption that $U - L$ approximates the 6-sigma spread of the normal distribution). Thus,
+2. The displacement is based on a normal distribution with mean ${x}_{k}$ and standard deviation $\frac{U - L}{6}$ (the estimate of the standard deviation is based on the assumption that $U - L$ approximates the 6-sigma spread of the normal distribution). Thus, ^normaldisp
 
 $$
 {x}_{k + 1} = {x}_{k} + \left( \frac{U - L}{6}\right) N\left( {0,1}\right)
@@ -138,7 +250,7 @@ The standard $N\left( {0,1}\right)$ deviate is determined from the normal tables
 
 In the two formulas given above, it may be necessary to recompute ${x}_{k + 1}$ more than once, using the same ${x}_{k}$ , until ${x}_{k + 1}$ falls within the feasible range $\left( {L, U}\right)$ . Moreover, if $F\left( {x}_{k + 1}\right)$ is not an improved solution relative to $F\left( {x}^{ * }\right)$ , the random selection is repeated for a specified number of iterations or until an improvement is realized, whichever occurs first.
 
-## Example 10.2-3
+## Example 10.2-3 ^continuousexample
 
 Consider the following problem
 
@@ -152,19 +264,32 @@ Tables 10.3 and 10.4 provide 5 iterations each using uniform and normal sampling
 
 The two sampling procedures can be combined into a hybrid heuristic: First, we implement the uniform sampling heuristic. Then the resulting solution is used to start the normal sampling heuristic. The idea is that the normal sampling heuristic may "fine-tune" the solution obtained by the uniform sampling heuristic (see next Excel moment). This idea is implemented later using Excel.
 
-TABLE 10.3 Minimization of $F\left( x\right)  = {x}^{5} - {10}{x}^{4} + {35}{x}^{3} - {50}{x}^{2} + {24x},0 \leq  x \leq  4$ Using Uniform Random-Walk Heuristic with ${x}_{0} = {.5}$ and ${x}_{k}^{\prime } = {x}_{k} + 4\left( {R - {.5}}\right)$
+TABLE 10.3 Minimization of $F\left( x\right)  = {x}^{5} - {10}{x}^{4} + {35}{x}^{3} - {50}{x}^{2} + {24x},0 \leq  x \leq  4$ Using Uniform Random-Walk Heuristic with ${x}_{0} = {.5}$ and ${x}_{k}^{\prime } = {x}_{k} + 4\left( {R - {.5}}\right)$ ^tableuniform
 
-<table><tr><td>Iteration $k$</td><td>${x}_{k}$</td><td>$F\left( {x}_{k}\right)$</td><td>${R}_{k}$</td><td>${x}_{k}^{\prime }$</td><td>$F\left( {x}_{k}^{\prime }\right)$</td><td>Action</td></tr><tr><td>(Start) 0</td><td>.5</td><td>3.281</td><td></td><td></td><td></td><td>Set ${x}^{ * } = {.5}, F\left( {x}^{ * }\right)  = {3.281},{x}_{k + 1} = {.5}$</td></tr><tr><td>1</td><td>.5</td><td>3.281</td><td>.4128</td><td>.151</td><td>2.602</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {.1512}, F\left( {x}^{ * }\right)  = {2.602},{x}_{k + 1} = {.151}$</td></tr><tr><td>2</td><td>.1512</td><td>2.602</td><td>.2039</td><td>-1.033</td><td></td><td>Out of range: Resample using ${x}_{k + 1} = {x}_{k}$</td></tr><tr><td>3</td><td>.1512</td><td>2.602</td><td>.9124</td><td>1.801</td><td>-.757</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {1.801}, F\left( {x}^{ * }\right)  =  - {.757},{x}_{k + 1} = {1.801}$</td></tr><tr><td>4</td><td>1.801</td><td>-.757</td><td>.5712</td><td>2.086</td><td>.339</td><td>$F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$</td></tr><tr><td>(End) 5</td><td>1.801</td><td>-.757</td><td>.8718</td><td>3.288</td><td>-1.987</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {3.288}, F\left( {x}^{ * }\right)  =  - {1.987},{x}_{k + 1} = {3.288}$</td></tr></table>
+| Iteration $k$ | ${x}_{k}$ | $F\left( {x}_{k}\right)$ | ${R}_{k}$ | ${x}_{k}^{\prime }$ | $F\left( {x}_{k}^{\prime }\right)$ | Action |
+|---|---:|---:|---:|---:|---:|---|
+| (Start) 0 | .5 | 3.281 |  |  |  | Set ${x}^{ * } = {.5}, F\left( {x}^{ * }\right)  = {3.281},{x}_{k + 1} = {.5}$ |
+| 1 | .5 | 3.281 | .4128 | .151 | 2.602 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {.1512}, F\left( {x}^{ * }\right)  = {2.602},{x}_{k + 1} = {.151}$ |
+| 2 | .1512 | 2.602 | .2039 | -1.033 |  | Out of range: Resample using ${x}_{k + 1} = {x}_{k}$ |
+| 3 | .1512 | 2.602 | .9124 | 1.801 | -.757 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {1.801}, F\left( {x}^{ * }\right)  =  - {.757},{x}_{k + 1} = {1.801}$ |
+| 4 | 1.801 | -.757 | .5712 | 2.086 | .339 | $F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$ |
+| (End) 5 | 1.801 | -.757 | .8718 | 3.288 | -1.987 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {3.288}, F\left( {x}^{ * }\right)  =  - {1.987},{x}_{k + 1} = {3.288}$ |
 
 Search result: $x = {1.801}, F\left( x\right)  =  - {.757}$ occurs at iteration 3 [exact global minimum: ${x}^{ * } = {3.64438}, F\left( {x}^{ * }\right)  =  - {3.631}$ ].
 
-TABLE 10.4 Minimization of $F\left( x\right)  = {x}^{5} - {10}{x}^{4} + {35}{x}^{3} - {50}{x}^{2} + {24x},0 \leq  x \leq  4$ Using Normal Random-Walk Heuristic with ${x}_{0} = {.5}$ and ${x}_{k}^{\prime } = {x}_{k} + \left( {4/6}\right) N\left( {0,1}\right)$ .
+TABLE 10.4 Minimization of $F\left( x\right)  = {x}^{5} - {10}{x}^{4} + {35}{x}^{3} - {50}{x}^{2} + {24x},0 \leq  x \leq  4$ Using Normal Random-Walk Heuristic with ${x}_{0} = {.5}$ and ${x}_{k}^{\prime } = {x}_{k} + \left( {4/6}\right) N\left( {0,1}\right)$ . ^tablenormal
 
-<table><tr><td>Iteration $k$</td><td>${x}_{k}$</td><td>$F\left( {x}_{k}\right)$</td><td>${R}_{k}$</td><td>$N\left( {0,1}\right)$</td><td>${x}_{k}^{\prime }$</td><td>$F\left( {x}_{k}^{\prime }\right)$</td><td>Action</td></tr><tr><td>(Start) 0 <br> 1</td><td>.5 <br> .5</td><td>3.281 <br> 3.281</td><td>.4128</td><td>-.2203</td><td>.353</td><td rowspan="2">3.631</td><td>Set ${x}^{ * } = {.5}, F\left( {x}^{ * }\right)  = {3.281},{x}_{k + 1} = {.5}$</td></tr><tr><td>2</td><td>.5</td><td>3.281</td><td>.2039</td><td>-.8278</td><td>-.0519</td><td>$F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$ <br> Out of range: Resample using ${x}_{k + 1} = {x}_{k}$</td></tr><tr><td>3</td><td>.5</td><td>3.281</td><td>.9124</td><td>1.3557</td><td>1.404</td><td>-1.401</td><td>$F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {1.404}, F\left( {x}^{ * }\right)  =  - {1.401}$ , <br> ${x}_{k + 1} = {1.404}$</td></tr><tr><td>4</td><td>1.404</td><td>-1.401</td><td>.5712</td><td>.1794</td><td>1.523</td><td>-1.390</td><td>$F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$</td></tr><tr><td>(End) 5</td><td>1.404</td><td>-1.401</td><td>.8718</td><td>1.1349</td><td>2.160</td><td>.6219</td><td>$F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$</td></tr></table>
+| Iteration $k$ | ${x}_{k}$ | $F\left( {x}_{k}\right)$ | ${R}_{k}$ | $N\left( {0,1}\right)$ | ${x}_{k}^{\prime }$ | $F\left( {x}_{k}^{\prime }\right)$ | Action |
+|---|---:|---:|---:|---:|---:|---:|---|
+| (Start) 0 / 1 | .5 / .5 | 3.281 / 3.281 | .4128 | -.2203 | .353 | 3.631 | Set ${x}^{ * } = {.5}, F\left( {x}^{ * }\right)  = {3.281},{x}_{k + 1} = {.5}$ |
+| 2 | .5 | 3.281 | .2039 | -.8278 | -.0519 |  | $F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$ ; Out of range: Resample using ${x}_{k + 1} = {x}_{k}$ |
+| 3 | .5 | 3.281 | .9124 | 1.3557 | 1.404 | -1.401 | $F\left( {x}_{k}^{\prime }\right)  < F\left( {x}^{ * }\right)  : {x}^{ * } = {1.404}, F\left( {x}^{ * }\right)  =  - {1.401}$ , ${x}_{k + 1} = {1.404}$ |
+| 4 | 1.404 | -1.401 | .5712 | .1794 | 1.523 | -1.390 | $F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$ |
+| (End) 5 | 1.404 | -1.401 | .8718 | 1.1349 | 2.160 | .6219 | $F\left( {x}_{k}^{\prime }\right)  > F\left( {x}^{ * }\right)$ : Resample using ${x}_{k + 1} = {x}_{k}$ |
 
 Search result: $x = {1.404}, F\left( x\right)  =  - {1.401}$ , occurs at iteration 3 [exact global minimum: ${x}^{ * } = {3.64438}, F\left( {x}^{ * }\right)  =  - {3.631}$ ].
 
-Extension of the greedy search multiple variables. Given $\mathbf{X} = \left( {{x}_{1},{x}_{2},\ldots ,{x}_{n}}\right)$ and a solution space $S$ , the optimization problem is defined as
+Extension of the greedy search multiple variables. Given $\mathbf{X} = \left( {{x}_{1},{x}_{2},\ldots ,{x}_{n}}\right)$ and a solution space $S$ , the optimization problem is defined as ^multivariable
 
 $$
 \text{ Minimize }z = F\left( \mathbf{X}\right) ,\mathbf{X}{\varepsilon S}
@@ -172,7 +297,7 @@ $$
 
 The greedy search algorithm is extended to the multivariable case by targeting the variables one at a time in each iteration, where a target variable is selected randomly from the set $\left( {{x}_{1},{x}_{2},\ldots ,{x}_{n}}\right)$ . The single-variable discrete and continuous heuristics given in Sections 10.2.1 and 10.2.2 are then applied to the selected variable.
 
-## Excel Moment
+## Excel Moment ^excelcontinuous
 
 Figure 10.2 is a snapshot of the Excel spreadsheet application of the continuous random-walk heuristic (file excelContSingleVarHeuristic.xls). Using Excel syntax, the function $F\left( x\right)$ is entered in cell D2, with cell D5 assuming the role of the variable $x$ . The sense of optimization (max or min) is specified in cell C2. The search range is entered in cells D3 and D4. The drop-down menu in cell D5 allows the use of uniform or random sampling.
 
@@ -190,15 +315,34 @@ FIGURE 10.2
 
 Excel random-walk heuristic for finding the optimum (maximum or minimum) of a single-variable continuous function (file excelContSingleVarHeuristic.xls)
 
-<table><tr><td colspan="3">D2 ${f}_{\mathrm{c}}$</td><td colspan="7">=D5^5-10*D5^4+35*D5^3-50*D5^2+24*D5</td></tr><tr><td></td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>1</td></tr><tr><td colspan="10">1 Random-Walk Heuristic for Continuous Single Variable functions</td></tr><tr><td>2</td><td>Step 1:</td><td></td><td>Enter F(D5) O Max O Mn</td><td>2.325007</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>3</td><td>Step 2a:</td><td>Enter lower bound</td><td></td><td>0</td><td>Step 4:</td><td colspan="2">Enter starting point, x0</td><td>0.5</td><td></td></tr><tr><td>4</td><td>Step 2b:</td><td colspan="2">Enter upper bound</td><td>4</td><td>Step 5:</td><td colspan="2">Enter nbr of iterations, N</td><td>5</td><td></td></tr><tr><td>5</td><td>Step 3:</td><td colspan="2">Select sampling method</td><td>Uniform</td><td>Step 6:</td><td colspan="3">Execute Heuristic</td><td></td></tr><tr><td>6</td><td colspan="2">Solution summary:</td><td>Best solution:</td><td>x* = 1.455886</td><td colspan="2">F(x*) = -1.418696</td><td></td><td></td><td></td></tr><tr><td>7</td><td>Iteration, k</td><td>xk</td><td>F(xk)</td><td>R</td><td>Uniform</td><td>${\mathrm{x}}^{\prime }$</td><td>F(x')</td><td>${x}^{ * }$</td><td>F(x*)</td></tr><tr><td>8</td><td>start</td><td>0.5</td><td>3.28125</td><td></td><td></td><td></td><td></td><td>0.5</td><td>3.28125</td></tr><tr><td>9</td><td>1</td><td>0.5</td><td>3.28125</td><td>0.705547512</td><td>0.82219</td><td>1.322190046</td><td>-1.2972882</td><td>1.32219</td><td>-1.297288</td></tr><tr><td>10</td><td>2</td><td>1.32219005</td><td>-1.297288179</td><td>0.53342402</td><td>0.1336961</td><td>1.455886126</td><td>-1.4186964</td><td>1.4558861</td><td>-1.418696</td></tr><tr><td>11</td><td>3</td><td>1.45588613</td><td>-1.418696404</td><td>0.579518616</td><td>0.3180745</td><td>1.77396059</td><td>-0.8470017</td><td></td><td></td></tr><tr><td>12</td><td>4</td><td>1.45588613</td><td>-1.418696404</td><td>0.289562464</td><td>-0.84175</td><td>0.614135981</td><td>2.65298409</td><td></td><td></td></tr><tr><td>13</td><td>5</td><td>1.45588613</td><td>-1.418696404</td><td>0.301948011</td><td>-0.792208</td><td>0.663678169</td><td>2.32500697</td><td></td><td></td></tr></table>
+| Cell | Content |
+|---|---|
+| D2 ${f}_{\mathrm{c}}$ | =D5^5-10*D5^4+35*D5^3-50*D5^2+24*D5 |
 
-### 10.3 METAHEURISTIC
+| Row | A | B | C | D | E | F | G | H | 1 |
+|---:|---|---|---|---|---|---|---|---|---|
+|  | A | B | C | D | E | F | G | H | 1 |
+| 1 | Random-Walk Heuristic for Continuous Single Variable functions |  |  |  |  |  |  |  |  |
+| 2 | Step 1: |  | Enter F(D5) O Max O Mn | 2.325007 |  |  |  |  |  |
+| 3 | Step 2a: | Enter lower bound |  | 0 | Step 4: | Enter starting point, x0 |  | 0.5 |  |
+| 4 | Step 2b: | Enter upper bound |  | 4 | Step 5: | Enter nbr of iterations, N |  | 5 |  |
+| 5 | Step 3: | Select sampling method |  | Uniform | Step 6: | Execute Heuristic |  |  |  |
+| 6 | Solution summary: |  | Best solution: | x* = 1.455886 | F(x*) = -1.418696 |  |  |  |  |
+| 7 | Iteration, k | xk | F(xk) | R | Uniform | ${\mathrm{x}}^{\prime }$ | F(x') | ${x}^{ * }$ | F(x*) |
+| 8 | start | 0.5 | 3.28125 |  |  |  |  | 0.5 | 3.28125 |
+| 9 | 1 | 0.5 | 3.28125 | 0.705547512 | 0.82219 | 1.322190046 | -1.2972882 | 1.32219 | -1.297288 |
+| 10 | 2 | 1.32219005 | -1.297288179 | 0.53342402 | 0.1336961 | 1.455886126 | -1.4186964 | 1.4558861 | -1.418696 |
+| 11 | 3 | 1.45588613 | -1.418696404 | 0.579518616 | 0.3180745 | 1.77396059 | -0.8470017 |  |  |
+| 12 | 4 | 1.45588613 | -1.418696404 | 0.289562464 | -0.84175 | 0.614135981 | 2.65298409 |  |  |
+| 13 | 5 | 1.45588613 | -1.418696404 | 0.301948011 | -0.792208 | 0.663678169 | 2.32500697 |  |  |
+
+### 10.3 METAHEURISTIC ^metasection
 
 The greedy heuristics presented in Section 10.2 share a common strategy: At iteration $k$ , the search moves to a new point ${\mathbf{X}}_{k + 1} \in  N\left( {\mathbf{X}}_{k}\right)$ only if the new point improves the value of the objective function $F\left( \mathbf{X}\right)$ . If no better ${\mathbf{X}}_{k + 1}$ can be found in $N\left( {\mathbf{X}}_{k}\right)$ or if a user-specified number of iterations is reached, the solution is entrapped at a local optimum and the search ends.
 
 Metaheuristics are primarily designed to escape entrapment at local optima by permitting inferior moves, if necessary. The hope is that the added search flexibility will lead to a better solution.
 
-Unlike the greedy heuristic, which always terminates when a local optimum is reached, termination of a metaheuristic search can be based on one of the following benchmarks:
+Unlike the greedy heuristic, which always terminates when a local optimum is reached, termination of a metaheuristic search can be based on one of the following benchmarks: ^metatermination
 
 1. The number of search iterations exceeds a specified number.
 
@@ -210,11 +354,11 @@ Unlike the greedy heuristic, which always terminates when a local optimum is rea
 
 This section presents three prominent search metaheuristics: tabu, simulated annealing, and genetic. These algorithms differ primarily in the manner in which the search escapes a local optimum. Each metaheuristic is illustrated by two examples: The first, dealing with a single-variable function $F\left( x\right)$ , is designed to explain the basics of the metaheuristics. The second, dealing with the more complex job-shop scheduling problem, reveals additional intricacies in the implementation of the metaheuristics. In Chapter 11, the three metaheuristics are applied to the traveling salesperson problem.
 
-#### 10.3.1 Tabu Search Algorithm
+#### 10.3.1 Tabu Search Algorithm ^tabusection
 
 When search is trapped at a local optimum, tabu search (TS) selects the next (possibly inferior) search move in a manner that temporarily prohibits reexamining previous solutions. The main instrument for achieving this result is a tabu list that "remembers" previous search moves and disallows them during a specified tenure period. When a tabu move completes its tenure, it is removed from the tabu list and becomes available for future moves.
 
-## Example 10.3-1 (Minimization of a Single-Variable Function)
+## Example 10.3-1 (Minimization of a Single-Variable Function) ^tabuexamplea
 
 ---
 
@@ -234,9 +378,16 @@ For iteration $k$ , let
 
 ---
 
-TABLE 10.5 TS Minimization of $F\left( x\right)$ in Figure 10.1 with Tabu Tenure Period $\tau  = 3$ and $N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 4,\ldots ,{x}_{k} - 1,{x}_{k} + 1,\ldots ,{x}_{k} + 4}\right\}   - {L}_{k}$
+TABLE 10.5 TS Minimization of $F\left( x\right)$ in Figure 10.1 with Tabu Tenure Period $\tau  = 3$ and $N\left( {x}_{k}\right)  = \left\{  {{x}_{k} - 4,\ldots ,{x}_{k} - 1,{x}_{k} + 1,\ldots ,{x}_{k} + 4}\right\}   - {L}_{k}$ ^tabletabua
 
-<table><tr><td>Iteration $k$</td><td>${R}_{k}$</td><td>${x}_{k}$</td><td>$F\left( {x}_{k}\right)$</td><td>${L}_{k}$</td><td>$N\left( {x}_{k}\right)$</td></tr><tr><td>(Start) 0</td><td>.0935</td><td>1</td><td>90</td><td></td><td>$\{ 2,3,4,5\}$</td></tr><tr><td>1</td><td>.4128</td><td>3</td><td>50</td><td>\{1\}</td><td>$\{ 2,4,5,6,7\}$</td></tr><tr><td>2</td><td>.2039</td><td>4</td><td>80</td><td>$\{ 1,3\}$</td><td>$\{ 2,5,6,7,8\}$</td></tr><tr><td>3</td><td>.0861</td><td>2</td><td>60</td><td>$\{ 1,3,4\}$</td><td>$\{ 5,6\}$</td></tr><tr><td>4</td><td>.5839</td><td>5</td><td>100</td><td>$\{ 3,4,2\}$</td><td>$\{ 1,6,7,8\}$</td></tr><tr><td>(End) 5</td><td>.5712</td><td>7</td><td>20</td><td>$\{ 4,2,5\}$</td><td>$\{ 3,6,8\}$</td></tr></table>
+| Iteration $k$ | ${R}_{k}$ | ${x}_{k}$ | $F\left( {x}_{k}\right)$ | ${L}_{k}$ | $N\left( {x}_{k}\right)$ |
+|---|---:|---:|---:|---|---|
+| (Start) 0 | .0935 | 1 | 90 |  | $\{ 2,3,4,5\}$ |
+| 1 | .4128 | 3 | 50 | $\{1\}$ | $\{ 2,4,5,6,7\}$ |
+| 2 | .2039 | 4 | 80 | $\{ 1,3\}$ | $\{ 2,5,6,7,8\}$ |
+| 3 | .0861 | 2 | 60 | $\{ 1,3,4\}$ | $\{ 5,6\}$ |
+| 4 | .5839 | 5 | 100 | $\{ 3,4,2\}$ | $\{ 1,6,7,8\}$ |
+| (End) 5 | .5712 | 7 | 20 | $\{ 4,2,5\}$ | $\{ 3,6,8\}$ |
 
 Best heuristic solution: $x = 7, F\left( x\right)  = {20}$ , at iteration 5 (also happens to be the optimum).
 
@@ -250,7 +401,7 @@ To illustrate the computations, $N\left( {{x}_{0} = 1}\right)  = \{ 2,3,4,5\}$ .
 
 An element is dropped from the tabu list on first-in-first-out basis after a tenure period of $\tau  = 3$ successive iterations. For example, element $\{ 1\}$ stays on the tabu list during iterations 1,2, and 3 until it is dropped at iteration 4.
 
-## Example 10.3-2 (Job Sequencing)
+## Example 10.3-2 (Job Sequencing) ^tabuexampleb
 
 Consider the case of sequencing $n$ jobs on a single machine. The processing time for job $j$ is ${t}_{j}$ and its due date is ${d}_{j}$ (measured from zero). Completing job $j$ ahead of its due date incurs a holding (storage) cost ${h}_{j}$ per unit time. A tardy job $j$ results in a penalty cost ${p}_{j}$ per unit time. Table 10.6 provides the data for a 4-job problem.
 
@@ -272,9 +423,14 @@ ${}^{3}$ Actually, a tabu element can define a next search move if it satisfies 
 
 ---
 
-TABLE 10.6 Data of the Job Sequencing Problem for Example 10.3-2
+TABLE 10.6 Data of the Job Sequencing Problem for Example 10.3-2 ^tablejobsdataa
 
-<table><tr><td>Job, $j$</td><td>Processing time in days, ${T}_{j}$</td><td>Due date, ${d}_{j}$</td><td>Holding cost, ${h}_{j}$ (\$/day)</td><td>Penalty cost, ${p}_{i}$ (\$/day)</td></tr><tr><td>1</td><td>10</td><td>15</td><td>3</td><td>10</td></tr><tr><td>2</td><td>8</td><td>20</td><td>2</td><td>22</td></tr><tr><td>3</td><td>6</td><td>10</td><td>5</td><td>10</td></tr><tr><td>4</td><td>7</td><td>30</td><td>4</td><td>8</td></tr></table>
+| Job, $j$ | Processing time in days, ${T}_{j}$ | Due date, ${d}_{j}$ | Holding cost, ${h}_{j}$ (\$/day) | Penalty cost, ${p}_{i}$ (\$/day) |
+|---:|---:|---:|---:|---:|
+| 1 | 10 | 15 | 3 | 10 |
+| 2 | 8 | 20 | 2 | 22 |
+| 3 | 6 | 10 | 5 | 10 |
+| 4 | 7 | 30 | 4 | 8 |
 
 ${L}_{k} =$ Tabu list at iteration $k$
 
@@ -296,9 +452,17 @@ Possible options for determining the neighborhood, $N\left( {s}_{k}\right)$ , fr
 
 The first definition is used in this example. To demonstrate its use, consider ${s}_{0} =$ (1-2-3-4). The neighborhood set is $N\left( {s}_{0}\right)  = \{$ (2-1-3-4),(1-3-2-4),(1-2-4-3) $\}$ , which corresponds to swapping the positions (in ${s}_{0}$ ) of jobs 1 and 2, jobs 2 and 3, and jobs 3 and 4, respectively. The selection of the next move ${s}_{1}$ from $N\left( {s}_{0}\right)$ can be made either randomly or based on the least-cost criterion. This example employs random selection.
 
-Table 10.7 summarizes 5 iterations assuming a tenure period $\tau  = 2$ iterations. The sequence (3-1-2-4) in iteration 2 provides the best solution with ${z}^{ * } = {126}$ . To demonstrate cost computations in the table, the value of $z$ for the sequence ${s}_{2} =$ (3-1-2-4) of iteration 2 is determined in the following order: ${}^{4}$
+Table 10.7 summarizes 5 iterations assuming a tenure period $\tau  = 2$ iterations. The sequence (3-1-2-4) in iteration 2 provides the best solution with ${z}^{ * } = {126}$ . To demonstrate cost computations in the table, the value of $z$ for the sequence ${s}_{2} =$ (3-1-2-4) of iteration 2 is determined in the following order: ${}^{4}$ ^tablecostcalc
 
-<table><tr><td>Job</td><td>3</td><td>1</td><td>2</td><td>4</td></tr><tr><td>Processing time</td><td>6</td><td>10</td><td>8</td><td>7</td></tr><tr><td>Due date</td><td>10</td><td>15</td><td>20</td><td>30</td></tr><tr><td>Completion date</td><td>6</td><td>16</td><td>24</td><td>31</td></tr><tr><td>Holding time</td><td>4</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Delay time</td><td>0</td><td>1</td><td>4</td><td>1</td></tr><tr><td>Holding cost</td><td>20</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Late penalty cost</td><td>0</td><td>10</td><td>88</td><td>8</td></tr></table>
+|  | 3 | 1 | 2 | 4 |
+|---|---:|---:|---:|---:|
+| Processing time | 6 | 10 | 8 | 7 |
+| Due date | 10 | 15 | 20 | 30 |
+| Completion date | 6 | 16 | 24 | 31 |
+| Holding time | 4 | 0 | 0 | 0 |
+| Delay time | 0 | 1 | 4 | 1 |
+| Holding cost | 20 | 0 | 0 | 0 |
+| Late penalty cost | 0 | 10 | 88 | 8 |
 
 Thus, $z =$ Holding cost + Penalty cost $= {20} + \left( {{10} + {88} + 8}\right)  = \$ {126}$ .
 
@@ -310,21 +474,28 @@ ${}^{4}$ For convenience, cost calculations are automated using the spreadsheet 
 
 ---
 
-TABLE 10.7 TS Applied to the Job Sequencing Problem with Tenure Period $\tau  = 2$ Iterations
+TABLE 10.7 TS Applied to the Job Sequencing Problem with Tenure Period $\tau  = 2$ Iterations ^tabletabujobs
 
-<table><tr><td>Iteration, $k$</td><td>Sequence, ${s}_{k}$</td><td>Total cost (holding) + (penalty)</td><td>${z}^{ * }$</td><td>Tabu list, $L\left( {s}_{k}\right)$</td><td>$R$</td><td>Neighborhood, $N{\left( {s}_{k}\right) }^{ * }$</td></tr><tr><td>(Start) 0</td><td>(1-2-3-4)</td><td>$\left( {5 \times  3 + 2 \times  2}\right)  + \left( {{14} \times  {10} + 1 \times  8}\right)  = {167}$</td><td>167</td><td></td><td>.5124</td><td>(2-1-3-4) (1-3-2-4)✓ (1-2-4-3)</td></tr><tr><td>1</td><td>(1-3-2-4)</td><td>$\left( {5 \times  3}\right)  + \left( {6 \times  {10} + 4 \times  {22} + 1 \times  8}\right)  = {171}$</td><td></td><td>\{3-2\}</td><td>.3241</td><td>(3-1-2-4)✓ (1-2-3-4) (1-3-4-2)</td></tr><tr><td>2</td><td>(3-1-2-4)</td><td>$\left( {4 \times  5}\right)  + \left( {1 \times  {10} + 4 \times  {22} + 1 \times  8}\right)  = {126}$</td><td>126</td><td>\{3-2, 3-1\}</td><td>.2952</td><td>(1-3-2-4) (3-2-1-4)✓ (3-1-4-2)</td></tr><tr><td>3</td><td>(3-2-1-4)</td><td>$\left( {4 \times  5 + 6 \times  2}\right)  + \left( {9 \times  {10} + 1 \times  8}\right)  = {130}$</td><td></td><td>\{3-1, 2-1\}</td><td>.4241</td><td>(2-3-1-4)✓ (3-1-2-4) (3-2-4-1)</td></tr><tr><td>4</td><td>(2-3-1-4)</td><td>$\left( {{12} \times  2}\right)  + \left( {4 \times  {10} + 9 \times  {10} + 1 \times  8}\right)  = {162}$</td><td></td><td>\{2-1, 2-3\}</td><td>.8912</td><td>(3-2-1-4) (2-1-3-4) <br> (2-3-4-1)✓</td></tr><tr><td>(End) 5</td><td>(2-3-4-1)</td><td>$\left( {{12} \times  2 + 9 \times  4}\right)  + \left( {4 \times  {10} + {16} \times  {10}}\right)  = {260}$</td><td></td><td>\{2-3, 4-1\}</td><td>.0992</td><td>(3-2-4-1)✓ (2-4-3-1) (2-3-1-4)</td></tr></table>
+| Iteration, $k$ | Sequence, ${s}_{k}$ | Total cost (holding) + (penalty)                                                                              | ${z}^{ * }$ | Tabu list, $L\left( {s}_{k}\right)$ |   $R$ | Neighborhood, $N{\left( {s}_{k}\right) }^{ * }$ |
+| -------------- | ------------------- | ------------------------------------------------------------------------------------------------------------- | ----------: | ----------------------------------- | ----: | ----------------------------------------------- |
+| (Start) 0      | (1-2-3-4)           | $\left( {5 \times  3 + 2 \times  2}\right)  + \left( {{14} \times  {10} + 1 \times  8}\right)  = {167}$       |         167 |                                     | .5124 | (2-1-3-4) (1-3-2-4)✓ (1-2-4-3)                  |
+| 1              | (1-3-2-4)           | $\left( {5 \times  3}\right)  + \left( {6 \times  {10} + 4 \times  {22} + 1 \times  8}\right)  = {171}$       |             | $\{3-2\}$                           | .3241 | (3-1-2-4)✓ (1-2-3-4) (1-3-4-2)                  |
+| 2              | (3-1-2-4)           | $\left( {4 \times  5}\right)  + \left( {1 \times  {10} + 4 \times  {22} + 1 \times  8}\right)  = {126}$       |         126 | $\{3-2, 3-1\}$                      | .2952 | (1-3-2-4) (3-2-1-4)✓ (3-1-4-2)                  |
+| 3              | (3-2-1-4)           | $\left( {4 \times  5 + 6 \times  2}\right)  + \left( {9 \times  {10} + 1 \times  8}\right)  = {130}$          |             | $\{3-1, 2-1\}$                      | .4241 | (2-3-1-4)✓ (3-1-2-4) (3-2-4-1)                  |
+| 4              | (2-3-1-4)           | $\left( {{12} \times  2}\right)  + \left( {4 \times  {10} + 9 \times  {10} + 1 \times  8}\right)  = {162}$    |             | $\{2-1, 2-3\}$                      | .8912 | (3-2-1-4) (2-1-3-4) (2-3-4-1)✓                  |
+| (End) 5        | (2-3-4-1)           | $\left( {{12} \times  2 + 9 \times  4}\right)  + \left( {4 \times  {10} + {16} \times  {10}}\right)  = {260}$ |             | $\{2-3, 4-1\}$                      | .0992 | (3-2-4-1)✓ (2-4-3-1) (2-3-1-4)                  |
 
 Best search sequence: (3-1-2-4) with cost $= {126}$ at iteration 2.
 
 *Check mark $\checkmark$ designates the non-tabu element selected randomly from $N\left( {s}_{k}\right)$ using $R$ .
 
-"Fine-Tuning" TS. The following refinements can prove effective in improving the quality of the final solution:
+"Fine-Tuning" TS. The following refinements can prove effective in improving the quality of the final solution: ^tabufinetune
 
 1. Aspiration Criterion. The design of TS search disallows moves that are on the tabu list. An exception occurs when a disallowed move leads to an improved solution. For example, in Table 10.7 (Example 10.3-2 ), the crossed-out tabu sequences in iterations 1, 2, 3, and 4 should be examined for the possibility of producing better search moves. If they do, they should be accepted as search moves.
 
 2. Intensification and Diversification. Two additional strategies, called intensification and diversification, are usually applied when a string of successive iterations fails to produce improvement. Intensification calls for a more thorough examination of nearby solution points and diversification attempts to move the search to unexplored solution regions. One way to implement these strategies is by controlling the size of the tabu list. A shorter tabu list increases the size of the allowable neighborhood set and hence intensifies the search to points that lie close to the best solution. A longer tabu list does the opposite in that it permits escape from a local optimum point by allowing the exploration of "remote" regions.
 
-## Summary of Tabu Search Algorithm
+## Summary of Tabu Search Algorithm ^tabusummary
 
 Step 0: Select a starting solution ${s}_{0} \in  S$ . Initialize the tabu list ${L}_{0} = \varnothing$ , and choose a schedule for specifying the size of the tabu list. Set $k = 0$ .
 
@@ -334,7 +505,7 @@ Step 2: Select the next move ${s}_{k + 1}$ from $N\left( {s}_{k}\right)$ (or fro
 
 Step 3: If a termination condition is reached, stop. Otherwise, set $k = k + 1$ and go to step 1.
 
-#### 10.3.2 Simulated Annealing Algorithm
+#### 10.3.2 Simulated Annealing Algorithm ^sasection
 
 Simulated annealing (SA) escapes entrapment at a local optimum by using a probability condition that accepts or rejects an inferior move (a no-worse move is always accepted). The idea of determining the acceptance probability of the next search move is explained in the following manner: Suppose the optimization problem is given as
 
@@ -342,7 +513,7 @@ $$
 \text{ Maximize or minimize }z = F\left( s\right) ,{s\varepsilon S}
 $$
 
-As the number of iterations increases, SA seeks a more selective determination of solution strategies by using an adjustable parameter $T$ , called temperature, that is made progressively smaller according to a temperature schedule. ${}^{5}$ Typically, a schedule of $I$ elements for $T$ is defined as $\left\{  {T = {T}_{i}, i = 0,1,\ldots , I}\right\}$ . Each ${T}_{i}$ applies for a specified number of consecutive accept-iterations, $t \cdot  {}^{6}$ Given ${s}_{0}$ is the starting strategy of the search, ${T}_{i}$ is typically computed as
+As the number of iterations increases, SA seeks a more selective determination of solution strategies by using an adjustable parameter $T$ , called temperature, that is made progressively smaller according to a temperature schedule. ${}^{5}$ Typically, a schedule of $I$ elements for $T$ is defined as $\left\{  {T = {T}_{i}, i = 0,1,\ldots , I}\right\}$ . Each ${T}_{i}$ applies for a specified number of consecutive accept-iterations, $t \cdot  {}^{6}$ Given ${s}_{0}$ is the starting strategy of the search, ${T}_{i}$ is typically computed as ^satemperature
 
 $$
 {T}_{0} = {r}_{0}F\left( {s}_{0}\right) ,0 < {r}_{0} < 1
@@ -352,7 +523,7 @@ $$
 {T}_{i} = {r}_{i}{T}_{i - 1},0 < {r}_{i} < 1, i = 1,2,\ldots , I
 $$
 
-Define ${s}_{a}$ as the last accepted solution strategy. At iteration $k$ , the probability of accepting a neighborhood strategy as the next search move, ${s}_{k + 1}$ , is computed as
+Define ${s}_{a}$ as the last accepted solution strategy. At iteration $k$ , the probability of accepting a neighborhood strategy as the next search move, ${s}_{k + 1}$ , is computed as ^saaccept
 
 $$
 P\left\{  {\text{ accept }{s}_{k + 1} \mid  {s}_{k + 1} \in  N\left( {s}_{k}\right) }\right\}   = \left\{  \begin{array}{l} 1,\text{ if }F\left( {s}_{k + 1}\right) \text{ is not worse than } \\  {e}^{\frac{-\left| {F\left( {s}_{a}\right)  - F\left( {s}_{k + 1}\right) }\right| }{T}},\text{ if otherwise } \end{array}\right.
@@ -368,13 +539,20 @@ ${}^{6}$ Basing change in temperature on the number of accept-iterations is an a
 
 ---
 
-TABLE 10.8 Minimization of $F\left( x\right)$ in Figure 10.1 Using SA Heuristic with Schedule ${T}_{0} = {.5F}\left( {x}_{0}\right) ,{T}_{i} = {.5}{T}_{i - 1}$ , $i = 1,2,3,\ldots$ and $t = 3$ Accept-Iterations
+TABLE 10.8 Minimization of $F\left( x\right)$ in Figure 10.1 Using SA Heuristic with Schedule ${T}_{0} = {.5F}\left( {x}_{0}\right) ,{T}_{i} = {.5}{T}_{i - 1}$ , $i = 1,2,3,\ldots$ and $t = 3$ Accept-Iterations ^tablesaexample
 
-<table><tr><td>Iteration $k$</td><td>${R}_{1k}$</td><td>${x}_{k}$</td><td>$F\left( {x}_{k}\right)$</td><td>$a$</td><td>$T$</td><td>$\Delta  = \left| {\text{ Change in }F}\right|$</td><td>${e}^{-\Delta /T}$</td><td>${R}_{2k}$</td><td>Decision</td><td>$N\left( {x}_{k}\right)$</td></tr><tr><td>(Start) 0</td><td></td><td>1</td><td>90</td><td>0</td><td>45.0</td><td></td><td></td><td></td><td></td><td>$\{ 2,3,4,5,6,7,8\}$</td></tr><tr><td>1</td><td>0.4128</td><td>4</td><td>80</td><td>1</td><td>45.0</td><td></td><td></td><td></td><td>Accept: $F\left( {x}_{1}\right)  < F\left( {x}_{0}\right)$</td><td>$\{ 1,2,3,5,6,7,8\}$</td></tr><tr><td>2</td><td>0.2039</td><td>2</td><td>60</td><td>2</td><td>45.0</td><td></td><td></td><td></td><td>Accept: $F\left( {x}_{2}\right)  < F\left( {x}_{1}\right)$</td><td>$\{ 1,3,4,5,6,7,8\}$</td></tr><tr><td>3</td><td>0.0861</td><td>1</td><td>90</td><td>2</td><td>45.0</td><td>$\left| {{60} - {90}}\right|  = {30}$</td><td>.5134</td><td>.5462</td><td>Reject: ${R}_{2k} > {e}^{-\Delta /T}$</td><td>Same as $N\left( {x}_{2}\right)$</td></tr><tr><td>4</td><td>0.5839</td><td>6</td><td>40</td><td></td><td>45.0</td><td></td><td></td><td></td><td>Accept: $F\left( {x}_{4}\right)  < F\left( {x}_{2}\right)$</td><td>$\{ 1,2,3,4,5,7,8\}$</td></tr><tr><td>(End) 5</td><td>0.5712</td><td>5</td><td>100</td><td></td><td>22.5</td><td>$\left| {{40} - {100}}\right|  = {60}$</td><td>.0695</td><td>.0197</td><td>Accept: ${R}_{2k} < {e}^{-\Delta /T}$</td><td>$\{ 1,2,3,4,6,7,8\}$</td></tr></table>
+| Iteration $k$ | ${R}_{1k}$ | ${x}_{k}$ | $F\left( {x}_{k}\right)$ | $a$ | $T$ | $\Delta  = \left| {\text{ Change in }F}\right|$ | ${e}^{-\Delta /T}$ | ${R}_{2k}$ | Decision | $N\left( {x}_{k}\right)$ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|
+| (Start) 0 |  | 1 | 90 | 0 | 45.0 |  |  |  |  | $\{ 2,3,4,5,6,7,8\}$ |
+| 1 | 0.4128 | 4 | 80 | 1 | 45.0 |  |  |  | Accept: $F\left( {x}_{1}\right)  < F\left( {x}_{0}\right)$ | $\{ 1,2,3,5,6,7,8\}$ |
+| 2 | 0.2039 | 2 | 60 | 2 | 45.0 |  |  |  | Accept: $F\left( {x}_{2}\right)  < F\left( {x}_{1}\right)$ | $\{ 1,3,4,5,6,7,8\}$ |
+| 3 | 0.0861 | 1 | 90 | 2 | 45.0 | $\left| {{60} - {90}}\right|  = {30}$ | .5134 | .5462 | Reject: ${R}_{2k} > {e}^{-\Delta /T}$ | Same as $N\left( {x}_{2}\right)$ |
+| 4 | 0.5839 | 6 | 40 |  | 45.0 |  |  |  | Accept: $F\left( {x}_{4}\right)  < F\left( {x}_{2}\right)$ | $\{ 1,2,3,4,5,7,8\}$ |
+| (End) 5 | 0.5712 | 5 | 100 |  | 22.5 | $\left| {{40} - {100}}\right|  = {60}$ | .0695 | .0197 | Accept: ${R}_{2k} < {e}^{-\Delta /T}$ | $\{ 1,2,3,4,6,7,8\}$ |
 
 Search best solution: $x = 6$ with $F\left( 6\right)  = {40}$ .
 
-## Example 10.3-3 (Minimization of a Single-Variable Function)
+## Example 10.3-3 (Minimization of a Single-Variable Function) ^saexamplea
 
 This example applies SA to find the minimum of the single-variable function in Figure 10.1.
 
@@ -382,7 +560,7 @@ Table 10.8 provides five iterations. The solution arbitrarily defines the neighb
 
 To illustrate the computations, the search arbitrarily selects ${x}_{0} = 1$ with $t = 3$ accept-iterations and sets ${r}_{i} = {.5}$ for all $i \geq  0$ . Thus, $N\left( {x}_{0}\right)  = \{ 2,3,4,5,6,7,8\} , F\left( 1\right)  = {90}$ , and ${T}_{0} = {.5F}\left( 1\right)  = {45}$ . For $k = 1$ , the random number ${R}_{11} = {.4128}$ selects the (possible) next-solution point ${x}_{1} = 4$ from $N\left( {x}_{0}\right)$ with $F\left( 4\right)  = {80}$ . Because $F\left( {x}_{1}\right)$ is better than $F\left( {x}_{0}\right)$ , we accept the move. At iteration 2, we set $a = 1$ with $F\left( {x}_{a}\right)  = {80}$ . The next move ${x}_{2} = 2$ is selected from $N\left( {x}_{1}\right)  = \{ 1,2,3,5,6,7,8\}$ using ${R}_{12} = {.2039}$ . The move is again accepted because it improves the solution from $F\left( {x}_{1}\right)  = {80}$ to $F\left( {x}_{2}\right)  = {60}$ . This sets $a = 2$ with $F\left( {x}_{a}\right)  = {60}$ . At iteration $3,{R}_{13} = {.0861}$ selects ${x}_{3} = 1$ from $N\left( {x}_{2}\right)  = \{ 1,3,4,5,6,7,8\}$ with $F\left( {x}_{3}\right)  = {90}$ . The new solution is inferior to $F\left( {x}_{a}\right)  = {60}$ . Thus, $\Delta  = \left| {{60} - {90}}\right|  = {30}$ , and ${e}^{-\Delta /T} = {.5134}$ . Given ${R}_{23} = {.5462}$ , the solution ${x}_{3} = 1$ is rejected, which requires re-sampling from the last accept-neighborhood $N\left( {x}_{2}\right)$ . At iteration $4,{x}_{4} = 6$ is accepted because it yields an improved solution (relative to that of iteration 2). At this point, the condition $t = 3$ is satisfied, which changes the temperature to ${T}_{1} = {.5},{T}_{0} = {22.5}$ at the next iteration. At iteration 5, given ${x}_{5} = 5,{R}_{25}\left( { = {.0197}}\right)  < {e}^{-\Delta /\mathrm{T}}\left( { = {.0695}}\right)$ accepts the move even though it is an inferior solution $\left\lbrack  {F\left( 5\right)  = {100}}\right\rbrack$ .
 
-## Example 10.3-4 (Job Sequencing)
+## Example 10.3-4 (Job Sequencing) ^saexampleb
 
 ---
 
@@ -408,13 +586,18 @@ scheduling problem.
 
 ---
 
-TABLE 10.9 Data for the Job Sequencing Problem of Example 10.3-4
+TABLE 10.9 Data for the Job Sequencing Problem of Example 10.3-4 ^tablejobsdatab
 
-<table><tr><td>Job, $j$</td><td>Processing time in days, ${D}_{j}$</td><td>Due date, ${d}_{j}$</td><td>Holding cost, ${h}_{j}$ (\$/day)</td><td>Penalty cost, ${p}_{i}$ (\$/day)</td></tr><tr><td>1</td><td>10</td><td>15</td><td>3</td><td>10</td></tr><tr><td>2</td><td>8</td><td>20</td><td>2</td><td>22</td></tr><tr><td>3</td><td>6</td><td>10</td><td>5</td><td>10</td></tr><tr><td>4</td><td>7</td><td>30</td><td>4</td><td>8</td></tr></table>
+| Job, $j$ | Processing time in days, ${D}_{j}$ | Due date, ${d}_{j}$ | Holding cost, ${h}_{j}$ (\$/day) | Penalty cost, ${p}_{i}$ (\$/day) |
+|---:|---:|---:|---:|---:|
+| 1 | 10 | 15 | 3 | 10 |
+| 2 | 8 | 20 | 2 | 22 |
+| 3 | 6 | 10 | 5 | 10 |
+| 4 | 7 | 30 | 4 | 8 |
 
 Table 10.10 provides five SA iterations. Iteration 3 gives the best sequence. Note that when a sequence is rejected at iteration $k$ , we reuse the neighborhood of the last accept-iteration to randomly select the sequence for iteration $k + 1$ . This occurs at iteration 2, where the neighborhood remains the same as at iteration 1 . Note also that the $t = 3$ is satisfied at iteration 4, causing temperature change from 83.5 to 41.75 at iteration 5.
 
-## Summary of Simulated Annealing Algorithm
+## Summary of Simulated Annealing Algorithm ^sasummary
 
 Step 0: Select a starting solution ${s}_{0}{\varepsilon S}$ . Set $k = 0, p = 0$ , and $i = 0$ .
 
@@ -424,17 +607,24 @@ Step 2: Determine the solution ${s}_{k + 1}$ randomly from $N\left( {s}_{k}\righ
 
 Step 3: If a termination condition is reached, stop. Otherwise, set $k = k + 1$ . If $p = t$ , then set $i = i + 1$ . Go to step 1 .
 
-TABLE 10.10 SA Applied to the Job Sequencing Problem with Schedule ${T}_{0} = {.5}{c}_{0},{T}_{i} = {.5}{T}_{i - 1}$ , $i = 1,2,3,\ldots$ and $t = 3$ Accept-Iterations
+TABLE 10.10 SA Applied to the Job Sequencing Problem with Schedule ${T}_{0} = {.5}{c}_{0},{T}_{i} = {.5}{T}_{i - 1}$ , $i = 1,2,3,\ldots$ and $t = 3$ Accept-Iterations ^tablesajobs
 
-<table><tr><td>Iteration $k$</td><td>Sequence ${s}_{k}$</td><td>Total cost ${c}_{k} =$ (holding) + (penalty)</td><td>${T}_{k}$</td><td>$z = \frac{\left| \text{ Change in cost }\right| }{{T}_{k}}$</td><td>${e}^{-z}$</td><td>${R}_{1k}$</td><td>Decision</td><td>${R}_{2k}$</td><td>Neighborhood, $N{\left( {s}_{k}\right) }^{ * }$</td></tr><tr><td>(Start) 0</td><td>(1-2-3-4)</td><td>$\left( {5 \times  3 + 2 \times  2}\right)  + ({14} \times  {10} \; + 1 \times  8) = {167}$</td><td>83.5</td><td></td><td></td><td></td><td></td><td>.5462</td><td>(2-1-3-4) <br> (1-3-2-4)✓ <br> (1-2-4-3)</td></tr><tr><td>1</td><td>(1-3-2-4)</td><td>$\left( {5 \times  3}\right)  + (6 \times  {10} + 4 \; \times  {22} + 1 \times  8) = {171}$</td><td>83.5</td><td>.0479</td><td>.9532</td><td>.5683</td><td>Accept: ${R}_{11} < {e}^{-z}$</td><td>.7431</td><td>(3-1-2-4) <br> (1-2-3-4) <br> (1-3-4-2)✓</td></tr><tr><td>2</td><td>(1-3-4-2)</td><td>$\left( {5 \times  3 + 7 \times  4}\right)  + (6 \times  {10} \; + {11} \times  {22}) = {345}$</td><td>83.5</td><td>2.083</td><td>.1244</td><td>.3459</td><td>Reject: ${R}_{12} > {e}^{-z}$</td><td>.1932</td><td>(3-1-2-4)✓ <br> (1-2-3-4) <br> (1-3-4-2)</td></tr><tr><td>3</td><td>(3-1-2-4)</td><td>$\left( {4 \times  5}\right)  + (1 \times  {10} + 4 \; \times  {22} + 1 \times  8) = {126}$</td><td>83.5</td><td></td><td></td><td></td><td>Accept: ${c}_{3} < {c}_{1}$</td><td>.6125</td><td>(1-3-2-4) (3-2-1-4)✓ (3-1-4-2)</td></tr><tr><td>4</td><td>(3-2-1-4)</td><td>$\left( {4 \times  5 + 6 \times  3}\right)  + (9 \times  {10} \; + 1 \times  8) = {130}$</td><td>83.5</td><td>.0479</td><td>.9532</td><td>.6412</td><td>Accept: ${R}_{14} < {e}^{-z}$</td><td>.2234</td><td>(2-3-1-4)✓ (3-1-2-4) (3-2-4-1)</td></tr><tr><td>(End) 5</td><td>(2-3-1-4)</td><td>$\left( {{12} \times  2}\right)  + (4 \times  {10} + 9 \; \times  {10} + 1 \times  8) = {162}$</td><td>41.75</td><td>.766</td><td>.4647</td><td>.5347</td><td>Reject: ${R}_{15} > {e}^{-z}$</td><td>.8127</td><td>(2-3-1-4) <br> (3-1-2-4) <br> (3-2-4-1)✓</td></tr></table>
+| Iteration $k$ | Sequence ${s}_{k}$ | Total cost ${c}_{k} =$ (holding) + (penalty) | ${T}_{k}$ | $z = \frac{\left| \text{ Change in cost }\right| }{{T}_{k}}$ | ${e}^{-z}$ | ${R}_{1k}$ | Decision | ${R}_{2k}$ | Neighborhood, $N{\left( {s}_{k}\right) }^{ * }$ |
+|---|---|---|---:|---:|---:|---:|---|---:|---|
+| (Start) 0 | (1-2-3-4) | $\left( {5 \times  3 + 2 \times  2}\right)  + ({14} \times  {10} \; + 1 \times  8) = {167}$ | 83.5 |  |  |  |  | .5462 | (2-1-3-4) (1-3-2-4)✓ (1-2-4-3) |
+| 1 | (1-3-2-4) | $\left( {5 \times  3}\right)  + (6 \times  {10} + 4 \; \times  {22} + 1 \times  8) = {171}$ | 83.5 | .0479 | .9532 | .5683 | Accept: ${R}_{11} < {e}^{-z}$ | .7431 | (3-1-2-4) (1-2-3-4) (1-3-4-2)✓ |
+| 2 | (1-3-4-2) | $\left( {5 \times  3 + 7 \times  4}\right)  + (6 \times  {10} \; + {11} \times  {22}) = {345}$ | 83.5 | 2.083 | .1244 | .3459 | Reject: ${R}_{12} > {e}^{-z}$ | .1932 | (3-1-2-4)✓ (1-2-3-4) (1-3-4-2) |
+| 3 | (3-1-2-4) | $\left( {4 \times  5}\right)  + (1 \times  {10} + 4 \; \times  {22} + 1 \times  8) = {126}$ | 83.5 |  |  |  | Accept: ${c}_{3} < {c}_{1}$ | .6125 | (1-3-2-4) (3-2-1-4)✓ (3-1-4-2) |
+| 4 | (3-2-1-4) | $\left( {4 \times  5 + 6 \times  3}\right)  + (9 \times  {10} \; + 1 \times  8) = {130}$ | 83.5 | .0479 | .9532 | .6412 | Accept: ${R}_{14} < {e}^{-z}$ | .2234 | (2-3-1-4)✓ (3-1-2-4) (3-2-4-1) |
+| (End) 5 | (2-3-1-4) | $\left( {{12} \times  2}\right)  + (4 \times  {10} + 9 \; \times  {10} + 1 \times  8) = {162}$ | 41.75 | .766 | .4647 | .5347 | Reject: ${R}_{15} > {e}^{-z}$ | .8127 | (2-3-1-4) (3-1-2-4) (3-2-4-1)✓ |
 
 Best search solution: (3-1-2-4) with cost 126 at iteration 3.
 
 *Check mark $\checkmark$ indicates the sequence selected using random number ${R}_{2k}$ .
 
-#### 10.3.3 Genetic Algorithm
+#### 10.3.3 Genetic Algorithm ^gasection
 
-The genetic algorithm (GA) mimics the biological evolution process of "survival of the fittest." Each feasible solution of a problem is regarded as a chromosome encoded by a set of genes. The most common gene codes are binary $\left( {0,1}\right)$ and numeric $\left( {0,1,2,\ldots }\right)$ . For example, the chromosomes of a single variable whose feasible values are $0,1,\ldots$ , and 8 can be represented by the binary codes $\left( {{0000},{1000},{0100},{1100},{0010},{1010},{0110},{1110},}\right)$ and 0001). The chromosomes for a two-variable problem $\left( {{x}_{1},{x}_{2}}\right)$ with ${x}_{1} = \{ 0,1\}$ and ${x}_{2} = \{ 0,1,2,3\}$ can be represented by the numeric codes $\left( {0,0}\right) ,\left( {0,1}\right) ,\left( {0,2}\right) ,\left( {0,3}\right) ,\left( {1,0}\right)$ , $\left( {1,1}\right) ,\left( {1,2}\right)$ , and $\left( {1,3}\right)$ . The multivariable numeric codes may also be represented as binary codes. For example, the binary code of $\left( {{x}_{1},{x}_{2}}\right)  = \left( {0,3}\right)$ is $\left( {{000},{110}}\right)$ . There are other coding schemes, including node code for network models (see Beasley and Associates, 1993, Part 2).
+The genetic algorithm (GA) mimics the biological evolution process of "survival of the fittest." Each feasible solution of a problem is regarded as a chromosome encoded by a set of genes. The most common gene codes are binary $\left( {0,1}\right)$ and numeric $\left( {0,1,2,\ldots }\right)$ . For example, the chromosomes of a single variable whose feasible values are $0,1,\ldots$ , and 8 can be represented by the binary codes $\left( {{0000},{1000},{0100},{1100},{0010},{1010},{0110},{1110},}\right)$ and 0001). The chromosomes for a two-variable problem $\left( {{x}_{1},{x}_{2}}\right)$ with ${x}_{1} = \{ 0,1\}$ and ${x}_{2} = \{ 0,1,2,3\}$ can be represented by the numeric codes $\left( {0,0}\right) ,\left( {0,1}\right) ,\left( {0,2}\right) ,\left( {0,3}\right) ,\left( {1,0}\right)$ , $\left( {1,1}\right) ,\left( {1,2}\right)$ , and $\left( {1,3}\right)$ . The multivariable numeric codes may also be represented as binary codes. For example, the binary code of $\left( {{x}_{1},{x}_{2}}\right)  = \left( {0,3}\right)$ is $\left( {{000},{110}}\right)$ . There are other coding schemes, including node code for network models (see Beasley and Associates, 1993, Part 2). ^gageneral
 
 A set of $N$ feasible solutions is referred to as a population with $N$ chromosomes. The fitness of a chromosome is measured in terms of an appropriate objective function. A more fit chromosome yields a better value of the objective function.
 
@@ -442,7 +632,7 @@ The overall idea of GA is to select two parents from a population. The genes of 
 
 The actual implementation of GA requires additional problem-specific details. Also, the rules for selecting parents and creating children may vary. For example, the parents may be selected totally randomly from a population, or they may consist of the two fittest chromosomes. Some of these details will be provided later.
 
-## Example 10.3-5 (Minimization of a Single-Variable Function)
+## Example 10.3-5 (Minimization of a Single-Variable Function) ^gaexamplea
 
 The GA is applied to the single-variable discrete problem in Figure 10.1 with the feasible domain $X = \{ 1,2,3,4,5,6,7,8\}$ . We will arbitrarily specify a population of size $N = 4$ parents whose chromosomes are determined from $X$ using uniform random sampling.
 
@@ -450,15 +640,23 @@ The random number $R$ is applied to the uniform distribution in Table 10.11 to g
 
 Two parents can be selected from the initial population ${X}_{0} = \{ 8,3,5,1\}$ in a number of ways: (1) Select the two fittest members. (2) Select the fittest member and then a random one from the remaining members. (3) Select two parents randomly from ${X}_{0}$ . In this presentation, we use the third option. Specifically, the two random numbers ${R}_{1} = {.2869}$ and ${R}_{2} = {.0281}$ yield $x = 3$ with $F\left( 3\right)  = {50}$ and $x = 8$ with $F\left( 8\right)  = {70}$ .
 
-The two children are created from the two selected parents by using genes crossover. There are several methods for implementing the crossover.
+The two children are created from the two selected parents by using genes crossover. There are several methods for implementing the crossover. ^gacrossover
 
-TABLE 10.11 Uniform Random Sampling from the Domain $X = \{ x = 1,2,3,4,5,6,7,8\}$
+TABLE 10.11 Uniform Random Sampling from the Domain $X = \{ x = 1,2,3,4,5,6,7,8\}$ ^tablesampling
 
-<table><tr><td>$x$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr><tr><td>Cumulative probability, $P\left( x\right)$</td><td>.125</td><td>.250</td><td>.375</td><td>.500</td><td>.625</td><td>.750</td><td>.875</td><td>1.</td></tr></table>
+| $x$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Cumulative probability, $P\left( x\right)$ | .125 | .250 | .375 | .500 | .625 | .750 | .875 | 1. |
 
-TABLE 10.12 Generation of the Starting Population with $N = 4$
+TABLE 10.12 Generation of the Starting Population with $N = 4$ ^tablepopulation
 
-<table><tr><td>$i$</td><td>${R}_{i}$</td><td>${x}_{i}$</td><td>Binary-coded ${x}_{i}$</td><td>$F\left( {x}_{i}\right)$</td></tr><tr><td>1</td><td>.3025</td><td>3</td><td>1100</td><td>50</td></tr><tr><td>2</td><td>.9842</td><td>8</td><td>0001</td><td>70</td></tr><tr><td>3</td><td>.5839</td><td>5</td><td>1010</td><td>100</td></tr><tr><td>4</td><td>.5712</td><td>5</td><td>Discard</td><td></td></tr><tr><td>5</td><td>.0926</td><td>1</td><td>1000</td><td>90</td></tr></table>
+| $i$ | ${R}_{i}$ | ${x}_{i}$ | Binary-coded ${x}_{i}$ | $F\left( {x}_{i}\right)$ |
+|---:|---:|---:|---|---:|
+| 1 | .3025 | 3 | 1100 | 50 |
+| 2 | .9842 | 8 | 0001 | 70 |
+| 3 | .5839 | 5 | 1010 | 100 |
+| 4 | .5712 | 5 | Discard |  |
+| 5 | .0926 | 1 | 1000 | 90 |
 
 1. Uniform crossover. In this rule, parents' common genes apply to both children. The remaining genes for one child are determined randomly, with the other child getting the complement gene.
 
@@ -488,13 +686,13 @@ $$
 \mathrm{C}2 = \left( \begin{array}{llll} 0 & 1 & 0 & 1 \end{array}\right) \left( {\text{ or }x = {10}}\right)
 $$
 
-Child 2 corresponds to an infeasible solution (recall that the feasible range is $x = 1,2,\ldots ,8$ ). However, before discarding a child infeasible solution, we first apply random mutation (replacing one gene with another) and then check the mutated offspring for feasibility. If infeasibility persists, totally new offspring must be created (from the same parents). The process can be repeated as necessary until feasibility is achieved.
+Child 2 corresponds to an infeasible solution (recall that the feasible range is $x = 1,2,\ldots ,8$ ). However, before discarding a child infeasible solution, we first apply random mutation (replacing one gene with another) and then check the mutated offspring for feasibility. If infeasibility persists, totally new offspring must be created (from the same parents). The process can be repeated as necessary until feasibility is achieved. ^gamutation
 
 The probability of mutation is usually about .1, meaning a gene is mutated if $0 \leq  R < {.1}$ . For child 1, the random number sequence .6901, .7698, .0871, .9534 shows that the third gene only is mutated from 0 to 1, yielding $\mathrm{C}1 = \left( \begin{array}{llll} 1 & 0 & 1 & 0 \end{array}\right)$ [or $x = 5$ with $\left. {F\left( 5\right)  = {100}}\right\rbrack$ . For Child 2, the sequence.5954,.2632,.6731,.0983mutates gene 4 and yields $\mathrm{C}2 = \left( \begin{array}{llll} 0 & 1 & 0 & \mathbf{0} \end{array}\right)$ [or $x = 2$ with $F\left( 2\right)  = {60}\rbrack$ . Both child chromosomes are feasible, but neither yields a better solution. Hence, the solution ${x}^{ * } = 3$ of the initial population continues to be the best so far.
 
 The least-fit parents in ${X}_{0}\left( {x = 5\text{ and }x = 1}\right)$ are now replaced with the two offspring solutions $\left( {x = 5\text{ and }x = 2}\right)$ . This, in effect, says that the next population is ${X}_{1} = \left( {8,3,5,2}\right)$ . We now use ${X}_{1}$ to start a new iteration.
 
-Dealing with continuous variables. The genetic coding in Example 10.3-5 assumes that the variable $x$ is integer. The coding can be modified to include continuous variables in the following manner: Specify a finite (preferably tight) feasible range of the form $l \leq  x \leq  u$ , where $l$ and $u$ are constants. Let $v$ represent the numeric value of a binary string $s$ of length $n$ bits. The string $s$ is then translated to a real (continuous) value by using
+Dealing with continuous variables. The genetic coding in Example 10.3-5 assumes that the variable $x$ is integer. The coding can be modified to include continuous variables in the following manner: Specify a finite (preferably tight) feasible range of the form $l \leq  x \leq  u$ , where $l$ and $u$ are constants. Let $v$ represent the numeric value of a binary string $s$ of length $n$ bits. The string $s$ is then translated to a real (continuous) value by using ^gacontinuous
 
 $$
 x = l + \left( {u - l}\right) \left( \frac{v}{{2}^{n} - 1}\right)
@@ -510,7 +708,7 @@ The design of the code indicates that larger values of $n$ yield better accuracy
 
 The $n$ -bit strings representing $v$ are used in the same manner as given in Example 10.3-5. This means that children are created through crossover and mutation of the parents' genes. Indeed, a multivariable situation is handled in a similar manner with each variable represented by an independent $n$ -bit string.
 
-## Example 10.3-6 (Job Sequencing)
+## Example 10.3-6 (Job Sequencing) ^gaexampleb
 
 This problem was solved in Example 10.3-2 using TS and in Example 10.3-4 using SA. We repeat the problem statement here for convenience (a fifth job is added to render the example more viable). Jobs are sequenced on a single machine. Each job $j$ has a processing time ${t}_{j}$ and a due date ${d}_{j}$ . If job $j$ is completed earlier than its due date, a holding cost ${h}_{j}$ per unit time is incurred. A tardy job $j$ results in a penalty cost ${p}_{j}$ per unit time. Table 10.13 provides the data for a 5-job scheduling problem.
 
@@ -522,9 +720,15 @@ $N\left( {s}_{k}\right)  =$ Neighborhood sequences of ${s}_{k}$
 
 ${z}_{k} =$ Total cost (holding + penalty) of sequence ${s}_{k}$
 
-TABLE 10.13 Data for a Single-Machine 5-Job Sequencing Problem
+TABLE 10.13 Data for a Single-Machine 5-Job Sequencing Problem ^tablejobsdatac
 
-<table><tr><td>Job, $j$</td><td>Processing time in days, ${T}_{i}$</td><td>Due date, ${d}_{j}$</td><td>Holding cost, ${h}_{j}\left( {\$ /\text{ day }}\right)$</td><td>Penalty cost, ${p}_{j}\left( {\$ /\text{ day }}\right)$</td></tr><tr><td>1</td><td>10</td><td>15</td><td>3</td><td>10</td></tr><tr><td>2</td><td>8</td><td>20</td><td>2</td><td>22</td></tr><tr><td>3</td><td>6</td><td>10</td><td>5</td><td>10</td></tr><tr><td>4</td><td>7</td><td>30</td><td>4</td><td>8</td></tr><tr><td>5</td><td>4</td><td>12</td><td>6</td><td>15</td></tr></table>
+| Job, $j$ | Processing time in days, ${T}_{i}$ | Due date, ${d}_{j}$ | Holding cost, ${h}_{j}\left( {\$ /\text{ day }}\right)$ | Penalty cost, ${p}_{j}\left( {\$ /\text{ day }}\right)$ |
+|---:|---:|---:|---:|---:|
+| 1 | 10 | 15 | 3 | 10 |
+| 2 | 8 | 20 | 2 | 22 |
+| 3 | 6 | 10 | 5 | 10 |
+| 4 | 7 | 30 | 4 | 8 |
+| 5 | 4 | 12 | 6 | 15 |
 
 ${s}^{ * } =$ Best sequence available during the search
 
@@ -532,7 +736,7 @@ ${z}^{ * } =$ Total cost associated with ${s}^{ * }$
 
 The first task is to develop the genetic code of the chromosomes. Although binary coding can be used in the job sequencing problem (see, e.g., Yamada and Nakano, 1997), the resulting algorithm is complex because the crossover and mutation operations may result in infeasible schedules that must be "repaired." Thus, instead of using a binary code, the nature of the problem allows representing a chromosome as a job sequence (e.g., 1-2-5-3-4).
 
-To show how children are created, consider parents chromosomes $\mathrm{P}1 = 1 - 3 - 5 - 2 - 4$ and P2 = 5-4-2-3-1. Suppose that a random 1-point crossover occurs at gene 3. The first two genes of C1(C2) are constructed by swapping the first two genes of P1(P2). The last three genes are the ones remaining from P1(P2) after excluding the first two genes - that is,
+To show how children are created, consider parents chromosomes $\mathrm{P}1 = 1 - 3 - 5 - 2 - 4$ and P2 = 5-4-2-3-1. Suppose that a random 1-point crossover occurs at gene 3. The first two genes of C1(C2) are constructed by swapping the first two genes of P1(P2). The last three genes are the ones remaining from P1(P2) after excluding the first two genes - that is, ^gajobencoding
 
 First 2 genes of $\mathrm{C}1 = \{ 5,4\}$
 
@@ -548,7 +752,7 @@ Next, mutations of C1 and C2 are carried out in the following manner: If random 
 
 Table 10.14 summarizes the calculations for iterations 0 to 3. For convenience, the cost calculations (values of $z$ ) are automated using the spreadsheet excelJobSequencing.xls. The best sequence is associated with P4 in iteration 3.
 
-## Summary of Genetic Algorithm
+## Summary of Genetic Algorithm ^gasummary
 
 ## Step 0:
 
@@ -570,13 +774,44 @@ Table 10.14 summarizes the calculations for iterations 0 to 3. For convenience, 
 
 Step 2: If a termination condition has been reached, stop; ${s}^{ * }$ is the best available solution. Else, repeat step 1.
 
-TABLE 10.14 GA Iterations Applied to the Job Sequencing Problem of Example 10.3-6
+TABLE 10.14 GA Iterations Applied to the Job Sequencing Problem of Example 10.3-6 ^tablegajobs
 
-<table><tr><td>Iteration</td><td></td><td>Sequence, $s$</td><td>$z$</td><td>Explanation</td></tr><tr><td rowspan="8">0</td><td>P1</td><td>1-2-3-4-5</td><td>512</td><td>Initial random population (P1, P2, P3, P4).</td></tr><tr><td>P2</td><td>2-3-4-1-5</td><td>605</td><td>Chosen parents are P4 (best $z$ ) and P3 (random).</td></tr><tr><td>P3</td><td>4-1-5-2-3</td><td>695</td><td rowspan="2">Crossover P3 and P4 starting at position 3.</td></tr><tr><td>P4</td><td>3-2-1-4-5</td><td>475</td></tr><tr><td>C1</td><td>3-2-4-1-5</td><td>573</td><td>Mutate C1 by exchanging positions 2 and 5.</td></tr><tr><td>C2</td><td>4-1-3-2-5</td><td>829</td><td rowspan="3">Mutate C2 by exchanging positions 1 and 5.</td></tr><tr><td>mC1</td><td>3-5-4-1-2</td><td>534</td></tr><tr><td>mC2</td><td>5-1-3-2-4</td><td>367</td></tr><tr><td rowspan="8">1</td><td>P1</td><td>1-2-3-4-5</td><td>512</td><td>Worst parents P2 and P3 in iteration 0 are replaced</td></tr><tr><td>P2</td><td>3-5-4-1-2</td><td>534</td><td>with their mC1 and mC2.</td></tr><tr><td>P3</td><td>5-1-3-2-4</td><td>367</td><td>Chosen parents are P3 (best $z$ ) and P1 (random).</td></tr><tr><td>P4</td><td>3-2-1-4-5</td><td>475</td><td>Crossover P1 and P3 starting at position 4.</td></tr><tr><td>C1</td><td>5-1-3-2-4</td><td>367</td><td>Mutate C1 by exchanging positions 2 and 3.</td></tr><tr><td>C2</td><td>1-2-3-5-4</td><td>439</td><td>Mutate C2 by exchanging positions 2 and 4.</td></tr><tr><td>mC1</td><td>5-3-1-2-4</td><td>314</td><td></td></tr><tr><td>mC2</td><td>1-5-3-2-4</td><td>361</td><td></td></tr><tr><td rowspan="8">2</td><td>P1</td><td>5-3-1-2-4</td><td>314</td><td>Worst parents P1 and P2 in iteration 1 are replaced</td></tr><tr><td>P2</td><td>1-5-3-2-4</td><td>361</td><td>with their mC1 and mC2.</td></tr><tr><td>P3</td><td>5-1-3-2-4</td><td>367</td><td>Chosen parents are P1 (best $z$ ) and P4 (random).</td></tr><tr><td>P4</td><td>3-2-1-4-5</td><td>475</td><td>Crossover P1 and P4 starting at position 3.</td></tr><tr><td>C1</td><td>3-2-5-1-4</td><td>292</td><td>Mutate C1 by exchanging positions 1 and 2.</td></tr><tr><td>C2</td><td>5-3-2-1-4</td><td>222</td><td>No mutation in C2.</td></tr><tr><td>mC1</td><td>2-3-5-1-4</td><td>324</td><td></td></tr><tr><td>mC2</td><td>5-3-2-1-4</td><td>222</td><td></td></tr><tr><td rowspan="6">3</td><td>P1</td><td>5-3-1-2-4</td><td>314</td><td>Worst parents P3 and P4 in iteration 2 are replaced</td></tr><tr><td>P2</td><td>1-5-3-2-4</td><td>361</td><td>with their mC1 and mC2.</td></tr><tr><td>P3</td><td>2-3-5-1-4</td><td>324</td><td>Chosen parents are P4 (best $z$ ) and P2 (random).</td></tr><tr><td>P4</td><td>5-3-2-1-4</td><td>222</td><td>Crossover P2 and P4 starting at position 3.</td></tr><tr><td>C1</td><td>5-3-1-2-4</td><td>314</td><td>No mutation.</td></tr><tr><td>C2</td><td>1-5-3-2-4</td><td>361</td><td>No mutation.</td></tr></table>
+| Iteration | Chromosome | Sequence, $s$ | $z$ | Explanation |
+|---:|---|---|---:|---|
+| 0 | P1 | 1-2-3-4-5 | 512 | Initial random population (P1, P2, P3, P4). |
+| 0 | P2 | 2-3-4-1-5 | 605 | Chosen parents are P4 (best $z$ ) and P3 (random). |
+| 0 | P3 | 4-1-5-2-3 | 695 | Crossover P3 and P4 starting at position 3. |
+| 0 | P4 | 3-2-1-4-5 | 475 |  |
+| 0 | C1 | 3-2-4-1-5 | 573 | Mutate C1 by exchanging positions 2 and 5. |
+| 0 | C2 | 4-1-3-2-5 | 829 | Mutate C2 by exchanging positions 1 and 5. |
+| 0 | mC1 | 3-5-4-1-2 | 534 |  |
+| 0 | mC2 | 5-1-3-2-4 | 367 |  |
+| 1 | P1 | 1-2-3-4-5 | 512 | Worst parents P2 and P3 in iteration 0 are replaced |
+| 1 | P2 | 3-5-4-1-2 | 534 | with their mC1 and mC2. |
+| 1 | P3 | 5-1-3-2-4 | 367 | Chosen parents are P3 (best $z$ ) and P1 (random). |
+| 1 | P4 | 3-2-1-4-5 | 475 | Crossover P1 and P3 starting at position 4. |
+| 1 | C1 | 5-1-3-2-4 | 367 | Mutate C1 by exchanging positions 2 and 3. |
+| 1 | C2 | 1-2-3-5-4 | 439 | Mutate C2 by exchanging positions 2 and 4. |
+| 1 | mC1 | 5-3-1-2-4 | 314 |  |
+| 1 | mC2 | 1-5-3-2-4 | 361 |  |
+| 2 | P1 | 5-3-1-2-4 | 314 | Worst parents P1 and P2 in iteration 1 are replaced |
+| 2 | P2 | 1-5-3-2-4 | 361 | with their mC1 and mC2. |
+| 2 | P3 | 5-1-3-2-4 | 367 | Chosen parents are P1 (best $z$ ) and P4 (random). |
+| 2 | P4 | 3-2-1-4-5 | 475 | Crossover P1 and P4 starting at position 3. |
+| 2 | C1 | 3-2-5-1-4 | 292 | Mutate C1 by exchanging positions 1 and 2. |
+| 2 | C2 | 5-3-2-1-4 | 222 | No mutation in C2. |
+| 2 | mC1 | 2-3-5-1-4 | 324 |  |
+| 2 | mC2 | 5-3-2-1-4 | 222 |  |
+| 3 | P1 | 5-3-1-2-4 | 314 | Worst parents P3 and P4 in iteration 2 are replaced |
+| 3 | P2 | 1-5-3-2-4 | 361 | with their mC1 and mC2. |
+| 3 | P3 | 2-3-5-1-4 | 324 | Chosen parents are P4 (best $z$ ) and P2 (random). |
+| 3 | P4 | 5-3-2-1-4 | 222 | Crossover P2 and P4 starting at position 3. |
+| 3 | C1 | 5-3-1-2-4 | 314 | No mutation. |
+| 3 | C2 | 1-5-3-2-4 | 361 | No mutation. |
 
-### 10.4 APPLICATION OF METAHEURISTICS TO INTEGER LINEAR PROGRAMS
+### 10.4 APPLICATION OF METAHEURISTICS TO INTEGER LINEAR PROGRAMS ^ilpsection
 
-This section shows how the metaheuristics developed in Section 10.3 are applied to the following general integer linear programs (ILPs):
+This section shows how the metaheuristics developed in Section 10.3 are applied to the following general integer linear programs (ILPs): ^ilpmodel
 
 $$
 \text{ Maximize }z = \mathop{\sum }\limits_{{j = 1}}^{n}{c}_{j}{x}_{j}
@@ -598,9 +833,9 @@ $$
 
 The basic elements of an ILP metaheuristic include selection of the starting solution, definition of the neighborhood, and determination of the next search move.
 
-1. Selection of starting solution. The metaheuristics use the rounded continuous optimum solution as the starting solution. In this chapter, the (arbitrary) rule for rounding is: Round up if the fractional value is greater than or equal to .5; else, round down.
+1. Selection of starting solution. The metaheuristics use the rounded continuous optimum solution as the starting solution. In this chapter, the (arbitrary) rule for rounding is: Round up if the fractional value is greater than or equal to .5; else, round down. ^ilpstart
 
-2. Definition of neighborhood. It is more manageable computationally to search the variables one at a time by defining the neighborhood for variable ${x}_{j}$ as
+2. Definition of neighborhood. It is more manageable computationally to search the variables one at a time by defining the neighborhood for variable ${x}_{j}$ as ^ilpneighborhood
 
 $$
 N\left( {x}_{j}\right)  = \left\{  {\left( {{x}_{1},\ldots {x}_{j} - 1,\ldots ,{x}_{n}}\right) ,\left( {{x}_{1},\ldots ,{x}_{j} + 1,\ldots ,{x}_{n}}\right) }\right\}
@@ -614,7 +849,7 @@ $$
 
 Infeasible solutions that violate lower or upper bounds are excluded from the neighborhood. For example, if ${x}_{4}$ is designated for change and $0 \leq  {x}_{4} \leq  \infty$ , then $N\left( {x}_{4}\right)  = \{ \left( {8,6,4, - \mathbf{1},2}\right) ,\left( {8,6,4,\mathbf{1},2}\right) \}  = \{ \left( {8,6,4,\mathbf{1},2}\right) \}$ , because ${x}_{4} =  - 1$ is infeasible.
 
-3. Determination of the next search move. The next search move is determined from a neighborhood as the solution $\mathbf{X} = \left( {{x}_{1},{x}_{2},\ldots ,{x}_{n}}\right)$ with the least infeasibility. ${}^{7}$ The infeasibility measure is computed as
+3. Determination of the next search move. The next search move is determined from a neighborhood as the solution $\mathbf{X} = \left( {{x}_{1},{x}_{2},\ldots ,{x}_{n}}\right)$ with the least infeasibility. ${}^{7}$ The infeasibility measure is computed as ^ilpinfeasibility
 
 $$
 {I}_{\mathbf{X}} = \mathop{\sum }\limits_{\left(  \leq  \right) }\max \left\{  {0,\mathop{\sum }\limits_{{j = 1}}^{n}{a}_{ij}{x}_{j} - {b}_{i}}\right\}   + \mathop{\sum }\limits_{\left(  \geq  \right) }\max \left\{  {0,{b}_{i} - \mathop{\sum }\limits_{{j = 1}}^{n}{a}_{ij}{x}_{j}}\right\}
@@ -628,7 +863,7 @@ If ${I}_{\mathbf{X}} = 0$ , then the next search move is feasible.
 
 The remainder of the section details the development of TS, SA, and GA ILP. ${}^{8}$ The ideas can be applied to any ILP and, indeed, can be extended to nonlinear programs.
 
-#### 10.4.1 ILP Tabu Algorithm
+#### 10.4.1 ILP Tabu Algorithm ^ilptabu
 
 The TS algorithm for an $n$ -variable ILP uses the following definitions:
 
@@ -678,7 +913,7 @@ The algorithm starts by setting $\mathbf{X}$ equal to the rounded optimum LP sol
 
 At iteration $t$ , the search computes the associated infeasibility measure ${I}_{j}^{t}\left( k\right)$ and the objective value ${z}_{j}^{t}\left( k\right)$ for all $j$ and $k$ . The algorithm keeps track of the candidate for the next move by updating the indices ${j}^{ * }$ and ${k}^{ * }$ . A better feasible solution automatically defines the next move. Otherwise, the non-tabu move with the least infeasibility measure is selected. If ${j}^{ * } = 0$ , all neighborhood solutions are tabu and the tabu list is emptied to allow the search to continue.
 
-## Example 10.4-1
+## Example 10.4-1 ^ilpexamplea
 
 The TS is applied to the following ILP:
 
@@ -712,9 +947,19 @@ The optimum continuous solution is ${x}_{1} = {4.625},{x}_{2} = 0,{x}_{3} = {14.
 
 Table 10.15 gives five iterations using a tabu tenure period $\tau  = 4$ iterations. An underlined index identifies a tabu variable. For example, ${x}_{1}\left( { = 4}\right)$ enters the tabu list at iteration 1, hence it is underlined. At iteration 5, the underline is removed because the tabu tenure period is $\tau  = 4$ .
 
-TABLE 10.15 Tabu Search of ILP Example with Tenure Period $\tau  = 4$
+TABLE 10.15 Tabu Search of ILP Example with Tenure Period $\tau  = 4$ ^tableilptabu
 
-<table><tr><td>Iteration</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${I}^{ * }$</td><td>$z$</td><td>${j}^{ * }$</td><td>${k}^{ * }$</td></tr><tr><td>LP optimum</td><td>4.625</td><td>0</td><td>14.625</td><td>14.5</td><td></td><td>82.125</td><td></td><td></td></tr><tr><td>Search start</td><td>5</td><td>0</td><td>15</td><td>15</td><td>2</td><td>85</td><td></td><td></td></tr><tr><td>1</td><td>4</td><td>0</td><td>15</td><td>15</td><td>1</td><td>83</td><td>1</td><td>-1</td></tr><tr><td>2</td><td>4</td><td>0</td><td>15</td><td>14</td><td>1</td><td>81</td><td>4</td><td>-1</td></tr><tr><td>(Best) 3</td><td>4</td><td>0</td><td>14</td><td>14</td><td>0</td><td>78</td><td>3</td><td>-1</td></tr><tr><td>(All-tabu list) 4</td><td>4</td><td>1</td><td>14</td><td>14</td><td>1</td><td>79</td><td>2</td><td>1</td></tr><tr><td>(Empty tabu list) 4a</td><td>4</td><td>1</td><td>14</td><td>14</td><td></td><td></td><td></td><td></td></tr><tr><td>(Repeat of iteration 3) 5</td><td>4</td><td>0</td><td>14</td><td>14</td><td>0</td><td>78</td><td>2</td><td>-1</td></tr><tr><td>(Restart, iteration 4) 5a</td><td>4</td><td>1</td><td>14</td><td>14</td><td></td><td></td><td></td><td></td></tr></table>
+| Iteration | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${I}^{ * }$ | $z$ | ${j}^{ * }$ | ${k}^{ * }$ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| LP optimum | 4.625 | 0 | 14.625 | 14.5 |  | 82.125 |  |  |
+| Search start | 5 | 0 | 15 | 15 | 2 | 85 |  |  |
+| 1 | 4 | 0 | 15 | 15 | 1 | 83 | 1 | -1 |
+| 2 | 4 | 0 | 15 | 14 | 1 | 81 | 4 | -1 |
+| (Best) 3 | 4 | 0 | 14 | 14 | 0 | 78 | 3 | -1 |
+| (All-tabu list) 4 | 4 | 1 | 14 | 14 | 1 | 79 | 2 | 1 |
+| (Empty tabu list) 4a | 4 | 1 | 14 | 14 |  |  |  |  |
+| (Repeat of iteration 3) 5 | 4 | 0 | 14 | 14 | 0 | 78 | 2 | -1 |
+| (Restart, iteration 4) 5a | 4 | 1 | 14 | 14 |  |  |  |  |
 
 The search encounters the first feasible solution at iteration 3 (which happens to be the best solution in all 5 iterations). At iteration 4, all the variables are tabu, and no neighborhood solution leads to a better solution. Thus, the tabu list is emptied, releasing all four variables and yielding the solution $\left( {4,1,{14},{14}}\right)$ as the start of future search. At iteration 5 the neighborhood ${x}_{2} = 0$ yields $I = 0$ and hence is selected (and underlined). However, the resulting solution $\left( {4,\underline{0},{14},{14}}\right)$ is a repeat of iteration 3 solution. Hence the next iteration will restart with iteration 4 solution $\left( {4,\underline{1},{14},{14}}\right)$ with ${x}_{2}$ tabooed to allow a different search move. In this case, iteration 6 will produce the new (minimum-infeasibility) solution $\left( {4,\underline{1},{14},\underline{13}}\right)$ with $z = {77}$ . (Try it!)
 
@@ -722,7 +967,7 @@ The search encounters the first feasible solution at iteration 3 (which happens 
 
 File excelTabu-IP-Heuristic.xls allows experimentation with small-size problems (up to 10 variables). The spreadsheet presentation is basically a learning tool designed to reinforce your understanding of the details of TS. Commercial TS algorithms include additional rules for solving very large problems.
 
-#### 10.4.2 ILP Simulated Annealing Algorithm
+#### 10.4.2 ILP Simulated Annealing Algorithm ^ilpsa
 
 In Section 10.4.1 dealing with TS, all the variables are examined before selecting the next search move. The same strategy can be used with SA. However, for the sake of variation, we will adopt a new strategy that calls for examining one randomly selected variable in each iteration.
 
@@ -776,7 +1021,7 @@ At the start of the algorithm, $\mathbf{X}$ is set equal to the rounded LP solut
 
 3. If ${\mathbf{X}}_{{j}^{ * }}^{t}\left( {k}^{ * }\right)$ is a no-worse feasible solution, allow it as the next move.
 
-4. If ${\mathbf{X}}_{{j}^{ * }}^{t}\left( {k}^{ * }\right)$ is an inferior feasible solution, accept it as the next move if
+4. If ${\mathbf{X}}_{{j}^{ * }}^{t}\left( {k}^{ * }\right)$ is an inferior feasible solution, accept it as the next move if ^ilpsaaccept
 
 $$
 R \leq  \exp \left( \frac{-\left| {{z}_{\text{ last }} - {z}_{{j}^{ * }}^{t}\left( {k}^{ * }\right) }\right| }{T}\right) \text{ . Otherwise, reject it. }
@@ -784,13 +1029,25 @@ $$
 
 Prior to the start of a new iteration, the temperature $T$ is reduced if $a = {a}^{ * }$ .
 
-## Example 10.4-2
+## Example 10.4-2 ^ilpexampleb
 
 We use the ILP defined in Example 10.4-1 starting with the rounded solution $\left( {{x}_{1} = 5,{x}_{2} = 0}\right.$ , ${x}_{3} = {15},{x}_{4} = {15})$ and the initial temperature ${T}_{0} = {.75} \times$ (LP optimum objective value) $= \; {.75}\left( {82.125}\right)  \approx  {62}$ . Temperature reduction is triggered every ${a}^{ * } = 2$ accept-iterations using a reduction ratio $r = {.5}$ . Table 10.16 summarizes 10 iterations. At each iteration, the randomly selected variable is labeled with an underline. For example, ${x}_{1}$ is the random selection at iteration 1 and ${x}_{4}$ at iteration 2. According to the rules of the algorithm, an infeasible nonredundant solution is allowed as a move toward achieving feasibility. This occurs at iterations 1, 2, and 4. Also, a move is always generated from the most recent allowed/accepted move. For example, the move at iteration 6 is generated from the allowed move at iteration 4 because the move at iteration 5 is rejected.
 
-TABLE 10.16 Simulated Annealing Applied to ILP of Example 10.4-1 with ${T}_{0} = {.75}$ (LP Objective Value), $r = {.5}$ , and ${a}^{ * } = 2$
+TABLE 10.16 Simulated Annealing Applied to ILP of Example 10.4-1 with ${T}_{0} = {.75}$ (LP Objective Value), $r = {.5}$ , and ${a}^{ * } = 2$ ^tableilpsa
 
-<table><tr><td>Iteration $t$</td><td>${x}_{1}$</td><td></td><td>${x}_{2}{x}_{3}$</td><td>${x}_{4}$</td><td>${I}^{ * }$</td><td>${z}_{{j}^{ * }}^{t}\left( {k}^{ * }\right)$</td><td>${z}_{\text{ last }}$</td><td>Temp $T$</td><td>$\exp \left( \frac{-\left| {{z}_{\text{ last }} - {z}_{{j}^{ * }}^{t}\left( {k}^{ * }\right) }\right| }{T}\right)$</td><td>$R$</td><td>Explanation</td></tr><tr><td>Search start</td><td>5</td><td>0</td><td>15</td><td>15</td><td>2</td><td>85</td><td>$- \infty$</td><td>62</td><td></td><td></td><td>Infeasible first trial solution</td></tr><tr><td>1</td><td>4</td><td>0</td><td>0 15</td><td>15</td><td>3</td><td>83</td><td>$- \infty$</td><td>62</td><td></td><td></td><td>Infeasible move: Allow</td></tr><tr><td>2</td><td>4</td><td>0</td><td>15</td><td>14</td><td>1</td><td>81</td><td>$- \infty$</td><td>62</td><td></td><td></td><td>Infeasible move: Allow</td></tr><tr><td>(Best) 3</td><td>4</td><td>0</td><td>14</td><td>14</td><td>0</td><td>78</td><td>$- \infty$</td><td>62</td><td></td><td></td><td>First feasible move: Accept</td></tr><tr><td>4</td><td>4</td><td>0</td><td>13</td><td>14</td><td>1</td><td>75</td><td>78</td><td>62</td><td></td><td></td><td>Infeasible move: Allow</td></tr><tr><td>5</td><td>4</td><td>0</td><td>14</td><td>14</td><td>0</td><td>78</td><td>78</td><td>62</td><td></td><td></td><td>Redundant: Reject</td></tr><tr><td>6</td><td>4</td><td>0</td><td>13</td><td>13</td><td>0</td><td>73</td><td>78</td><td>62</td><td>0.92</td><td>0.11</td><td>$R < \mathrm{P}\{$ accept $\}$ : Accept</td></tr><tr><td>7</td><td>4</td><td>1</td><td>13</td><td>13</td><td>0</td><td>74</td><td>73</td><td>31</td><td></td><td></td><td>${z}_{{i}^{ * }{k}^{ * }}^{t} > {z}_{\text{ last }}$ : Accept</td></tr><tr><td>8</td><td>4</td><td>1</td><td>13</td><td>12</td><td>0</td><td>72</td><td>74</td><td>31</td><td>0.94</td><td>0.93</td><td>$R < \mathrm{P}\{$ accept $\}$ : Accept</td></tr><tr><td>9</td><td>4</td><td>1</td><td>12</td><td>12</td><td>0</td><td>69</td><td>72</td><td>15.5</td><td>0.82</td><td>0.96</td><td>$R > \mathrm{P}\{$ accept $\}$ : Reject</td></tr><tr><td>10</td><td>4</td><td>0</td><td>13</td><td>12</td><td>0</td><td>71</td><td>72</td><td>15.5</td><td>0.94</td><td>0.38</td><td>$R < \mathrm{P}\{$ accept $\}  :$ Accept</td></tr></table>
+| Iteration $t$ | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${I}^{ * }$ | ${z}_{{j}^{ * }}^{t}\left( {k}^{ * }\right)$ | ${z}_{\text{ last }}$ | Temp $T$ | $\exp \left( \frac{-\left| {{z}_{\text{ last }} - {z}_{{j}^{ * }}^{t}\left( {k}^{ * }\right) }\right| }{T}\right)$ | $R$ | Explanation |
+|---|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|---|
+| Search start | 5 | 0 | 15 | 15 | 2 | 85 | $- \infty$ | 62 |  |  | Infeasible first trial solution |
+| 1 | 4 | 0 | 15 | 15 | 3 | 83 | $- \infty$ | 62 |  |  | Infeasible move: Allow |
+| 2 | 4 | 0 | 15 | 14 | 1 | 81 | $- \infty$ | 62 |  |  | Infeasible move: Allow |
+| (Best) 3 | 4 | 0 | 14 | 14 | 0 | 78 | $- \infty$ | 62 |  |  | First feasible move: Accept |
+| 4 | 4 | 0 | 13 | 14 | 1 | 75 | 78 | 62 |  |  | Infeasible move: Allow |
+| 5 | 4 | 0 | 14 | 14 | 0 | 78 | 78 | 62 |  |  | Redundant: Reject |
+| 6 | 4 | 0 | 13 | 13 | 0 | 73 | 78 | 62 | 0.92 | 0.11 | $R < \mathrm{P}\{$ accept $\}$ : Accept |
+| 7 | 4 | 1 | 13 | 13 | 0 | 74 | 73 | 31 |  |  | ${z}_{{i}^{ * }{k}^{ * }}^{t} > {z}_{\text{ last }}$ : Accept |
+| 8 | 4 | 1 | 13 | 12 | 0 | 72 | 74 | 31 | 0.94 | 0.93 | $R < \mathrm{P}\{$ accept $\}$ : Accept |
+| 9 | 4 | 1 | 12 | 12 | 0 | 69 | 72 | 15.5 | 0.82 | 0.96 | $R > \mathrm{P}\{$ accept $\}$ : Reject |
+| 10 | 4 | 0 | 13 | 12 | 0 | 71 | 72 | 15.5 | 0.94 | 0.38 | $R < \mathrm{P}\{$ accept $\}  :$ Accept |
 
 Best solution occurs at iteration 3.
 
@@ -800,13 +1057,17 @@ The move at iteration 3 is accepted because it is the first feasible solution en
 
 As in TS, file excelSA-IP-Heuristic.xls allows experimentation with small-size problems (number of variables $\leq  {10}$ ). The user can study the impact of changing the data in steps 2 and 3 on the efficacy of the algorithm. One of the immediate observations about the behavior of the algorithm is that the "frequency" of rejecting feasible solutions increases with the number of iterations, a typical behavior of SA.
 
-#### 10.4.3 ILP Genetic Algorithm
+#### 10.4.3 ILP Genetic Algorithm ^ilpga
 
 In Section 10.2.3, binary coding is used in the development of the GA. The same idea can be applied to ILP. For example, in a 3-variable problem, the solution $\left( {{x}_{1},{x}_{2},{x}_{3}}\right)  = \left( {{100},{24},{60}}\right)$ can be represented by the binary code in Table 10.17. In general, the number of binary bits is adjusted to represent the maximum value of any of the variables.
 
 A convenient way to represent the ILP variables is to use numeric coding. In this case, the rounded LP solution in an $n$ -variable problem is represented as $\overline{\mathbf{X}} = \left( {{\bar{x}}_{1},{\bar{x}}_{2},\ldots ,{\bar{x}}_{n}}\right)$ . The initial population chromosomes can be generated randomly from the range $\left( {{\bar{x}}_{j} - q{\bar{x}}_{j},{\bar{x}}_{j} + q{\bar{x}}_{j}}\right) ,0 < q < 1$ . The resulting limits of the range are adjusted if the bounds ${L}_{j} \leq  {x}_{j} \leq  {U}_{j}, j = 1,2,\ldots , n$ are tighter. A convenient way to determine the genes is to sample from the continuous search range and then approximate the result to an integer value.
 
-<table><tr><td>TABLE 10.17</td><td colspan="2">Binary Coding of $\left( {{x}_{\mathbf{1}},{x}_{\mathbf{2}},{x}_{\mathbf{3}}}\right)  = \left( {{100},{24},{60}}\right)$</td></tr><tr><td>${x}_{1} = {100}$</td><td>${x}_{2} = {24}$</td><td>${x}_{3} = {60}$</td></tr><tr><td>0010011</td><td>0001100</td><td>0011110</td></tr></table>
+TABLE 10.17 Binary Coding of $\left( {{x}_{\mathbf{1}},{x}_{\mathbf{2}},{x}_{\mathbf{3}}}\right)  = \left( {{100},{24},{60}}\right)$ ^tablebinary
+
+| ${x}_{1} = {100}$ | ${x}_{2} = {24}$ | ${x}_{3} = {60}$ |
+|---|---|---|
+| 0010011 | 0001100 | 0011110 |
 
 Table 10.18 demonstrates the idea of generating a population of three parent chromosomes starting with the solution $\left( {{x}_{1},{x}_{2},{x}_{3}}\right)  = \left( {{100},1,{60}}\right)$ with bounds $0 \leq  {x}_{1} \leq  {99},0 \leq  {x}_{2} \leq  \infty ,{50} \leq  {x}_{3} \leq  \infty$ , and using $q = {.2}$ . The genes of each parent are determined randomly from the respective (adjusted) ranges.
 
@@ -842,9 +1103,17 @@ ${i}^{ * } =$ Chromosome with the best objective value or the smallest infeasibi
 
 ${i}^{* * } =$ Chromosome with the worst infeasibility in the current population
 
-TABLE 10.18 Random Generation of Initial Population of 3 Parents Starting with Solution $\left( {{x}_{1},{x}_{2},{x}_{3}}\right)  = \left( {{100},1,{60}}\right)$
+TABLE 10.18 Random Generation of Initial Population of 3 Parents Starting with Solution $\left( {{x}_{1},{x}_{2},{x}_{3}}\right)  = \left( {{100},1,{60}}\right)$ ^tableranges
 
-<table><tr><td></td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td></tr><tr><td>Starting value</td><td>100</td><td>8</td><td>60</td></tr><tr><td>${L}_{j} \leq  {x}_{j} \leq  {U}_{j}$</td><td>$0 \leq  {x}_{1} \leq  {99}$</td><td>$0 \leq  {x}_{2} \leq  \infty$</td><td>${50} \leq  {x}_{3} \leq  \infty$</td></tr><tr><td>$\left( {{x}_{j} - q{x}_{j},{x}_{j} + q{x}_{j}}\right) , q = {.2}$</td><td>(80, 120)</td><td>(6.4, 9.6)</td><td>(48,72)</td></tr><tr><td>Adjusted search ranges</td><td>(80, 99)</td><td>(6, 10)</td><td>(50,72)</td></tr><tr><td>Parent 1</td><td>92</td><td>7</td><td>58</td></tr><tr><td>Parent 2</td><td>81</td><td>9</td><td>70</td></tr><tr><td>Parent 3</td><td>90</td><td>8</td><td>62</td></tr></table>
+|  | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ |
+|---|---|---|---|
+| Starting value | 100 | 8 | 60 |
+| ${L}_{j} \leq  {x}_{j} \leq  {U}_{j}$ | $0 \leq  {x}_{1} \leq  {99}$ | $0 \leq  {x}_{2} \leq  \infty$ | ${50} \leq  {x}_{3} \leq  \infty$ |
+| $\left( {{x}_{j} - q{x}_{j},{x}_{j} + q{x}_{j}}\right) , q = {.2}$ | (80, 120) | (6.4, 9.6) | (48,72) |
+| Adjusted search ranges | (80, 99) | (6, 10) | (50,72) |
+| Parent 1 | 92 | 7 | 58 |
+| Parent 2 | 81 | 9 | 70 |
+| Parent 3 | 90 | 8 | 62 |
 
 ${i}^{* *  * } =$ Chromosome with the next-worst infeasibility relative to ${i}^{* * }$
 
@@ -856,7 +1125,7 @@ $p =$ Mutation probability
 
 The GA metaheuristic starts with a population of $P$ chromosomes. The population is then examined for the best feasible solution. Such a solution, if it exists, identifies parent 1. If no feasible solution exists, the chromosome with the smallest infeasibility is used instead to identify parent 1. Parent 2 is then determined randomly from the remaining chromosomes (after excluding that of parent 1). Child 1 and child 2 are created from parent 1 and parent 2 (using crossovers or some other method) with random mutation. Next, child 1 and child 2 replace chromosomes ${i}^{* * }$ and ${i}^{* *  * }$ having the two worst infeasibilities.
 
-## Example 10.4-3
+## Example 10.4-3 ^ilpexamplec
 
 For the ILP in Example 10.4-1, Table 10.19 provides a starting population of 10 chromosomes generated randomly from the rounded LP solution $\left( {5,0,{15},{15}}\right)$ .
 
@@ -882,9 +1151,23 @@ $$
 
 Next, we apply mutation to each child. The probability of mutation of .1 calls for mutating a gene (to a new value in the search range) if $R < {.1}$ . As shown in the table, only (underlined) gene 4 of child 1 is mutated from 17 to 14 .
 
-TABLE 10.19 Starting Population of Size $p = {10}$ Generated from the Rounded LP Solution $\left( {5,0,{15},{15}}\right)$ with $q = {.2}, c = 1$ Crossover, and Mutation Probability .1
+TABLE 10.19 Starting Population of Size $p = {10}$ Generated from the Rounded LP Solution $\left( {5,0,{15},{15}}\right)$ with $q = {.2}, c = 1$ Crossover, and Mutation Probability .1 ^tableilpga
 
-<table><tr><td>Chromosome</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>$I$</td><td>$z$</td></tr><tr><td>1</td><td>4</td><td>1</td><td>16</td><td>15</td><td>3</td><td>87</td></tr><tr><td>(Parent 2) 2</td><td>5</td><td>0</td><td>15</td><td>17</td><td>5</td><td>89</td></tr><tr><td>3</td><td>6</td><td>1</td><td>17</td><td>12</td><td>9</td><td>88</td></tr><tr><td>4</td><td>4</td><td>0</td><td>12</td><td>14</td><td>3</td><td>72</td></tr><tr><td>(Parent 1) 5</td><td>4</td><td>0</td><td>15</td><td>16</td><td>2</td><td>85</td></tr><tr><td>6</td><td>5</td><td>1</td><td>12</td><td>13</td><td>4</td><td>73</td></tr><tr><td>7</td><td>6</td><td>0</td><td>14</td><td>13</td><td>6</td><td>80</td></tr><tr><td>8</td><td>6</td><td>1</td><td>15</td><td>12</td><td>5</td><td>82</td></tr><tr><td>9</td><td>6</td><td>0</td><td>15</td><td>15</td><td>7</td><td>87</td></tr><tr><td>10</td><td>4</td><td>0</td><td>12</td><td>16</td><td>7</td><td>76</td></tr><tr><td>Child 1</td><td>4</td><td>0</td><td>15</td><td>14</td><td>1</td><td>81</td></tr><tr><td>Child 2</td><td>5</td><td>0</td><td>15</td><td>16</td><td>3</td><td>87</td></tr><tr><td>Search ranges</td><td>(4,6)</td><td>(0,1)</td><td>(12, 18)</td><td>(12,18)</td><td></td><td></td></tr></table>
+| Chromosome | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | $I$ | $z$ |
+|---|---:|---:|---:|---:|---:|---:|
+| 1 | 4 | 1 | 16 | 15 | 3 | 87 |
+| (Parent 2) 2 | 5 | 0 | 15 | 17 | 5 | 89 |
+| 3 | 6 | 1 | 17 | 12 | 9 | 88 |
+| 4 | 4 | 0 | 12 | 14 | 3 | 72 |
+| (Parent 1) 5 | 4 | 0 | 15 | 16 | 2 | 85 |
+| 6 | 5 | 1 | 12 | 13 | 4 | 73 |
+| 7 | 6 | 0 | 14 | 13 | 6 | 80 |
+| 8 | 6 | 1 | 15 | 12 | 5 | 82 |
+| 9 | 6 | 0 | 15 | 15 | 7 | 87 |
+| 10 | 4 | 0 | 12 | 16 | 7 | 76 |
+| Child 1 | 4 | 0 | 15 | 14 | 1 | 81 |
+| Child 2 | 5 | 0 | 15 | 16 | 3 | 87 |
+| Search ranges | (4,6) | (0,1) | (12, 18) | (12,18) |  |  |
 
 In the next iteration, child 1 and child 2 replace two parents in the current population. Parent 3 has the highest infeasibility $\left( { = 9}\right)$ , hence ${i}^{* * } = 3$ . There is a tie between parents 9 and 10 for the next-worst infeasibility. The tie is broken in favor of the chromosome with worse objective value (87 for parent 9 versus 76 for parent 10), which yields ${i}^{* * } = {10}$ . Hence, parent 3 and parent 10 are replaced by child 1 and child 2, respectively. The new population is now ready for a new iteration.
 
@@ -894,7 +1177,7 @@ With the Excel implementation of GA file excelGA-IP-Heuristic.xls, you can step 
 
 If the number of crossovers, $c$ , in cell H4 is set equal to zero, the genes of the two children are given by the arithmetic and geometric means of the parents.
 
-### 10.5 INTRODUCTION TO CONSTRAINT PROGRAMMING (CP)
+### 10.5 INTRODUCTION TO CONSTRAINT PROGRAMMING (CP) ^cpsection
 
 Suppose that we want to determine the values of the variables $x, y$ , and $z$ that satisfy the following requirements:
 
@@ -914,7 +1197,11 @@ $$
 x \neq  7, y \neq  2, x - y = {3z}
 $$
 
-One way to solve the problem is to enumerate all 800 combinations, which is computationally inefficient. Constraint programming solves the problem by producing tighter domains for the variables and then applying an "intelligent" search tree to find the feasible solutions.
+One way to solve the problem is to enumerate all 800 combinations, which is computationally inefficient.
+
+Constraint programming solves the problem by producing tighter domains for the variables. ^cppropagation
+
+It then applies an "intelligent" search tree to find the feasible solutions. ^cptree
 
 The constraints $x \neq  7$ and $y \neq  2$ reduce the domains of $x$ and $y$ to
 
@@ -956,7 +1243,7 @@ Construction of search tree for CP example
 
 	1 var int x in 1.8; FIGURE 10.4
 
-2 var int y in 1..10; ILOG OPL code for the CP example
+2 var int y in 1..10; ILOG OPL code for the CP example ^oplcode
 
 3 var int z in 1..10;
 
@@ -972,7 +1259,7 @@ Construction of search tree for CP example
 
 ---
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^bibliography
 
 Abramson, D., and M. Randall, "A Simulated Annealing Code for General Integer Linear Program," Annals of Operations Research, Vol. 86, pp. 3-21, 1999.
 
@@ -990,9 +1277,16 @@ Yamada, T., and R. Nakano, "Genetic Algorithm for Job-Shop Scheduling Problems,"
 
 Yamamoto, M., G. Câmara, and L. Lorena, "Tabu Search Heuristic for Point-Feature Cartographic Label Placement," GeoInformatica, Vol. 6, No. 1, pp. 77-90, 2002.
 
-## PROBLEMS
+## PROBLEMS ^problems
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>10.3.1</td><td>10-9 to 10-16</td><td>10.4.2</td><td>10-33 to 10-35</td></tr><tr><td>10.3.2</td><td>10-17 to 10-23</td><td>10.4.3</td><td>10-36 to 10-38</td></tr><tr><td>10.3.3</td><td>10-24 to 10-29</td><td>10.5</td><td>10-39 to 10-40</td></tr><tr><td>10.4.1</td><td>10-30 to 10-32</td><td></td><td></td></tr></table>
+Assigned Problems by Section ^tableproblems
+
+| Section | Assigned Problems | Section | Assigned Problems |
+|---|---|---|---|
+| 10.3.1 | 10-9 to 10-16 | 10.4.2 | 10-33 to 10-35 |
+| 10.3.2 | 10-17 to 10-23 | 10.4.3 | 10-36 to 10-38 |
+| 10.3.3 | 10-24 to 10-29 | 10.5 | 10-39 to 10-40 |
+| 10.4.1 | 10-30 to 10-32 |  |  |
 
 10-1. Re-solve the problem of Example 10.2-1 to estimate the maximum value of $F\left( x\right)$ . Repeat the calculations using $x = 7$ as a starting solution.
 
@@ -1034,7 +1328,13 @@ The function has multiple maxima and minima in the range $x = 1,2,\ldots ,{10}$ 
 
 TABLE 10.20 Data for Problem 10-11
 
-<table><tr><td>Job, $j$</td><td>Processing time in days, ${T}_{j}$</td><td>Due date, ${d}_{j}$</td><td>Holding cost, ${h}_{i}$ (\$/day)</td><td>Penalty cost ${p}_{i}$ (\$/day)</td></tr><tr><td>1</td><td>10</td><td>12</td><td>3</td><td>10</td></tr><tr><td>2</td><td>12</td><td>30</td><td>1</td><td>20</td></tr><tr><td>3</td><td>5</td><td>9</td><td>5</td><td>12</td></tr><tr><td>4</td><td>7</td><td>25</td><td>2</td><td>8</td></tr><tr><td>5</td><td>9</td><td>40</td><td>4</td><td>15</td></tr></table>
+| Job, $j$ | Processing time in days, ${T}_{j}$ | Due date, ${d}_{j}$ | Holding cost, ${h}_{i}$ (\$/day) | Penalty cost ${p}_{i}$ (\$/day) |
+|---:|---:|---:|---:|---:|
+| 1 | 10 | 12 | 3 | 10 |
+| 2 | 12 | 30 | 1 | 20 |
+| 3 | 5 | 9 | 5 | 12 |
+| 4 | 7 | 25 | 2 | 8 |
+| 5 | 9 | 40 | 4 | 15 |
 
 10-12. Consider 10 Boolean variables, $\mathrm{B}i, i = 1,2,\ldots ,{10}$ . Each variable assumes the value $T$ (true) or $F$ (false). Next, consider the following six expressions (the notation $\underline{\mathrm{B}}i$ defines not Bi):
 
@@ -1074,7 +1374,14 @@ B1 or (B4 and B7) or B8
 
 (b) Solve the problem using TS with a tabu tenure period of two iterations.
 
-<table><tr><td colspan="2">TABLE 10.21</td><td colspan="4">Data for Problem 10-14</td></tr><tr><td></td><td></td><td></td><td>${c}_{ij}$</td><td></td><td></td></tr><tr><td>$j$ <br> $i$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>10</td><td>15</td><td>20</td><td>9</td><td>40</td></tr><tr><td>2</td><td>12</td><td>17</td><td>15</td><td>20</td><td>10</td></tr><tr><td>3</td><td>18</td><td>14</td><td>10</td><td>35</td><td>16</td></tr><tr><td>4</td><td>9</td><td>12</td><td>33</td><td>28</td><td>19</td></tr></table>
+TABLE 10.21 Data for Problem 10-14
+
+| $j$ / $i$ | 1 | 2 | 3 | 4 | 5 |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 10 | 15 | 20 | 9 | 40 |
+| 2 | 12 | 17 | 15 | 20 | 10 |
+| 3 | 18 | 14 | 10 | 35 | 16 |
+| 4 | 9 | 12 | 33 | 28 | 19 |
 
 10-15. Constrained Minimal Spanning Tree, Glover (1990). Section 6.2 presents an optimum algorithm for finding the minimal spanning tree that links all the nodes of a network (by definition, a tree contains no cycles). In a practical setting, it may be necessary to impose interdependence restrictions on the arcs (branches) of the minimal spanning tree (e.g., only one of a subset of arcs can be in the spanning tree). TS can be used to account for the additional restrictions.
 
@@ -1110,7 +1417,12 @@ The "cost" of selecting a specific rectangle in a solution is the sum of two com
 
 The following matrix summarizes the scores associated with solution (A1, B2, C3, D2).
 
-<table><tr><td></td><td>A1</td><td>B2</td><td>C3</td><td>D2</td></tr><tr><td>A1</td><td>.00</td><td>.00</td><td>.00</td><td>.00</td></tr><tr><td>B2</td><td>.00</td><td>.02</td><td>.00</td><td>.00</td></tr><tr><td>C3</td><td>.00</td><td>.00</td><td>.03</td><td>1.00</td></tr><tr><td>D2</td><td>.00</td><td>.00</td><td>1.00</td><td>.02</td></tr></table>
+|  | A1 | B2 | C3 | D2 |
+|---|---:|---:|---:|---:|
+| A1 | .00 | .00 | .00 | .00 |
+| B2 | .00 | .02 | .00 | .00 |
+| C3 | .00 | .00 | .03 | 1.00 |
+| D2 | .00 | .00 | 1.00 | .02 |
 
 All diagonal entries equal the preference scores of the associated rectangle. An off-diagonal element equals 1 if the corresponding elements overlap. Else, it is zero. The cost associated with the solution $\left( {\mathrm{A}1,\mathrm{\;B}2,\mathrm{C}3,\mathrm{\;D}2}\right)$ is the sum of all the entries in the matrix $\left\lbrack  { = \left( {{.02} + {.03} + {.02}}\right)  + \left( {1 + 1}\right)  = {2.7}}\right\rbrack$ . The objective of the model is to find the solution that minimizes the total cost.
 
@@ -1240,7 +1552,18 @@ The exact global minima are ( -.08984, .71266) and (.08984, -.71266) with ${f}^{
 
 (c) Create C1 and C2 using a 1-point crossover.
 
-<table><tr><td>TABLE 10.22</td><td></td><td></td><td>Conflicts in Course Schedules for Problem 10-22</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr><tr><td>1</td><td></td><td>X</td><td>X</td><td>X</td><td></td><td>X</td><td></td><td></td></tr><tr><td>2</td><td>X</td><td></td><td></td><td></td><td>X</td><td></td><td>X</td><td>X</td></tr><tr><td>3</td><td>X</td><td></td><td></td><td>X</td><td></td><td>X</td><td></td><td></td></tr><tr><td>4</td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td></tr><tr><td>5</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td></tr><tr><td>6</td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td>X</td></tr><tr><td>7</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td><td>X</td></tr><tr><td>8</td><td></td><td>X</td><td></td><td></td><td>X</td><td>X</td><td>X</td><td></td></tr></table>
+TABLE 10.22 Conflicts in Course Schedules for Problem 10-22
+
+|  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---:|---|---|---|---|---|---|---|---|
+| 1 |  | X | X | X |  | X |  |  |
+| 2 | X |  |  |  | X |  | X | X |
+| 3 | X |  |  | X |  | X |  |  |
+| 4 | X |  | X |  | X |  | X |  |
+| 5 |  | X |  | X |  | X |  | X |
+| 6 | X |  | X |  | X |  | X | X |
+| 7 |  | X |  | X |  | X |  | X |
+| 8 |  | X |  |  | X | X | X |  |
 
 (d) Create C1 and C2 using a 2-point crossover.
 

@@ -1,12 +1,99 @@
-## CHAPTER 9 Integer Linear Programming
+## CHAPTER 9 Integer Linear Programming ^chapter
 
-## Real-Life Application-Optimizing Trailer Payloads at PFG Building Glass
+```markmap
+---
+markmap:
+  height: 643
+---
+# [[#^chapter|CHAPTER 9: Integer Linear Programming]]
 
-PFG uses specially equipped (fifth-wheel) trailers to deliver packs of sheets of flat glass to customers. The packs vary in both size and weight, and a single trailer load may include different packs, depending on received orders. Government regulations set maximum limits on axle weights, and the actual positioning of the packs on the trailer is crucial in determining these weights. The problem deals with determining the optimal loading of the packs on the trailer bed to satisfy axle-weight limits. The problem is solved as an integer program. Case 7 in Chapter 26 on the website provides the details of the study. ${}^{1}$
+## [[#^trailer|Real-Life Application]]
+### [[#^axle|Trailer payloads and axle-weight limits]]
 
-### 9.1 ILLUSTRATIVE APPLICATIONS
+## [[#^illustrative|9.1 Illustrative Applications]]
+### [[#^direct|Direct ILP applications]]
+### [[#^transformed|Transformed ILP applications]]
+### [[#^pure|Pure vs mixed integer programs]]
+#### [[#^mixed|Mixed integer programs]]
 
-Integer linear program (ILP) applications generally fall into two categories: direct and transformed. In the direct category, the nature of the situation precludes assigning fractional values to the variables of the model. For example, the problem may involve determining whether or not a project is undertaken (binary variable) or finding the optimal number of machines needed to perform a task (general integer variable). In the transformed category, auxiliary integer variables are used to convert analytically intractable situations into models that can be solved by available optimization algorithms. For example, in sequencing two jobs, $A$ and $B$ , on a single machine, job $A$ may precede job $B$ or vice versa. The or-constraints make the problem analytically intractable because all mathematical programming algorithms deal with and-constraints only. Section 9.1.4 shows how auxiliary binary variables are used to transform the or-constraints into and-constraints without altering the nature of the model.
+### [[#^capital|Capital budgeting]]
+#### [[#^project|Example: project selection]]
+##### [[#^binaryvar|Binary project decisions]]
+##### [[#^objective|Objective: maximize total returns]]
+##### [[#^budget|Budget constraints by year]]
+##### [[#^optimumilp|Optimal integer solution and interpretation]]
+##### [[#^solvernote|Software note: Solver/AMPL/TORA]]
+##### [[#^relaxation|LP relaxation vs ILP; why rounding fails]]
+
+### [[#^setcover|Set-covering problems]]
+#### [[#^coverage|Coverage idea: minimum installations]]
+#### [[#^telephones|Example: installing security telephones]]
+##### [[#^intersection|Candidate sites: intersections]]
+##### [[#^streets|Street-coverage constraints]]
+##### [[#^teleopt|Optimal phone locations]]
+#### [[#^setcriteria|Set-covering characteristics]]
+#### [[#^amplset|AMPL model note]]
+
+### [[#^fixedcharge|Fixed-charge problems]]
+#### [[#^costfunction|Discontinuous cost function]]
+#### [[#^auxbinary|Binary variables to activate fixed costs]]
+#### [[#^phonecompany|Example: choosing a telephone company]]
+##### [[#^bigm|Big-M linking constraint]]
+##### [[#^mchoice|Choosing a safe M value]]
+##### [[#^interpretation|Why the binary variables matter]]
+
+### [[#^eitheror|Either-or and if-then constraints]]
+#### [[#^orand|Turning or-constraints into and-constraints (Big-M)]]
+#### [[#^jobseq|Example: job sequencing with due dates]]
+##### [[#^noninterference|Noninterference constraints]]
+##### [[#^duedate|Due-date slack variables]]
+##### [[#^lateness|Late-penalty objective]]
+##### [[#^jobsolution|Interpreting the optimal schedule]]
+#### [[#^ifthen|If-then conditions]]
+##### [[#^epsilon|Epsilon–M reformulation trick]]
+
+## [[#^algorithms|9.2 Integer Programming Algorithms]]
+### [[#^relaxsteps|LP-relaxation strategy (3 steps)]]
+### [[#^methods|Two families: B&B and cutting planes]]
+
+### [[#^branchbound|Branch-and-bound (B&B)]]
+#### [[#^landdoig|Land–Doig algorithm context]]
+#### [[#^bbeexample|Example: building the B&B tree]]
+##### [[#^lpbranch|Branching on a fractional variable]]
+##### [[#^altsearch|Search order can change work dramatically]]
+#### [[#^heuristics|Practical heuristics: get a feasible integer solution early]]
+##### [[#^tradeoffs|Horizontal vs vertical exploration trade-off]]
+##### [[#^manualtweak|Manual tweaking in commercial solvers]]
+#### [[#^bbsummary|B&B algorithm summary]]
+#### [[#^mixedbb|Extension to mixed ILP]]
+
+### [[#^cuttingplane|Cutting-plane method]]
+#### [[#^cutsidea|Cuts: exclude fractional optima, keep integer points]]
+#### [[#^cutexample|Example: cuts to reach an integer optimum]]
+##### [[#^tableau|Tableau-based cut construction]]
+##### [[#^source|Source rows and fractional decomposition]]
+##### [[#^fractionalcut|All-variables-integer assumption (incl. slacks)]]
+##### [[#^dualfeas|Dual simplex to restore feasibility]]
+##### [[#^mixedcut|Remedies: scaling or mixed cuts]]
+##### [[#^roundoff|Numerical stability and dual infeasibility]]
+#### [[#^branchcut|Cuts inside B&B: branch-and-cut intuition]]
+
+### [[#^dfj|Aha moment: Dantzig–Fulkerson–Johnson cut]]
+
+## [[#^bibliography|Bibliography]]
+## [[#^problems|Problems]]
+#### [[#^problemassign|Problem assignment by section]]
+```
+
+## Real-Life Application-Optimizing Trailer Payloads at PFG Building Glass ^trailer
+
+PFG uses specially equipped (fifth-wheel) trailers to deliver packs of sheets of flat glass to customers. The packs vary in both size and weight, and a single trailer load may include different packs, depending on received orders. Government regulations set maximum limits on axle weights, and the actual positioning of the packs on the trailer is crucial in determining these weights. The problem deals with determining the optimal loading of the packs on the trailer bed to satisfy axle-weight limits. The problem is solved as an integer program. Case 7 in Chapter 26 on the website provides the details of the study. ${}^{1}$ ^axle
+
+### 9.1 ILLUSTRATIVE APPLICATIONS ^illustrative
+
+Integer linear program (ILP) applications generally fall into two categories: direct and transformed. In the direct category, the nature of the situation precludes assigning fractional values to the variables of the model. For example, the problem may involve determining whether or not a project is undertaken (binary variable) or finding the optimal number of machines needed to perform a task (general integer variable). ^direct
+
+In the transformed category, auxiliary integer variables are used to convert analytically intractable situations into models that can be solved by available optimization algorithms. For example, in sequencing two jobs, $A$ and $B$ , on a single machine, job $A$ may precede job $B$ or vice versa. The or-constraints make the problem analytically intractable because all mathematical programming algorithms deal with and-constraints only. Section 9.1.4 shows how auxiliary binary variables are used to transform the or-constraints into and-constraints without altering the nature of the model. ^transformed
 
 ---
 
@@ -14,33 +101,42 @@ ${}^{1}$ Cases at the end of Chapters 7 and 8 use ILP. Also, case 17 in Chapter 
 
 ---
 
-For convenience, a problem is defined as a pure integer program when all the variables are integer. Else, it is a mixed integer program involving a mixture of integer and continuous variables.
+For convenience, a problem is defined as a pure integer program when all the variables are integer. ^pure
 
-#### 9.1.1 Capital Budgeting
+Else, it is a mixed integer program involving a mixture of integer and continuous variables. ^mixed
+
+#### 9.1.1 Capital Budgeting ^capital
 
 Decisions about whether or not to undertake a project is usually made under limited-budget considerations and preset priorities. The next example deals with one of these situations.
 
-## Example 9.1-1 (Project Selection)
+## Example 9.1-1 (Project Selection) ^project
 
 Five projects are being evaluated over a 3-year planning horizon. The following table gives the expected returns for each project and the associated yearly expenditures:
 
-<table><tr><td rowspan="2">Project</td><td colspan="3">Expenditures (\$ million)/year</td><td rowspan="2">Returns (\$ million)</td></tr><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>1</td><td>5</td><td>1</td><td>8</td><td>20</td></tr><tr><td>2</td><td>4</td><td>7</td><td>10</td><td>40</td></tr><tr><td>3</td><td>3</td><td>9</td><td>2</td><td>20</td></tr><tr><td>4</td><td>7</td><td>4</td><td>1</td><td>15</td></tr><tr><td>5</td><td>8</td><td>6</td><td>10</td><td>30</td></tr><tr><td>Available funds (\$ million)</td><td>25</td><td>25</td><td>25</td><td></td></tr></table>
+| Project | Expenditures ($ million), Year 1 | Year 2 | Year 3 | Returns ($ million) |
+| --- | --- | --- | --- | --- |
+| 1 | 5 | 1 | 8 | 20 |
+| 2 | 4 | 7 | 10 | 40 |
+| 3 | 3 | 9 | 2 | 20 |
+| 4 | 7 | 4 | 1 | 15 |
+| 5 | 8 | 6 | 10 | 30 |
+| Available funds ($ million) | 25 | 25 | 25 |  |
 
 Which projects should be selected over the 3-year horizon?
 
-The problem reduces to a "yes-no" decision for each project. Define the binary variable ${x}_{j}$ as
+The problem reduces to a "yes-no" decision for each project. Define the binary variable ${x}_{j}$ as ^binaryvar
 
 $$
 {x}_{j} = \left\{  \begin{array}{l} 1,\text{ if project }j\text{ is selected } \\  0,\text{ if project }j\text{ is not selected } \end{array}\right.
 $$
 
-The ILP model is
+The ILP model is ^objective
 
 $$
 \text{ Maximize }z = {20}{x}_{1} + {40}{x}_{2} + {20}{x}_{3} + {15}{x}_{4} + {30}{x}_{5}
 $$
 
-subject to
+subject to ^budget
 
 $$
 5{x}_{1} + 4{x}_{2} + 3{x}_{3} + 7{x}_{4} + 8{x}_{5} \leq  {25}
@@ -58,27 +154,27 @@ $$
 {x}_{1},{x}_{2},{x}_{3},{x}_{4},{x}_{5} = \left( {0,1}\right)
 $$
 
-The optimum integer solution (obtained by AMPL, Solver, or TORA) ${}^{2}$ is ${x}_{1} = {x}_{2} = \; {x}_{3} = {x}_{4} = 1,{x}_{5} = 0$ , with $z = {95}$ (\$ million). The solution excludes project 5 from the product mix.
+The optimum integer solution (obtained by AMPL, Solver, or TORA) ${}^{2}$ is ${x}_{1} = {x}_{2} = \; {x}_{3} = {x}_{4} = 1,{x}_{5} = 0$ , with $z = {95}$ (\$ million). The solution excludes project 5 from the product mix. ^optimumilp
 
 ---
 
-${}^{2}$ To use TORA, select Integer Programming from Main Menu. After entering the problem data, go to output screen, and select Automated B&B to obtain the optimum solution. Solver use is the same as in LP except that the targeted variables must be declared integer. The integer option (int or bin) is available in the Solver Parameters dialogue box when you add a new constraint. AMPL implementation for integer programming is the same as in linear programming, except that some or all the variables are declared integers by adding the key word integer (or binary) in the definition statement of the targeted variables. For example, the statement var $x\{ J\}  >  = 0$ , integer; declares ${x}_{j}$ as nonnegative integer for all ${j\varepsilon J}$ . If ${x}_{j}$ is binary, the statement is changed to var x\{J\} binary;.For execution, the statement option solver cplex; must precede solve;.
+${}^{2}$ To use TORA, select Integer Programming from Main Menu. After entering the problem data, go to output screen, and select Automated B&B to obtain the optimum solution. Solver use is the same as in LP except that the targeted variables must be declared integer. The integer option (int or bin) is available in the Solver Parameters dialogue box when you add a new constraint. AMPL implementation for integer programming is the same as in linear programming, except that some or all the variables are declared integers by adding the key word integer (or binary) in the definition statement of the targeted variables. For example, the statement var $x\{ J\}  >  = 0$ , integer; declares ${x}_{j}$ as nonnegative integer for all ${j\varepsilon J}$ . If ${x}_{j}$ is binary, the statement is changed to var x\{J\} binary;.For execution, the statement option solver cplex; must precede solve;. ^solvernote
 
 ---
 
-Remarks. It is interesting to compare the continuous LP solution with the ILP solution. The LP optimum, obtained by replacing ${x}_{j} = \left( {0,1}\right)$ with $0 \leq  {x}_{j} \leq  1$ for all $j$ , yields ${x}_{1} = {.5789}$ , ${x}_{2} = {x}_{3} = {x}_{4} = 1,{x}_{5} = {.7368}$ , and $z = {108.68}$ (\$ million). The solution is meaningless because binary ${x}_{1}$ and ${x}_{5}$ assume fractional values. We may round the solution to the closest integer, which yields ${x}_{1} = {x}_{5} = 1$ . However, the resulting solution violates the constraints. Moreover, the concept of rounding is meaningless here because ${x}_{j}$ represents a "yes-no" decision.
+Remarks. It is interesting to compare the continuous LP solution with the ILP solution. The LP optimum, obtained by replacing ${x}_{j} = \left( {0,1}\right)$ with $0 \leq  {x}_{j} \leq  1$ for all $j$ , yields ${x}_{1} = {.5789}$ , ${x}_{2} = {x}_{3} = {x}_{4} = 1,{x}_{5} = {.7368}$ , and $z = {108.68}$ (\$ million). The solution is meaningless because binary ${x}_{1}$ and ${x}_{5}$ assume fractional values. We may round the solution to the closest integer, which yields ${x}_{1} = {x}_{5} = 1$ . However, the resulting solution violates the constraints. Moreover, the concept of rounding is meaningless here because ${x}_{j}$ represents a "yes-no" decision. ^relaxation
 
-#### 9.1.2 Set-Covering Problem
+#### 9.1.2 Set-Covering Problem ^setcover
 
-In this class of problems, overlapping services are offered by a number of installations to a number of facilities. The objective is to determine the minimum number of installations that will cover (i.e., satisfy the service needs of)-each facility. For example, water treatment plants can be constructed at various locations, with each plant serving specific communities. The overlapping occurs when more than one plant can serve a given community.
+In this class of problems, overlapping services are offered by a number of installations to a number of facilities. The objective is to determine the minimum number of installations that will cover (i.e., satisfy the service needs of)-each facility. For example, water treatment plants can be constructed at various locations, with each plant serving specific communities. The overlapping occurs when more than one plant can serve a given community. ^coverage
 
-## Example 9.1-2 (Installing Security Telephones)
+## Example 9.1-2 (Installing Security Telephones) ^telephones
 
 To promote on-campus safety, the U of A Public Safety Department is in the process of installing emergency telephones at selected locations. The department wants to install the minimum number of telephones that serve each of the campus main streets. Figure 9.1 maps the campus principal streets.
 
 It is logical to maximize the utility of the telephones by placing them at street intersections. In this manner, a single unit can serve at least two streets.
 
-Define
+Define ^intersection
 
 $$
 {x}_{j} = \left\{  \begin{array}{l} 1,\text{ at telephone is installed at intersection }j, j = 1,2,\ldots ,8 \\  0,\text{ otherwise } \end{array}\right.
@@ -90,7 +186,7 @@ Street map of the U of A campus
 
 ![bo_d56m4mf7aajc73800na0_2_481_1549_998_652_0.jpg](bo_d56m4mf7aajc73800na0_2_481_1549_998_652_0.jpg)
 
-The constraints of the problem require installing at least one telephone on each of the 11 streets $\left( {A\text{ to }K}\right)$ . Thus, the model is
+The constraints of the problem require installing at least one telephone on each of the 11 streets $\left( {A\text{ to }K}\right)$ . Thus, the model is ^streets
 
 $$
 \text{ Minimize }z = {x}_{1} + {x}_{2} + {x}_{3} + {x}_{4} + {x}_{5} + {x}_{6} + {x}_{7} + {x}_{8}
@@ -132,25 +228,25 @@ $$
 {x}_{j} = \left( {0,1}\right) , j = 1,2,\ldots ,8
 $$
 
-The optimum solution of the problem requires installing four telephones at intersections 1, 2, 5, and 7.
+The optimum solution of the problem requires installing four telephones at intersections 1, 2, 5, and 7. ^teleopt
 
-Remarks. In the strict sense, set-covering problems are characterized by the following criteria: (1) The variables ${x}_{j}, j = 1,2,\ldots , n$ , are binary,(2) the left-hand-side coefficients of the constraints are 0 or 1,(3) the right-hand side of each constraint is of the form $\left( { \geq  1}\right)$ , and (4) the objective function minimizes ${c}_{1}{x}_{1} + {c}_{2}{x}_{2} + \ldots  + {c}_{n}{x}_{n}$ , where ${c}_{j} > 0$ for all $j = 1,2,\ldots , n$ . In the present example, ${c}_{j} = 1$ for all $j$ . If ${c}_{j}$ represents the installation cost in intersection $j$ , then these coefficients may assume values other than 1. Variations of the set-covering problem include additional side conditions, as described by some of the situations in Problems 9-19 to 9-27.
+Remarks. In the strict sense, set-covering problems are characterized by the following criteria: (1) The variables ${x}_{j}, j = 1,2,\ldots , n$ , are binary,(2) the left-hand-side coefficients of the constraints are 0 or 1,(3) the right-hand side of each constraint is of the form $\left( { \geq  1}\right)$ , and (4) the objective function minimizes ${c}_{1}{x}_{1} + {c}_{2}{x}_{2} + \ldots  + {c}_{n}{x}_{n}$ , where ${c}_{j} > 0$ for all $j = 1,2,\ldots , n$ . In the present example, ${c}_{j} = 1$ for all $j$ . If ${c}_{j}$ represents the installation cost in intersection $j$ , then these coefficients may assume values other than 1. Variations of the set-covering problem include additional side conditions, as described by some of the situations in Problems 9-19 to 9-27. ^setcriteria
 
 ## AMPL Moment
 
-File amplEx9.1-2.txt provides a general AMPL model for any set-covering problem. The formulation is detailed in Section C.9 on the website.
+File amplEx9.1-2.txt provides a general AMPL model for any set-covering problem. The formulation is detailed in Section C.9 on the website. ^amplset
 
-#### 9.1.3 Fixed-Charge Problem
+#### 9.1.3 Fixed-Charge Problem ^fixedcharge
 
-The fixed-charge problem deals with situations in which the economic activity incurs two types of costs: a fixed cost needed to initiate the activity and a variable cost proportional to the level of the activity. For example, the initial tooling of a machine prior to starting production incurs a fixed setup cost regardless of how many units are manufactured. Once the setup is done, the cost of labor and material is proportional to the amount produced. Given that $F$ is the fixed charge, $c$ is the variable unit cost, and $x$ is the level of production, the cost function is expressed as
+The fixed-charge problem deals with situations in which the economic activity incurs two types of costs: a fixed cost needed to initiate the activity and a variable cost proportional to the level of the activity. For example, the initial tooling of a machine prior to starting production incurs a fixed setup cost regardless of how many units are manufactured. Once the setup is done, the cost of labor and material is proportional to the amount produced. Given that $F$ is the fixed charge, $c$ is the variable unit cost, and $x$ is the level of production, the cost function is expressed as ^costfunction
 
 $$
 C\left( x\right)  = \left\{  \begin{array}{ll} F + {cx}, & \text{ if }x > 0 \\  0, & \text{ otherwise } \end{array}\right.
 $$
 
-The function $C\left( x\right)$ is intractable analytically because it involves a discontinuity at $x = 0$ . The next example shows how auxiliary binary variables are used to render the model analytically tractable.
+The function $C\left( x\right)$ is intractable analytically because it involves a discontinuity at $x = 0$ . The next example shows how auxiliary binary variables are used to render the model analytically tractable. ^auxbinary
 
-## Example 9.1-3 (Choosing a Telephone Company)
+## Example 9.1-3 (Choosing a Telephone Company) ^phonecompany
 
 I have been approached by three telephone companies to subscribe to their long-distance service in the United States. MaBell will charge a flat \$16 per month plus \$.25 a minute. PaBell will charge \$25 a month but will reduce the per-minute cost to \$.21. As for BabyBell, the flat monthly charge is \$18, and the cost per min is \$.22. I usually make an average of 200 minutes of long-distance calls a month. Assuming that I do not pay the flat monthly fee unless I make calls and that I can apportion my calls among all three companies as I please, how should I use the three companies to minimize my monthly telephone bill?
 
@@ -182,13 +278,13 @@ $$
 {y}_{3} = 1\text{ if }{x}_{3} > 0\text{ and 0 if }{x}_{3} = 0
 $$
 
-We can ensure that ${y}_{j}$ equals 1 when ${x}_{j}$ is positive by using the constraint
+We can ensure that ${y}_{j}$ equals 1 when ${x}_{j}$ is positive by using the constraint ^bigm
 
 $$
 {x}_{j} \leq  M{y}_{j}, j = 1,2,3
 $$
 
-The value of $M$ should be selected sufficiently large so as not to restrict the variable ${x}_{j}$ artificially. Because I make about 200 minutes of calls a month, then ${x}_{j} \leq  {200}$ for all $j$ , and it is safe to select $M = {200}$ .
+The value of $M$ should be selected sufficiently large so as not to restrict the variable ${x}_{j}$ artificially. Because I make about 200 minutes of calls a month, then ${x}_{j} \leq  {200}$ for all $j$ , and it is safe to select $M = {200}$ . ^mchoice
 
 The complete model is
 
@@ -222,19 +318,23 @@ $$
 {y}_{1},{y}_{2},{y}_{3} = \left( {0,1}\right)
 $$
 
-The formulation shows that the $j$ th monthly flat fee will be part of the objective function $z$ only if ${y}_{j} = 1$ , which can happen only if ${x}_{j} > 0$ (per the last three constraints of the model). If ${x}_{i} = 0$ at the optimum, then the minimization of $z$ , together with the fact that the objective coefficient of ${y}_{j}$ is positive, forces ${y}_{j}$ to equal zero, as desired. ${}^{3}$
+The formulation shows that the $j$ th monthly flat fee will be part of the objective function $z$ only if ${y}_{j} = 1$ , which can happen only if ${x}_{j} > 0$ (per the last three constraints of the model). If ${x}_{i} = 0$ at the optimum, then the minimization of $z$ , together with the fact that the objective coefficient of ${y}_{j}$ is positive, forces ${y}_{j}$ to equal zero, as desired. ${}^{3}$ ^interpretation
 
 The optimum solution yields ${x}_{3} = {200},{y}_{3} = 1$ , and all the remaining variables equal to zero, which shows that BabyBell should be selected as my long-distance carrier. Remember that the information conveyed by ${y}_{3} = 1$ is redundant because the same result is implied by ${x}_{3} > 0\left( { = {200}}\right)$ . Actually, the main reason for using ${y}_{1},{y}_{2}$ , and ${y}_{3}$ is to account for the monthly flat fee. In effect, the three binary variables convert an ill-behaved (nonlinear) model into an analytically tractable formulation. This conversion has resulted in introducing the integer (binary) variables in an otherwise continuous problem.
 
-#### 9.1.4 Either-Or and If-Then Constraints
+#### 9.1.4 Either-Or and If-Then Constraints ^eitheror
 
 In the fixed-charge problem (Section 9.1.3), auxiliary binary variables are used to handle the discontinuity in the objective cost function. This section deals with models in which constraints are not satisfied simultaneously (either-or) or are dependent (if-then), again using auxiliary binary variables. The transformation uses a mathematical trick to present the special constraint as and-constraints.
 
-## Example 9.1-4 (Job Sequencing Model)
+## Example 9.1-4 (Job Sequencing Model) ^jobseq
 
 Jobco uses a single machine to process three jobs. Both the processing time and the due date (in days) for each job are given in the following table. The due dates are measured from zero, the assumed start time of the first job.
 
-<table><tr><td>Job</td><td>Processing time (day)</td><td>Due date (day)</td><td>Late penalty (\$/day)</td></tr><tr><td>1</td><td>5</td><td>25</td><td>19</td></tr><tr><td>2</td><td>20</td><td>22</td><td>12</td></tr><tr><td>3</td><td>15</td><td>35</td><td>34</td></tr></table>
+| Job | Processing time (day) | Due date (day) | Late penalty ($/day) |
+| --- | --- | --- | --- |
+| 1 | 5 | 25 | 19 |
+| 2 | 20 | 22 | 12 |
+| 3 | 15 | 35 | 34 |
 
 The objective of the problem is to determine the job sequence that minimizes the late penalty for processing all three jobs.
 
@@ -248,7 +348,7 @@ $$
 {y}_{ij} = \left\{  \begin{array}{l} 1,\text{ if }i\text{ precedes }j \\  0,\text{ if }j\text{ precedes }i \end{array}\right.
 $$
 
-The problem has two types of constraints: the noninterference constraints (guaranteeing that no two jobs are processed concurrently) and the due-date constraints. Consider the noninterference constraints first.
+The problem has two types of constraints: the noninterference constraints (guaranteeing that no two jobs are processed concurrently) and the due-date constraints. Consider the noninterference constraints first. ^noninterference
 
 ---
 
@@ -262,7 +362,7 @@ $$
 {x}_{i} \geq  {x}_{j} + {p}_{j}\text{ or }{x}_{j} \geq  {x}_{i} + {p}_{i}
 $$
 
-For $M$ sufficiently large, the or-constraints are converted to and-constraints by using
+For $M$ sufficiently large, the or-constraints are converted to and-constraints by using ^orand
 
 $$
 M{y}_{ij} + \left( {{x}_{i} - {x}_{j}}\right)  \geq  {p}_{j}\text{ and }M\left( {1 - {y}_{ij}}\right)  + \left( {{x}_{j} - {x}_{i}}\right)  \geq  {p}_{i}
@@ -270,13 +370,13 @@ $$
 
 The conversion guarantees that only one of the two constraints can be active at any one time. If ${y}_{ij} = 0$ , the first constraint is active, and the second is redundant (because its left-hand side will include $M$ , which is much larger than ${p}_{i}$ ). If ${y}_{ij} = 1$ , the first constraint is redundant, and the second is active.
 
-Next, given that ${d}_{j}$ is the due date for job $j$ , the job is late if ${x}_{j} + {p}_{j} > {d}_{j}$ . We can use two nonnegative variables, ${s}_{j}^{ - }$ and ${s}_{j}^{ + }$ , to determine the status of a completed job $j$ with regard to its due date - namely, the due date constraint can be written as
+Next, given that ${d}_{j}$ is the due date for job $j$ , the job is late if ${x}_{j} + {p}_{j} > {d}_{j}$ . We can use two nonnegative variables, ${s}_{j}^{ - }$ and ${s}_{j}^{ + }$ , to determine the status of a completed job $j$ with regard to its due date - namely, the due date constraint can be written as ^duedate
 
 $$
 {x}_{j} + {p}_{j} + {s}_{j}^{ - } - {s}_{j}^{ + } = {d}_{j}
 $$
 
-Job $j$ is ahead of schedule if ${s}_{j}^{ - } > 0$ , and late if ${s}_{j}^{ + } > 0$ . The late-penalty cost is thus proportional to ${s}_{j}^{ + }$ .
+Job $j$ is ahead of schedule if ${s}_{j}^{ - } > 0$ , and late if ${s}_{j}^{ + } > 0$ . The late-penalty cost is thus proportional to ${s}_{j}^{ + }$ . ^lateness
 
 The model for the given problem is
 
@@ -354,13 +454,13 @@ $$
 
 The resulting model is a mixed ILP.
 
-To solve the model, we choose $M = {100}$ , a value that is larger than the sum of the processing times for all three activities. The optimal solution is ${x}_{1} = {20},{x}_{2}, = 0$ , and ${x}_{3} = {25}$ , This means that job 2 starts at time 0 , job 1 starts at time 20 , and job 3 starts at time 25 , thus yielding the optimal processing sequence $2 \rightarrow  1 \rightarrow  3$ . The solution calls for completing job 2 at time $0 + {20} = {20}$ , job 1 at time $= {20} + 5 = {25}$ , and job 3 at ${25} + {15} = {40}$ days. Job 3 is delayed by ${40} - {35} = 5$ days past its due date at a cost of $5 \times  \$ {34} = \$ {170}$ .
+To solve the model, we choose $M = {100}$ , a value that is larger than the sum of the processing times for all three activities. The optimal solution is ${x}_{1} = {20},{x}_{2}, = 0$ , and ${x}_{3} = {25}$ , This means that job 2 starts at time 0 , job 1 starts at time 20 , and job 3 starts at time 25 , thus yielding the optimal processing sequence $2 \rightarrow  1 \rightarrow  3$ . The solution calls for completing job 2 at time $0 + {20} = {20}$ , job 1 at time $= {20} + 5 = {25}$ , and job 3 at ${25} + {15} = {40}$ days. Job 3 is delayed by ${40} - {35} = 5$ days past its due date at a cost of $5 \times  \$ {34} = \$ {170}$ . ^jobsolution
 
 ## AMPL Moment
 
 File amplEx9.1-4.txt provides the AMPL model for the problem of Example 9.1-4. The model is explained in Section C.9 on the website.
 
-## Example 9.1-5 (Job Sequencing Model Revisited)
+## Example 9.1-5 (Job Sequencing Model Revisited) ^ifthen
 
 In Example 9.1-4, suppose that we have the following additional condition: If job $i$ precedes job $j$ , then job $k$ must precede job $m$ . Mathematically, the if-then condition is written as
 
@@ -368,7 +468,7 @@ $$
 \text{ if }{x}_{i} + {p}_{i} \leq  {x}_{j}\text{ , then }{x}_{k} + {p}_{k} \leq  {x}_{m}
 $$
 
-Given $\varepsilon \left( { > 0}\right)$ infinitesimally small, and $M$ sufficiently large, this condition is equivalent to the following two simultaneous constraints:
+Given $\varepsilon \left( { > 0}\right)$ infinitesimally small, and $M$ sufficiently large, this condition is equivalent to the following two simultaneous constraints: ^epsilon
 
 $$
 {x}_{j} - \left( {{x}_{i} + {p}_{i}}\right)  \leq  M\left( {1 - w}\right)  - \varepsilon
@@ -384,9 +484,9 @@ $$
 
 If ${x}_{i} + {p}_{i} \leq  {x}_{j}$ , then ${x}_{j} - \left( {{x}_{i} + {p}_{i}}\right)  \geq  0$ , which requires $w = 0$ , and the second constraint becomes ${x}_{k} + {p}_{k} \leq  {x}_{m}$ , as desired. Else, $w$ may assume the value 0 or 1, in which case the second constraint may or may not be satisfied, depending on other conditions in the model.
 
-### 9.2 INTEGER PROGRAMMING ALGORITHMS
+### 9.2 INTEGER PROGRAMMING ALGORITHMS ^algorithms
 
-The ILP algorithms are based on exploiting the tremendous computational success of LP. The strategy of these algorithms involves three steps.
+The ILP algorithms are based on exploiting the tremendous computational success of LP. The strategy of these algorithms involves three steps. ^relaxsteps
 
 Step 1. Relax the solution space of the ILP by deleting the integer restriction on all integer variables and replacing any binary variable $y$ with the continuous range $0 \leq  y \leq  1$ . The result of the relaxation is a regular LP.
 
@@ -394,7 +494,7 @@ Step 2. Solve the LP, and identify its continuous optimum.
 
 Step 3. Starting from the continuous optimum point, add special constraints that iteratively modify the LP solution space in a manner that eventually renders an optimum extreme point satisfying the integer requirements.
 
-Two general methods have been developed for generating the special constraints in step 3.
+Two general methods have been developed for generating the special constraints in step 3. ^methods
 
 1. Branch-and-bound (B&B) method
 
@@ -402,13 +502,13 @@ Two general methods have been developed for generating the special constraints i
 
 Neither method is consistently effective computationally. However, experience shows that the B&B method is far more successful than the cutting-plane method.
 
-#### 9.2.1 Branch-and-Bound (B&B) Algorithm ${}^{4}$
+#### 9.2.1 Branch-and-Bound (B&B) Algorithm ${}^{4}$ ^branchbound
 
-The first B&B algorithm was developed in 1960 by A. Land and G. Doig for the general mixed and pure ILP problem. Later, in 1965, E. Balas developed the additive algorithm for solving ILPs with pure binary (zero or one) variables. ${}^{5}$ The additive algorithm’s computations were so simple (mainly addition and subtraction) that it was initially hailed as a possible breakthrough in the solution of general ILP. Unfortunately, it failed to produce the desired computational advantages. Moreover, the algorithm, which initially appeared unrelated to the B&B technique, was shown to be but a special case of the general Land and Doig algorithm.
+The first B&B algorithm was developed in 1960 by A. Land and G. Doig for the general mixed and pure ILP problem. Later, in 1965, E. Balas developed the additive algorithm for solving ILPs with pure binary (zero or one) variables. ${}^{5}$ The additive algorithm’s computations were so simple (mainly addition and subtraction) that it was initially hailed as a possible breakthrough in the solution of general ILP. Unfortunately, it failed to produce the desired computational advantages. Moreover, the algorithm, which initially appeared unrelated to the B&B technique, was shown to be but a special case of the general Land and Doig algorithm. ^landdoig
 
 This section presents the general Land-Doig B&B algorithm only. A numeric example is used to provide the details.
 
-Example 9.2-1
+Example 9.2-1 ^bbeexample
 
 $$
 \text{ Maximize }z = 5{x}_{1} + 4{x}_{2}
@@ -430,7 +530,7 @@ $$
 
 The lattice points (dots) in Figure 9.2 define the ILP solution space. The associated continuous LP1 problem at node 1 (shaded area) is defined from ILP by removing the integer restrictions. The optimum solution of LP1 is ${x}_{1} = {3.75},{x}_{2} = {1.25}$ , and $z = {23.75}$ .
 
-Because the optimum LP1 solution does not satisfy the integer restrictions, the solution space is subdivided in a systematic manner that eventually locates the ILP optimum. First, B&B selects an integer variable whose optimum value at LP1 is not integer. In this example, both ${x}_{1}$ and ${x}_{2}$ qualify. Selecting ${x}_{1}\left( { = {3.75}}\right)$ arbitrarily, the region $3 < {x}_{1} < 4$ of the LP1 solution space contains no integer values of ${x}_{1}$ , and thus it can be deleted. This is equivalent to replacing the original LP1 with two new LPs:
+Because the optimum LP1 solution does not satisfy the integer restrictions, the solution space is subdivided in a systematic manner that eventually locates the ILP optimum. First, B&B selects an integer variable whose optimum value at LP1 is not integer. In this example, both ${x}_{1}$ and ${x}_{2}$ qualify. Selecting ${x}_{1}\left( { = {3.75}}\right)$ arbitrarily, the region $3 < {x}_{1} < 4$ of the LP1 solution space contains no integer values of ${x}_{1}$ , and thus it can be deleted. This is equivalent to replacing the original LP1 with two new LPs: ^lpbranch
 
 $$
 \text{ LP2 space } = \text{ LP1 space } + \left( {{x}_{1} \leq  3}\right)
@@ -506,7 +606,7 @@ Two questions remain unanswered regarding the algorithm:
 
 2. When selecting the next subproblem to be examined, could we have solved LP3 first instead of LP2?
 
-The answer to both questions is "yes," but ensuing computations may differ dramatically. Figure 9.5 demonstrates this point. Suppose that we examine LP3 first (instead of LP2 as we did in Figure 9.4). The solution is ${x}_{1} = 4,{x}_{2} = {.83}$ , and $z = {23.33}$ (verify!). Because ${x}_{2}\left( { = {.83}}\right)$ is noninteger, LP3 is examined further by creating subproblems LP4 and LP5 using the branches ${x}_{2} \leq  0$ and ${x}_{2} \geq  1$ , respectively. This means that
+The answer to both questions is "yes," but ensuing computations may differ dramatically. Figure 9.5 demonstrates this point. Suppose that we examine LP3 first (instead of LP2 as we did in Figure 9.4). The solution is ${x}_{1} = 4,{x}_{2} = {.83}$ , and $z = {23.33}$ (verify!). Because ${x}_{2}\left( { = {.83}}\right)$ is noninteger, LP3 is examined further by creating subproblems LP4 and LP5 using the branches ${x}_{2} \leq  0$ and ${x}_{2} \geq  1$ , respectively. This means that ^altsearch
 
 $$
 \text{ LP4 space } = \text{ LP3 space } + \left( {{x}_{2} \leq  0}\right)
@@ -548,13 +648,21 @@ The solution sequence in Figure 9.5 (LP1 $\rightarrow$ LP3 $\rightarrow$ LP5 $\r
 
 AMPL can be used interactively to generate the B&B search tree. The following table shows the sequence of commands needed to generate the tree of Example 9.2-1 (Figure 9.5) starting with the continuous LP1. AMPL model (file amplEx9.2-1.txt) has two variables $\times  1$ and $\times  2$ and two constraints c0 and c1. You will find it helpful to synchronize the AMPL commands with the branches in Figure 9.5.
 
-<table><tr><td>AMPL command</td><td>Result</td></tr><tr><td>ampl: model amplEx9.2-1.txt;solve;display x1, x2;</td><td>$\operatorname{LP1}\left( {{x}_{1} = {3.75},{x}_{2} = {1.25}}\right)$</td></tr><tr><td>ampl: c2:x1>=4;solve;display x1, x2;</td><td>$\operatorname{LP3}\left( {{x}_{1} = 4,{x}_{2} = {.83}}\right)$</td></tr><tr><td>ampl: c3:x2>=1;solve;display x1, x2;</td><td>LP5 (no solution)</td></tr><tr><td>ampl: drop c3; c4: x2<=0; solve; display x1, x2;</td><td>$\operatorname{LP4}\left( {{x}_{1} = {4.5},{x}_{2} = 0}\right)$</td></tr><tr><td>ampl: c5:x1>=5;solve;display x1, x2;</td><td>LP7 (no solution)</td></tr><tr><td>ampl: drop c5;c6:x1<=4;solve;display x1, x2;</td><td>$\operatorname{LP6}\left( {{x}_{1} = 4,{x}_{2} = 0}\right)$</td></tr><tr><td>ampl: drop c2;drop c4;drop c6;c7:x1<=3; solve; display x1, x2; LP2 $\left( {{x}_{1} = 3,{x}_{2} = 2}\right)$</td><td></td></tr></table>
+| AMPL command | Result |
+| --- | --- |
+| ampl: model amplEx9.2-1.txt; solve; display x1, x2; | $\operatorname{LP1}\left( {{x}_{1} = {3.75},{x}_{2} = {1.25}}\right)$ |
+| ampl: c2: x1 >= 4; solve; display x1, x2; | $\operatorname{LP3}\left( {{x}_{1} = 4,{x}_{2} = {.83}}\right)$ |
+| ampl: c3: x2 >= 1; solve; display x1, x2; | LP5 (no solution) |
+| ampl: drop c3; c4: x2 <= 0; solve; display x1, x2; | $\operatorname{LP4}\left( {{x}_{1} = {4.5},{x}_{2} = 0}\right)$ |
+| ampl: c5: x1 >= 5; solve; display x1, x2; | LP7 (no solution) |
+| ampl: drop c5; c6: x1 <= 4; solve; display x1, x2; | $\operatorname{LP6}\left( {{x}_{1} = 4,{x}_{2} = 0}\right)$ |
+| ampl: drop c2; drop c4; drop c6; c7: x1 <= 3; solve; display x1, x2; | LP2 $\left( {{x}_{1} = 3,{x}_{2} = 2}\right)$ |
 
 ## Solver Moment
 
 Solver can be used to obtain the solution of the different subproblems by using the add/change/ delete options in the Solver Parameters dialogue box.
 
-Remarks. Example 9.2-1 points to a principal weakness in the B&B algorithm: Given multiple choices, how do we select the next subproblem and its branching variable? In answering this question, there is but one goal in mind: Find a (good) feasible integer solution ASAP! This goal, though stated qualitatively, is of paramount importance. The reason is simple: finding a (good) feasible integer solution early on in the search tree can obviate exploring subproblems and hence speed up the termination of the search. But how can a (good) feasible solution be found? There are three possibilities:
+Remarks. Example 9.2-1 points to a principal weakness in the B&B algorithm: Given multiple choices, how do we select the next subproblem and its branching variable? In answering this question, there is but one goal in mind: Find a (good) feasible integer solution ASAP! This goal, though stated qualitatively, is of paramount importance. The reason is simple: finding a (good) feasible integer solution early on in the search tree can obviate exploring subproblems and hence speed up the termination of the search. But how can a (good) feasible solution be found? There are three possibilities: ^heuristics
 
 1. Use a rounded LP optimal solution if feasibility can be ascertained.
 
@@ -564,13 +672,13 @@ Remarks. Example 9.2-1 points to a principal weakness in the B&B algorithm: Give
 
 The first possibility is at best iffy, particularly in large models with equality constraints. The second is plausible though costly computationally, and the third is where most of the research has been concentrated.
 
-The overall idea of the third strategy is based on two broad options with marked trade-offs: (1) A high-echelon subproblem (closer to the start of the search tree) is more likely to produce a tighter objective bound (because it is closer-hence less additional constraints-to the continuous LP optimum), but less likely to produce a feasible integer solution (because of the smaller number of integer-branching constraints leading to the subproblem). (2) Conversely, a low-echelon subproblem is more likely to produce a feasible integer solution but less likely to generate a tight objective value bound. In essence, the first option explores the subproblems horizontally in one echelon before moving to the next echelon, whereas the second option explores the subproblems (sort of) vertically. But the two options still do not address how a branching variable is selected at each subproblem.
+The overall idea of the third strategy is based on two broad options with marked trade-offs: (1) A high-echelon subproblem (closer to the start of the search tree) is more likely to produce a tighter objective bound (because it is closer-hence less additional constraints-to the continuous LP optimum), but less likely to produce a feasible integer solution (because of the smaller number of integer-branching constraints leading to the subproblem). (2) Conversely, a low-echelon subproblem is more likely to produce a feasible integer solution but less likely to generate a tight objective value bound. In essence, the first option explores the subproblems horizontally in one echelon before moving to the next echelon, whereas the second option explores the subproblems (sort of) vertically. But the two options still do not address how a branching variable is selected at each subproblem. ^tradeoffs
 
-Although heuristics are available for the selection of both the next subproblem and its branching variable, computational experience shows that the effectiveness of these heuristics is data-dependent. In view of this difficulty, ILP software is usually not sufficiently sophisticated to be used as an input-output black box as in LP software; meaning there are cases where manual intervention is needed to "tweak" the B&B search. For example, the search may alternate periodically between horizontal and vertical selection of the next subproblem in hope of encountering a good objective value bound. Indeed all available commercial ILP packages allow this manual intervention. A typical example is demonstrated by the commands used in the AMPL moment following Example 9.2-1.
+Although heuristics are available for the selection of both the next subproblem and its branching variable, computational experience shows that the effectiveness of these heuristics is data-dependent. In view of this difficulty, ILP software is usually not sufficiently sophisticated to be used as an input-output black box as in LP software; meaning there are cases where manual intervention is needed to "tweak" the B&B search. For example, the search may alternate periodically between horizontal and vertical selection of the next subproblem in hope of encountering a good objective value bound. Indeed all available commercial ILP packages allow this manual intervention. A typical example is demonstrated by the commands used in the AMPL moment following Example 9.2-1. ^manualtweak
 
 The fact remains that integer programming algorithms are not totally reliable. But perhaps their performance can be improved by tweaking the ILP model itself. One possibility is to seek a formulation with the smallest possible number of integer variable (i.e., approximating some of the integer variables with continuous ones). Another is to tighten the feasible ranges on the integer variables as much as possible. And a third is to use a different solution venue altogether (e.g., knapsack problems can be formulated as a shortest route network model). But perhaps the most plausible possibility is to settle for a near-optimum solution using heuristics. Chapter 10, on heuristic programming, provides three such heuristics.
 
-Summary of the B&B Algorithm. Assume a maximization problem. Set an initial lower bound $z =  - \infty$ on the optimum objective value of ILP and set $i = {0.}^{6}$
+Summary of the B&B Algorithm. Assume a maximization problem. Set an initial lower bound $z =  - \infty$ on the optimum objective value of ILP and set $i = {0.}^{6}$ ^bbsummary
 
 Step 1. (Fathoming/bounding). Select LPi, the next subproblem to be examined. Solve LPi, and attempt to fathom it using one of three conditions:
 
@@ -594,13 +702,13 @@ $$
 
 Set $i = i + 1$ , and go to step 1 .
 
-The B&B algorithm can be extended to mixed problems (in which only some of the variables are integer), simply by never branching a continuous variable. A feasible subproblem provides a new bound on the objective value if the values of the discrete variables are integers with an improved objective value.
+The B&B algorithm can be extended to mixed problems (in which only some of the variables are integer), simply by never branching a continuous variable. A feasible subproblem provides a new bound on the objective value if the values of the discrete variables are integers with an improved objective value. ^mixedbb
 
-#### 9.2.2 Cutting-Plane Algorithm
+#### 9.2.2 Cutting-Plane Algorithm ^cuttingplane
 
-As in the B&B algorithm, the cutting-plane algorithm also starts at the continuous optimum LP solution. Special constraints (called cuts) are added to the solution space in a manner that renders an integer optimum extreme point. In Example 9.2-2, we first demonstrate graphically how cuts are used to produce an integer solution and then implement the idea algebraically.
+As in the B&B algorithm, the cutting-plane algorithm also starts at the continuous optimum LP solution. Special constraints (called cuts) are added to the solution space in a manner that renders an integer optimum extreme point. In Example 9.2-2, we first demonstrate graphically how cuts are used to produce an integer solution and then implement the idea algebraically. ^cutsidea
 
-Example 9.2-2
+Example 9.2-2 ^cutexample
 
 Consider the following ILP:
 
@@ -640,11 +748,15 @@ The added cuts do not eliminate any of the original feasible integer points, but
 
 It is purely accidental that a 2-variable problem used exactly 2 cuts to reach the optimum integer solution. In general, the number of cuts, though finite, cannot be determined based on the size of the problem, in the sense that a smaller problem may require more cuts than a larger problem.
 
-Next, we use the same example to show how the cuts are constructed and implemented algebraically. Given the slacks ${x}_{3}$ and ${x}_{4}$ for constraints 1 and 2, the optimum LP tableau is given as
+Next, we use the same example to show how the cuts are constructed and implemented algebraically. Given the slacks ${x}_{3}$ and ${x}_{4}$ for constraints 1 and 2, the optimum LP tableau is given as ^tableau
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>Z</td><td>0</td><td>0</td><td>63</td><td>$\frac{31}{22}$</td><td>${66}\frac{1}{2}$</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>$\frac{7}{22}$</td><td>$\frac{\frac{1}{22}}{\frac{3}{22}}$</td><td>$3\frac{1}{2}$</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>$- \frac{1}{22}$</td><td></td><td>$4\frac{1}{2}$</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| Z | 0 | 0 | 63 | $\frac{31}{22}$ | ${66}\frac{1}{2}$ |
+| ${x}_{2}$ | 0 | 1 | $\frac{7}{22}$ | $\frac{\frac{1}{22}}{\frac{3}{22}}$ | $3\frac{1}{2}$ |
+| ${x}_{1}$ | 1 | 0 | $- \frac{1}{22}$ |  | $4\frac{1}{2}$ |
 
-The optimum continuous solution is $z = {66}\frac{1}{2},{x}_{1} = 4\frac{1}{2},{x}_{2} = 3\frac{1}{2},{x}_{3} = 0,{x}_{4} = 0$ . The cut is developed under the assumption that all the variables, including all the slacks, are integers. Note also that because all the original objective coefficients are integers in this example, the value of $z$ also is integer.
+The optimum continuous solution is $z = {66}\frac{1}{2},{x}_{1} = 4\frac{1}{2},{x}_{2} = 3\frac{1}{2},{x}_{3} = 0,{x}_{4} = 0$ . The cut is developed under the assumption that all the variables, including all the slacks, are integers. Note also that because all the original objective coefficients are integers in this example, the value of $z$ also is integer. ^fractionalcut
 
 The information in the optimum tableau can be written explicitly as
 
@@ -660,7 +772,7 @@ $$
 {x}_{1} - \frac{1}{22}{x}_{3} + \frac{3}{22}{x}_{4} = 4\frac{1}{2}\;\left( {{x}_{1}\text{ -equation }}\right)
 $$
 
-A constraint equation can be used as a source row for generating a cut, provided its right-hand side is fractional. Also, the $z$ -equation can be used as a source row in this example because $z$ happens to be defined by an integer expression. We will demonstrate how a cut is generated from each of these source rows, starting with the $z$ -equation.
+A constraint equation can be used as a source row for generating a cut, provided its right-hand side is fractional. Also, the $z$ -equation can be used as a source row in this example because $z$ happens to be defined by an integer expression. We will demonstrate how a cut is generated from each of these source rows, starting with the $z$ -equation. ^source
 
 First, we factor out all the noninteger coefficients of the equation into an integer value and a positive fractional component. For example,
 
@@ -750,11 +862,21 @@ $$
 
 This constraint is added to the LP optimum tableau as follows:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${s}_{1}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>63</td><td>$\frac{31}{22}$</td><td>0</td><td>${66}\frac{1}{2}$</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>$\frac{7}{22}$</td><td>$\frac{1}{22}$</td><td>0</td><td>$3\frac{1}{2}$</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>$- \frac{1}{22}$</td><td>$\frac{3}{22}$</td><td>0</td><td>$4\frac{1}{2}$</td></tr><tr><td>${s}_{1}$</td><td>0</td><td>0</td><td>$- \frac{7}{22}$</td><td>$- \frac{1}{22}$</td><td>1</td><td>$- \frac{1}{2}$</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${s}_{1}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 63 | $\frac{31}{22}$ | 0 | ${66}\frac{1}{2}$ |
+| ${x}_{2}$ | 0 | 1 | $\frac{7}{22}$ | $\frac{1}{22}$ | 0 | $3\frac{1}{2}$ |
+| ${x}_{1}$ | 1 | 0 | $- \frac{1}{22}$ | $\frac{3}{22}$ | 0 | $4\frac{1}{2}$ |
+| ${s}_{1}$ | 0 | 0 | $- \frac{7}{22}$ | $- \frac{1}{22}$ | 1 | $- \frac{1}{2}$ |
 
-The tableau is optimal but infeasible. We apply the dual simplex method (Section 4.4.1) to recover feasibility, which yields
+The tableau is optimal but infeasible. We apply the dual simplex method (Section 4.4.1) to recover feasibility, which yields ^dualfeas
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${s}_{1}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>0</td><td>1</td><td>9</td><td>62</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>3</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>1 7</td><td>$- \frac{1}{7}$</td><td>$4\frac{4}{7}$</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>0</td><td>1</td><td>1 7</td><td>$- \frac{22}{7}$</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${s}_{1}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 0 | 1 | 9 | 62 |
+| ${x}_{2}$ | 0 | 1 | 0 | 0 | 1 | 3 |
+| ${x}_{1}$ | 1 | 0 | 0 | $\frac{1}{7}$ | $- \frac{1}{7}$ | $4\frac{4}{7}$ |
+| ${x}_{3}$ | 0 | 0 | 1 | $\frac{1}{7}$ | $- \frac{22}{7}$ | 1 |
 
 The last solution is still noninteger in ${x}_{1}$ and ${x}_{3}$ (recall that all variables, including slack and surplus, must be integer), and we arbitrarily select ${x}_{1}$ as the next source row - that is,
 
@@ -772,11 +894,23 @@ $$
 
 Adding cut II to the previous optimal tableau, we get
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>0</td><td>1</td><td>9</td><td>0</td><td>62</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>3</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>1 7</td><td>$- \frac{1}{7}$</td><td>0</td><td>$4\frac{4}{7}$</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>0</td><td>1</td><td>有</td><td>$- \frac{22}{7}$</td><td>0</td><td>$1\frac{4}{7}$</td></tr><tr><td>${s}_{2}$</td><td>0</td><td>0</td><td>0</td><td>$- \frac{1}{7}$</td><td>$- \frac{6}{7}$</td><td>1</td><td>$- \frac{4}{7}$</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${s}_{1}$ | ${s}_{2}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 0 | 1 | 9 | 0 | 62 |
+| ${x}_{2}$ | 0 | 1 | 0 | 0 | 1 | 0 | 3 |
+| ${x}_{1}$ | 1 | 0 | 0 | $\frac{1}{7}$ | $- \frac{1}{7}$ | 0 | $4\frac{4}{7}$ |
+| ${x}_{3}$ | 0 | 0 | 1 | $\frac{1}{7}$ | $- \frac{22}{7}$ | 0 | $1\frac{4}{7}$ |
+| ${s}_{2}$ | 0 | 0 | 0 | $- \frac{1}{7}$ | $- \frac{6}{7}$ | 1 | $- \frac{4}{7}$ |
 
 The dual simplex method yields the following tableau:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>7</td><td>58</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>3</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>0</td><td>-1</td><td>1</td><td>4</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>0</td><td>1</td><td>0</td><td>-4</td><td>1</td><td>1</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>0</td><td>0</td><td>1</td><td>6</td><td>-7</td><td>4</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${s}_{1}$ | ${s}_{2}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 0 | 0 | 3 | 7 | 58 |
+| ${x}_{2}$ | 0 | 1 | 0 | 0 | 1 | 0 | 3 |
+| ${x}_{1}$ | 1 | 0 | 0 | 0 | -1 | 1 | 4 |
+| ${x}_{3}$ | 0 | 0 | 1 | 0 | -4 | 1 | 1 |
+| ${x}_{4}$ | 0 | 0 | 0 | 1 | 6 | -7 | 4 |
 
 The optimum solution $\left( {{x}_{1} = 4,{x}_{2} = 3, z = {58}}\right)$ is all integer. It is not accidental that all the coefficients of the last tableau are integers also, a consequence of using the fractional cuts.
 
@@ -800,7 +934,7 @@ $$
 
 The application of the fractional cut assumes that the constraint has a feasible integer solution in all ${x}_{1},{x}_{2}$ , and ${s}_{1}$ . However, the given equation will have a feasible integer solution in ${x}_{1}$ and ${x}_{2}$ only if ${s}_{1}$ is noninteger. This means that the cutting-plane algorithm will conclude, through the applications of the dual simplex, that the problem has no feasible (integer) solution, even though the variables of concern, ${x}_{1}$ and ${x}_{2}$ , can assume feasible integer values.
 
-There are two ways to "remedy" this situation.
+There are two ways to "remedy" this situation. ^mixedcut
 
 1. Multiply the entire constraint by a proper constant to remove all the fractions. For example, multiplying the constraint above by 6 , we get
 
@@ -812,17 +946,17 @@ Any integer solution of ${x}_{1}$ and ${x}_{2}$ automatically yields integer sla
 
 2. Use a special cut, called the mixed cut, which allows only a subset of variables to assume integer values, with all the other variables (including slack and surplus) remaining continuous. The details of this cut will not be presented in this chapter (see Taha, 1975, pp. 198-202).
 
-An unavoidable flaw in floating-point arithmetic on the computer is the roundoff error. Fractions such as 1/3 is approximated as .33333, and no matter how many trailing threes one carries, the representation remains an approximation. And herein lies one of the most serious challenges to the use of the fractional cut whose construction, ironically, rests squarely on the use of fractions. Though attempts were made to avoid the use of fractions by using the so-called all-integer cuts that require an all-integer starting tableau
+An unavoidable flaw in floating-point arithmetic on the computer is the roundoff error. Fractions such as 1/3 is approximated as .33333, and no matter how many trailing threes one carries, the representation remains an approximation. And herein lies one of the most serious challenges to the use of the fractional cut whose construction, ironically, rests squarely on the use of fractions. Though attempts were made to avoid the use of fractions by using the so-called all-integer cuts that require an all-integer starting tableau ^roundoff
 
 (an unreasonable condition to boot!), the resulting algorithm is extremely slow because in seeking accuracy it forgoes speed. Another disadvantage of the cutting plane algorithms is their dual infeasibility; meaning that no feasible solution is available before the natural termination of the algorithm. Thus, unlike the B&B algorithm, there will be no solution to show if computations are stopped prematurely. The conclusion is that, from the practical standpoint, an ILP algorithm rooted only in the use of cuts is not recommended and for this reason branch-and-bound is the algorithm of choice in all solvers (in fact, Ralph Gomory, the developer of the fractional cut, was himself skeptical about the practicality of an all fractional-cut-based ILP algorithm because of the ensuing numerical instability).
 
-Yet, cuts can play a role in enhancing the efficiency and efficacy of the branch-and-bound algorithm by periodically applying them to the optimum tableau of a subproblem where massive degeneracy at its optimum extreme point may make it difficult to determine the associated branches (of the type $x \leq  a$ and $x \geq  a + 1$ ). ${}^{7}$
+Yet, cuts can play a role in enhancing the efficiency and efficacy of the branch-and-bound algorithm by periodically applying them to the optimum tableau of a subproblem where massive degeneracy at its optimum extreme point may make it difficult to determine the associated branches (of the type $x \leq  a$ and $x \geq  a + 1$ ). ${}^{7}$ ^branchcut
 
-## Aha! Moment: Seminal Development of Dantzig-Fulkerson-Johnson Cut. ${}^{8}$
+## Aha! Moment: Seminal Development of Dantzig-Fulkerson-Johnson Cut. ${}^{8}$ ^dfj
 
 The branch and cut algorithm developed in 1954 by Dantzig, Fulkeson, and Johnson for solving the traveling salesman problem (see Chapter 11) is seminal in that it ushered the start of the idea of imposing secondary constraints (cuts) on the optimum (continuous) LP solution to produce an integer optimum solution. Their work laid the foundation for the development of the branch and cut algorithm for the general mixed ILP. Additionally, the authors' idea of using cuts motivated the development of the Gomory's fractional cut in 1958 (see Section 9.2.2).
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^bibliography
 
 Barnett, A., "Misapplication Review: High Road to Glory," Interfaces, Vol. 17, No. 5, pp. 51-54, 1987.
 
@@ -856,9 +990,17 @@ Taha, H., Integer Programming: Theory, Applications, and Computations, Academic 
 
 Weber, G., "Puzzle Contests in MS/OR Education," Interfaces, Vol. 20, No. 2, pp. 72-76, 1990.
 
-## PROBLEMS
+## PROBLEMS ^problems
 
-<table><tr><td>Section</td><td>Assigned Problems</td></tr><tr><td>9.1.1</td><td>9-1 to 9-18</td></tr><tr><td>9.1.2</td><td>9-19 to 9-27</td></tr><tr><td>9.1.3</td><td>9-28 to 9-37</td></tr><tr><td>9.1.4</td><td>9-38 to 9-54</td></tr><tr><td>9.2.1</td><td>9-55 to 9-64</td></tr><tr><td>9.2.2</td><td>9-65 to 9-70</td></tr></table>
+| Section | Assigned problems |
+| --- | --- |
+| 9.1.1 | 9-1 to 9-18 |
+| 9.1.2 | 9-19 to 9-27 |
+| 9.1.3 | 9-28 to 9-37 |
+| 9.1.4 | 9-38 to 9-54 |
+| 9.2.1 | 9-55 to 9-64 |
+| 9.2.2 | 9-65 to 9-70 |
+^problemassign
 
 9-1. Modify and solve the capital budgeting model of Example 9.1-1 to account for the following additional restrictions:
 
@@ -868,7 +1010,13 @@ Weber, G., "Puzzle Contests in MS/OR Education," Interfaces, Vol. 20, No. 2, pp.
 
 9-2. Five items are to be loaded in a vessel. The weight ${w}_{i}$ , volume ${v}_{i}$ , and value ${r}_{i}$ for item $i$ are tabulated below.
 
-<table><tr><td>Item $i$</td><td>Unit weight, ${w}_{i}$ (tons)</td><td>Unit volume, ${v}_{i}\left( {\mathrm{{yd}}}^{3}\right)$</td><td>Unit worth, ${r}_{i}\left( {\$ {100}}\right)$</td></tr><tr><td>1</td><td>5</td><td>1</td><td>4</td></tr><tr><td>2</td><td>8</td><td>8</td><td>7</td></tr><tr><td>3</td><td>3</td><td>6</td><td>6</td></tr><tr><td>4</td><td>2</td><td>5</td><td>5</td></tr><tr><td>5</td><td>7</td><td>4</td><td>4</td></tr></table>
+| Item $i$ | Unit weight, ${w}_{i}$ (tons) | Unit volume, ${v}_{i}\left( {\mathrm{{yd}}}^{3}\right)$ | Unit worth, ${r}_{i}\left( {\$ {100}}\right)$ |
+| --- | --- | --- | --- |
+| 1 | 5 | 1 | 4 |
+| 2 | 8 | 8 | 7 |
+| 3 | 3 | 6 | 6 |
+| 4 | 2 | 5 | 5 |
+| 5 | 7 | 4 | 4 |
 
 The maximum allowable cargo weight and volume are 210 tons and ${198}{\mathrm{{yd}}}^{3}$ , respectively. Formulate the ILP model, and find the most valuable cargo.
 
@@ -900,7 +1048,14 @@ Formulate the problem as an ILP, and find the optimum solution.
 
 9-9. Weber (1990). Consider the following two groups of words: letters such that the difference between the total scores of the two groups will be as small as possible. (Note: The score for a word is the sum of the numeric values assigned to its individual letters.)
 
-<table><tr><td>Group 1</td><td>Group 2</td></tr><tr><td>AREA</td><td>ERST</td></tr><tr><td>FORT</td><td>FOOT</td></tr><tr><td>HOPE</td><td>HEAT</td></tr><tr><td>SPAR</td><td>PAST</td></tr><tr><td>THAT</td><td>PROF</td></tr><tr><td>TREE</td><td>STOP</td></tr></table>
+| Group 1 | Group 2 |
+| --- | --- |
+| AREA | ERST |
+| FORT | FOOT |
+| HOPE | HEAT |
+| SPAR | PAST |
+| THAT | PROF |
+| TREE | STOP |
 
 All the words in groups 1 and 2 can be formed from the nine letters A, E, F, H, O, P, R, S, and T. Develop a model to assign a unique numeric value from 1 through 9 to these
 
@@ -910,7 +1065,19 @@ All the words in groups 1 and 2 can be formed from the nine letters A, E, F, H, 
 
 *9-12. Graves and Associates (1993). Ulern University uses a mathematical model that optimizes student preferences taking into account the limitation of classroom and faculty resources. To demonstrate the application of the model, consider the simplified case of 10 students who are required to select two courses out of six offered electives. The table below gives scores that represent each student's preference for individual courses, with a score of 100 being the highest. For simplicity, it is assumed that the preference score for a two-course selection is the sum of the individual score. Course capacity is the maximum number of students allowed to take the class.
 
-<table><tr><td rowspan="2">Student</td><td colspan="6">Preference score for course</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><td>1</td><td>20</td><td>40</td><td>50</td><td>30</td><td>90</td><td>100</td></tr><tr><td>2</td><td>90</td><td>100</td><td>80</td><td>70</td><td>10</td><td>40</td></tr><tr><td>3</td><td>25</td><td>40</td><td>30</td><td>80</td><td>95</td><td>90</td></tr><tr><td>4</td><td>80</td><td>50</td><td>60</td><td>80</td><td>30</td><td>40</td></tr><tr><td>5</td><td>75</td><td>60</td><td>90</td><td>100</td><td>50</td><td>40</td></tr><tr><td>6</td><td>60</td><td>40</td><td>90</td><td>10</td><td>80</td><td>80</td></tr><tr><td>7</td><td>45</td><td>40</td><td>70</td><td>60</td><td>55</td><td>60</td></tr><tr><td>8</td><td>30</td><td>100</td><td>40</td><td>70</td><td>90</td><td>55</td></tr><tr><td>9</td><td>80</td><td>60</td><td>100</td><td>70</td><td>65</td><td>80</td></tr><tr><td>10</td><td>40</td><td>60</td><td>80</td><td>100</td><td>90</td><td>10</td></tr><tr><td>Course capacity</td><td>6</td><td>8</td><td>5</td><td>5</td><td>6</td><td>5</td></tr></table>
+| Student | Course 1 | Course 2 | Course 3 | Course 4 | Course 5 | Course 6 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 20 | 40 | 50 | 30 | 90 | 100 |
+| 2 | 90 | 100 | 80 | 70 | 10 | 40 |
+| 3 | 25 | 40 | 30 | 80 | 95 | 90 |
+| 4 | 80 | 50 | 60 | 80 | 30 | 40 |
+| 5 | 75 | 60 | 90 | 100 | 50 | 40 |
+| 6 | 60 | 40 | 90 | 10 | 80 | 80 |
+| 7 | 45 | 40 | 70 | 60 | 55 | 60 |
+| 8 | 30 | 100 | 40 | 70 | 90 | 55 |
+| 9 | 80 | 60 | 100 | 70 | 65 | 80 |
+| 10 | 40 | 60 | 80 | 100 | 90 | 10 |
+| Course capacity | 6 | 8 | 5 | 5 | 6 | 5 |
 
 Formulate the problem as an ILP and find the optimum solution.
 
@@ -934,29 +1101,67 @@ ${}^{10}$ Problems 9-13 to 9-16 are adapted from puzzles compiled in http://www.
 
 Formulate the problem as an integer program, and find the solution for the instance given below.
 
-<table><tr><td></td><td>6</td><td></td><td>1</td><td></td><td>4</td><td></td><td>5</td><td></td></tr><tr><td></td><td></td><td>8</td><td>3</td><td></td><td>5</td><td>6</td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td>7</td><td></td><td></td></tr><tr><td>8</td><td></td><td></td><td>4</td><td></td><td>7</td><td></td><td></td><td>6</td></tr><tr><td></td><td></td><td>6</td><td></td><td></td><td></td><td>3</td><td></td><td></td></tr><tr><td>7</td><td></td><td></td><td>9</td><td></td><td>1</td><td></td><td></td><td>4</td></tr><tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>2</td></tr><tr><td></td><td></td><td>7</td><td>2</td><td></td><td>6</td><td>9</td><td></td><td></td></tr><tr><td></td><td>4</td><td></td><td>5</td><td></td><td>8</td><td></td><td>7</td><td></td></tr></table>
+|     |     |     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     | 6   |     | 1   |     | 4   |     | 5   |     |
+|     |     | 8   | 3   |     | 5   | 6   |     |     |
+| 2   |     |     |     |     |     | 7   |     |     |
+| 8   |     |     | 4   |     | 7   |     |     | 6   |
+|     |     | 6   |     |     |     | 3   |     |     |
+| 7   |     |     | 9   |     | 1   |     |     | 4   |
+| 5   |     |     |     |     |     |     |     | 2   |
+|     |     | 7   | 2   |     | 6   | 9   |     |     |
+|     | 4   |     | 5   |     | 8   |     | 7   |     |
+|     |     |     |     |     |     |     |     |     |
 
-[Hint: Let ${x}_{ijk} = 1$ if digit $k$ is placed in cell $\left( {i, j}\right) , i, j, k = 1,2,\ldots , n, n = 9$ . If you use AMPL, keep in mind that for $n = 9$ , the resulting number of variables will exceed the capacity of student AMPL. If you do not have access to the full AMPL version, you can develop a general model for $n = 4$ or 9, and then solve it for the simpler (almost trivial) case of a $4 \times  4$ grid with a $2 \times  2$ subgrid.]
+Hint: Let ${x}_{ijk} = 1$ if digit $k$ is placed in cell $\left( {i, j}\right) , i, j, k = 1,2,\ldots , n, n = 9$ . If you use AMPL, keep in mind that for $n = 9$ , the resulting number of variables will exceed the capacity of student AMPL. If you do not have access to the full AMPL version, you can develop a general model for $n = 4$ or 9, and then solve it for the simpler (almost trivial) case of a $4 \times  4$ grid with a $2 \times  2$ subgrid.
 
 *9-19. ABC is an LTL (less-than-truckload) trucking company that delivers loads on a daily basis to five customers. The following list provides the customers associated with each route:
 
-<table><tr><td>Route</td><td>Customers served on the route</td></tr><tr><td>1</td><td>3,2</td></tr><tr><td>2</td><td>5, 3, 4</td></tr><tr><td>3</td><td>2, 5, 1, 3</td></tr><tr><td>4</td><td>2, 3, 5</td></tr><tr><td>5</td><td>1, 4, 2</td></tr><tr><td>6</td><td>1,3,5</td></tr></table>
+| Route | Customers served on the route |
+| --- | --- |
+| 1 | 3, 2 |
+| 2 | 5, 3, 4 |
+| 3 | 2, 5, 1, 3 |
+| 4 | 2, 3, 5 |
+| 5 | 1, 4, 2 |
+| 6 | 1, 3, 5 |
 
 The segments of each route are dictated by the capacity of the truck delivering the loads. For example, on route 1, the capacity of the truck is sufficient to deliver the loads to customers 3 and 2 only. The following table lists distances (in miles) among the truck terminal (ABC) and the customers.
 
-<table><tr><td colspan="7">Miles from $i$ to $j$</td></tr><tr><td>$j$ <br> $i$</td><td>ABC</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>ABC</td><td>0</td><td>10</td><td>12</td><td>16</td><td>9</td><td>8</td></tr><tr><td>1</td><td>10</td><td>0</td><td>32</td><td>8</td><td>17</td><td>10</td></tr><tr><td>2</td><td>12</td><td>32</td><td>0</td><td>14</td><td>21</td><td>20</td></tr><tr><td>3</td><td>16</td><td>8</td><td>14</td><td>0</td><td>15</td><td>18</td></tr><tr><td>4</td><td>9</td><td>17</td><td>21</td><td>15</td><td>0</td><td>11</td></tr><tr><td>5</td><td>8</td><td>10</td><td>20</td><td>18</td><td>11</td><td>0</td></tr></table>
+| $i \backslash j$ | ABC | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| ABC | 0 | 10 | 12 | 16 | 9 | 8 |
+| 1 | 10 | 0 | 32 | 8 | 17 | 10 |
+| 2 | 12 | 32 | 0 | 14 | 21 | 20 |
+| 3 | 16 | 8 | 14 | 0 | 15 | 18 |
+| 4 | 9 | 17 | 21 | 15 | 0 | 11 |
+| 5 | 8 | 10 | 20 | 18 | 11 | 0 |
 
 The objective is to determine the least distance needed to make the daily deliveries to all five customers. Though the solution may result in a customer being served by more than one route, an approximation in the implementation phase assumes that only one such route is used. Formulate the problem as an ILP, and find the optimum solution.
 
 *9-20. The U of A is in the process of forming a committee to handle students' grievances. The administration wants the committee to include at least one female, one male, one student, one administrator, and one faculty member. Ten individuals (identified, for simplicity, by the letters $a$ to $j$ ) have been nominated. The mix of these individuals in the different categories is given as follows:
 
-<table><tr><td>Category</td><td>Individuals</td></tr><tr><td>Females</td><td>$a, b, c, d, e$</td></tr><tr><td>Males</td><td>$f, g, h, i, j$</td></tr><tr><td>Students</td><td>$a, b, c, j$</td></tr><tr><td>Administrators</td><td>$e, f$</td></tr><tr><td>Faculty</td><td>$d, g, h, i$</td></tr></table>
+| Category | Individuals |
+| --- | --- |
+| Females | $a, b, c, d, e$ |
+| Males | $f, g, h, i, j$ |
+| Students | $a, b, c, j$ |
+| Administrators | $e, f$ |
+| Faculty | $d, g, h, i$ |
 
 The U of A wants to form the smallest committee with representation from each of the five categories. Formulate the problem as an ILP, and find the optimum solution.
 
 9-21. Washington County includes six towns that need emergency ambulance service. Because of the proximity of some of the towns, a single station may serve more than one community. The stipulation is that the station must be within 18 minutes of driving time from the towns it serves. The table below gives the driving times in minutes among the six towns.
 
-<table><tr><td colspan="7">Time in minutes from $i$ to $j$</td></tr><tr><td>$j$ <br> $i$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><td>1</td><td>0</td><td>19</td><td>23</td><td>18</td><td>20</td><td>25</td></tr><tr><td>2</td><td>19</td><td>0</td><td>22</td><td>13</td><td>22</td><td>11</td></tr><tr><td>3</td><td>23</td><td>22</td><td>0</td><td>60</td><td>17</td><td>20</td></tr><tr><td>4</td><td>18</td><td>13</td><td>60</td><td>0</td><td>55</td><td>17</td></tr><tr><td>5</td><td>20</td><td>22</td><td>17</td><td>55</td><td>0</td><td>12</td></tr><tr><td>6</td><td>25</td><td>11</td><td>20</td><td>17</td><td>12</td><td>0</td></tr></table>
+| $i \backslash j$ | 1 | 2 | 3 | 4 | 5 | 6 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 0 | 19 | 23 | 18 | 20 | 25 |
+| 2 | 19 | 0 | 22 | 13 | 22 | 11 |
+| 3 | 23 | 22 | 0 | 60 | 17 | 20 |
+| 4 | 18 | 13 | 60 | 0 | 55 | 17 |
+| 5 | 20 | 22 | 17 | 55 | 0 | 12 |
+| 6 | 25 | 11 | 20 | 17 | 12 | 0 |
 
 ![bo_d56m4mf7aajc73800na0_25_705_199_552_438_0.jpg](bo_d56m4mf7aajc73800na0_25_705_199_552_438_0.jpg)
 
@@ -970,13 +1175,32 @@ Formulate an ILP whose solution will produce the smallest number of stations and
 
 9-23. Bill has just completed his exams for the academic year and wants to celebrate by seeing every movie showing in theaters in his town and in six other neighboring cities. If he travels to another town, he will stay there until he has seen all the movies he wants. The following table provides the information about the movie offerings and the round-trip distance to the neighboring town:
 
-<table><tr><td>Theater location</td><td>Movie offerings</td><td>Round-trip miles</td><td>Cost per show (\$)</td></tr><tr><td>In-town</td><td>1,3</td><td>0</td><td>7.95</td></tr><tr><td>City A</td><td>1, 6, 8</td><td>25</td><td>5.50</td></tr><tr><td>City B</td><td>2, 5, 7</td><td>30</td><td>5.00</td></tr><tr><td>City C</td><td>1, 8, 9</td><td>28</td><td>7.00</td></tr><tr><td>City D</td><td>2, 4, 7</td><td>40</td><td>4.95</td></tr><tr><td>City E</td><td>1,3,5,10</td><td>35</td><td>5.25</td></tr><tr><td>City F</td><td>4,5,6,9</td><td>32</td><td>6.75</td></tr></table>
+| Theater location | Movie offerings | Round-trip miles | Cost per show ($) |
+| --- | --- | --- | --- |
+| In-town | 1, 3 | 0 | 7.95 |
+| City A | 1, 6, 8 | 25 | 5.50 |
+| City B | 2, 5, 7 | 30 | 5.00 |
+| City C | 1, 8, 9 | 28 | 7.00 |
+| City D | 2, 4, 7 | 40 | 4.95 |
+| City E | 1, 3, 5, 10 | 35 | 5.25 |
+| City F | 4, 5, 6, 9 | 32 | 6.75 |
 
 The cost of driving is 75 cents per mile. Bill wishes to determine the towns he needs to visit to see all the movies while minimizing his total cost.
 
 9-24. Walmark Stores is in the process of expansion in the western United States. During next year, Walmark is planning to construct new stores that will serve 10 geographically dispersed communities. Past experience indicates that a community must be within 25 miles of a store to attract customers. In addition, the population of a community plays an important role in where a store is located, in the sense that bigger communities generate more participating customers. The following table provides the populations as well as the distances (in miles) between the communities:
 
-<table><tr><td colspan="11">Miles from community $i$ to community $j$</td><td rowspan="2">Population</td></tr><tr><td>$j$ <br> $i$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr><tr><td>1</td><td></td><td>20</td><td>40</td><td>35</td><td>17</td><td>24</td><td>50</td><td>58</td><td>33</td><td>12</td><td>10,000</td></tr><tr><td>2</td><td>20</td><td></td><td>23</td><td>68</td><td>40</td><td>30</td><td>20</td><td>19</td><td>70</td><td>40</td><td>15,000</td></tr><tr><td>3</td><td>40</td><td>23</td><td></td><td>36</td><td>70</td><td>22</td><td>45</td><td>30</td><td>21</td><td>80</td><td>28,000</td></tr><tr><td>4</td><td>35</td><td>68</td><td>36</td><td></td><td>70</td><td>80</td><td>24</td><td>20</td><td>40</td><td>10</td><td>30,000</td></tr><tr><td>5</td><td>17</td><td>40</td><td>70</td><td>70</td><td></td><td>23</td><td>70</td><td>40</td><td>13</td><td>40</td><td>40,000</td></tr><tr><td>6</td><td>24</td><td>30</td><td>22</td><td>80</td><td>23</td><td></td><td>12</td><td>14</td><td>50</td><td>50</td><td>30,000</td></tr><tr><td>7</td><td>50</td><td>20</td><td>45</td><td>24</td><td>70</td><td>12</td><td></td><td>26</td><td>40</td><td>30</td><td>20,000</td></tr><tr><td>8</td><td>58</td><td>19</td><td>30</td><td>20</td><td>40</td><td>14</td><td>26</td><td></td><td>20</td><td>50</td><td>15,000</td></tr><tr><td>9</td><td>33</td><td>70</td><td>21</td><td>40</td><td>13</td><td>50</td><td>40</td><td>20</td><td></td><td>22</td><td>60,000</td></tr><tr><td>10</td><td>12</td><td>40</td><td>80</td><td>10</td><td>40</td><td>50</td><td>30</td><td>50</td><td>22</td><td></td><td>12,000</td></tr></table>
+| $i \backslash j$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | Population |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 |  | 20 | 40 | 35 | 17 | 24 | 50 | 58 | 33 | 12 | 10,000 |
+| 2 | 20 |  | 23 | 68 | 40 | 30 | 20 | 19 | 70 | 40 | 15,000 |
+| 3 | 40 | 23 |  | 36 | 70 | 22 | 45 | 30 | 21 | 80 | 28,000 |
+| 4 | 35 | 68 | 36 |  | 70 | 80 | 24 | 20 | 40 | 10 | 30,000 |
+| 5 | 17 | 40 | 70 | 70 |  | 23 | 70 | 40 | 13 | 40 | 40,000 |
+| 6 | 24 | 30 | 22 | 80 | 23 |  | 12 | 14 | 50 | 50 | 30,000 |
+| 7 | 50 | 20 | 45 | 24 | 70 | 12 |  | 26 | 40 | 30 | 20,000 |
+| 8 | 58 | 19 | 30 | 20 | 40 | 14 | 26 |  | 20 | 50 | 15,000 |
+| 9 | 33 | 70 | 21 | 40 | 13 | 50 | 40 | 20 |  | 22 | 60,000 |
+| 10 | 12 | 40 | 80 | 10 | 40 | 50 | 30 | 50 | 22 |  | 12,000 |
 
 The idea is to construct the least number of stores, taking into account the distance restriction and the concentration of populations.
 
@@ -984,41 +1208,72 @@ Specify the communities where the stores should be located.
 
 *9-25. Guéret and Associates (2002), Section 12.6. MobileCo is budgeting \$15 million to construct as many as 7 transmitters to cover as much population as possible in 15 contiguous geographical communities. The communities covered by each transmitter and the budgeted construction costs are given below.
 
-<table><tr><td>Transmitter</td><td>Covered communities</td><td>Cost (million \$)</td></tr><tr><td>1</td><td>1,2</td><td>3.60</td></tr><tr><td>2</td><td>2, 3, 5</td><td>2.30</td></tr><tr><td>3</td><td>1, 7, 9, 10</td><td>4.10</td></tr><tr><td>4</td><td>4, 6, 8, 9</td><td>3.15</td></tr><tr><td>5</td><td>6, 7, 9, 11</td><td>2.80</td></tr><tr><td>6</td><td>5, 7, 10, 12, 14</td><td>2.65</td></tr><tr><td>7</td><td>12, 13, 14, 15</td><td>3.10</td></tr></table>
+| Transmitter | Covered communities | Cost (million $) |
+| --- | --- | --- |
+| 1 | 1, 2 | 3.60 |
+| 2 | 2, 3, 5 | 2.30 |
+| 3 | 1, 7, 9, 10 | 4.10 |
+| 4 | 4, 6, 8, 9 | 3.15 |
+| 5 | 6, 7, 9, 11 | 2.80 |
+| 6 | 5, 7, 10, 12, 14 | 2.65 |
+| 7 | 12, 13, 14, 15 | 3.10 |
 
 The following table provides the populations of the different communities:
 
-<table><tr><td>Community</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr><tr><td>Population (in 1000s)</td><td>10</td><td>15</td><td>28</td><td>30</td><td>40</td><td>30</td><td>20</td><td>15</td><td>60</td><td>12</td></tr></table>
+| Community | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Population (in 1000s) | 10 | 15 | 28 | 30 | 40 | 30 | 20 | 15 | 60 | 12 |
 
 Which of the proposed transmitters should be constructed?
 
 9-26. Gavernini and Associates (2004). Modern electric networks use automated electric utility meter reading in place of the more costly manual meter reading. In the automated system, meters from several customers are linked wirelessly to a single receiver. The meter sends monthly signals to a designated receiver to report the customer's consumption of electricity. The data are then channeled to a central computer to generate the utility bills. The objective is to determine the smallest number of receivers needed to serve a given number of meters. In real life, the problem encompasses thousands of meters and receivers. This problem deals with 10 meters and 8 possible locations for receivers, with the following configurations:
 
-<table><tr><td>Receiver</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr><tr><td>Meters</td><td>1, 2, 3</td><td>2, 3, 9</td><td>5, 6, 7</td><td>7, 9, 10</td><td>3, 6, 8</td><td>1, 4, 7, 9</td><td>4, 5, 9</td><td>1, 4, 8</td></tr></table>
+| Receiver | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Meters | 1, 2, 3 | 2, 3, 9 | 5, 6, 7 | 7, 9, 10 | 3, 6, 8 | 1, 4, 7, 9 | 4, 5, 9 | 1, 4, 8 |
 
 9-27. Solve Problem 9-26 if, additionally, each receiver can handle at most 4 meters and receiver 8 can handle meters 1, 4, 8, and 10.
 
 9-28. Leatherco is contracted to manufacture batches of pants, vests and jackets. Each product requires a special setup of the machines needed in the manufacturing processes. The following table provides the pertinent data regarding the use of raw material (leather) and labor time together with cost and revenue estimates. Current supply of leather is estimated at ${3800}{\mathrm{{ft}}}^{2}$ and available labor time is limited to 2850 hours.
 
-<table><tr><td></td><td>Pants</td><td>Vests</td><td>Jackets</td></tr><tr><td>Leather material per unit $\left( {\mathrm{{ft}}}^{2}\right)$</td><td>5.5</td><td>3.5</td><td>7.5</td></tr><tr><td>Labor time per unit (hrs)</td><td>4.5</td><td>3.5</td><td>5.5</td></tr><tr><td>Production cost per unit (\$)</td><td>30</td><td>20</td><td>80</td></tr><tr><td>Equipment setup cost per batch (\$)</td><td>110</td><td>90</td><td>140</td></tr><tr><td>Price per unit (\$)</td><td>60</td><td>40</td><td>120</td></tr><tr><td>Minimum number of units needed</td><td>100</td><td>150</td><td>200</td></tr></table>
+|  | Pants | Vests | Jackets |
+| --- | --- | --- | --- |
+| Leather material per unit $\left( {\mathrm{{ft}}}^{2}\right)$ | 5.5 | 3.5 | 7.5 |
+| Labor time per unit (hrs) | 4.5 | 3.5 | 5.5 |
+| Production cost per unit ($) | 30 | 20 | 80 |
+| Equipment setup cost per batch ($) | 110 | 90 | 140 |
+| Price per unit ($) | 60 | 40 | 120 |
+| Minimum number of units needed | 100 | 150 | 200 |
 
 Determine the optimum number of units that Leatherco must manufacture of each product.
 
 *9-29. Jobco is planning to produce at least 2000 widgets on three machines. The minimum lot size on any machine is 600 widgets. The following table gives the pertinent data of the situation.
 
-<table><tr><td>Machine</td><td>Setup cost (\$)</td><td>Production cost/unit (\$)</td><td>Capacity (units)</td></tr><tr><td>1</td><td>300</td><td>2</td><td>650</td></tr><tr><td>2</td><td>100</td><td>10</td><td>850</td></tr><tr><td>3</td><td>200</td><td>5</td><td>1250</td></tr></table>
+| Machine | Setup cost ($) | Production cost/unit ($) | Capacity (units) |
+| --- | --- | --- | --- |
+| 1 | 300 | 2 | 650 |
+| 2 | 100 | 10 | 850 |
+| 3 | 200 | 5 | 1250 |
 
 Formulate the problem as an ILP, and find the optimum solution.
 
 *9-30. Oilco is considering two potential drilling sites for reaching four targets (possible oil wells). The following table provides the preparation costs at each of the two sites and the cost of drilling from site $i$ to target $j\left( {i = 1,2;j = 1,2,3,4}\right)$ :
 
-<table><tr><td rowspan="2">Site</td><td colspan="4">Drilling cost (\$ million) to target</td><td rowspan="2">Preparation cost (\$ million)</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td>1</td><td>2</td><td>1</td><td>8</td><td>5</td><td>5</td></tr><tr><td>2</td><td>4</td><td>6</td><td>3</td><td>1</td><td>6</td></tr></table>
+| Site | Drilling cost ($ million) to target 1 | 2 | 3 | 4 | Preparation cost ($ million) |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 2 | 1 | 8 | 5 | 5 |
+| 2 | 4 | 6 | 3 | 1 | 6 |
 
 Formulate the problem as an ILP, and find the optimum solution.
 
 9-31. Three industrial sites are considered for locating manufacturing plants. The plants send their supplies to three customers. The supply at the plants, the demand at the customers, and the unit transportation cost from the plants to the customers are given in the following table:
 
-<table><tr><td colspan="5">Unit transportations cost (\$)</td></tr><tr><td>Customer <br> Plant</td><td>1</td><td>2</td><td>3</td><td>Supply</td></tr><tr><td>1</td><td>10</td><td>15</td><td>12</td><td>1800</td></tr><tr><td>2</td><td>17</td><td>14</td><td>20</td><td>1400</td></tr><tr><td>3</td><td>15</td><td>10</td><td>11</td><td>1300</td></tr><tr><td>Demand</td><td>1200</td><td>1700</td><td>1600</td><td></td></tr></table>
+| Customer \ Plant | 1 | 2 | 3 | Supply |
+| --- | --- | --- | --- | --- |
+| 1 | 10 | 15 | 12 | 1800 |
+| 2 | 17 | 14 | 20 | 1400 |
+| 3 | 15 | 10 | 11 | 1300 |
+| Demand | 1200 | 1700 | 1600 |  |
 
 In addition to the transportation costs, fixed costs are incurred at the rate of \$12,000, \$11,000, and \$12,000 for plants 1, 2, and 3, respectively. Formulate the problem as an ILP, and find the optimum solution.
 
@@ -1026,19 +1281,39 @@ In addition to the transportation costs, fixed costs are incurred at the rate of
 
 9-33. Liberatore and Miller (1985). A manufacturing facility uses two production lines to produce three products over the next 6 months. Backlogged demand is not allowed. However, a product may be overstocked to meet demand in later months. The following table provides the data associated with the demand, production, and storage of the three products:
 
-<table><tr><td rowspan="2">Product</td><td colspan="6">Demand in period</td><td rowspan="2">Unit holding cost (\$)/month</td><td rowspan="2">Initial inventory</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><td>1</td><td>50</td><td>30</td><td>40</td><td>60</td><td>20</td><td>45</td><td>.50</td><td>55</td></tr><tr><td>2</td><td>40</td><td>60</td><td>50</td><td>30</td><td>30</td><td>55</td><td>.35</td><td>75</td></tr><tr><td>3</td><td>30</td><td>40</td><td>20</td><td>70</td><td>40</td><td>30</td><td>.45</td><td>60</td></tr></table>
+| Product | Demand (period 1) | 2 | 3 | 4 | 5 | 6 | Unit holding cost ($)/month | Initial inventory |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 50 | 30 | 40 | 60 | 20 | 45 | .50 | 55 |
+| 2 | 40 | 60 | 50 | 30 | 30 | 55 | .35 | 75 |
+| 3 | 30 | 40 | 20 | 70 | 40 | 30 | .45 | 60 |
 
 There is a fixed cost for switching a line from one product to another. The following tables give the switching cost, the production rates, and the unit production cost for each line:
 
-<table><tr><td rowspan="2"></td><td colspan="3">Line switching cost (\$)</td></tr><tr><td>Product 1</td><td>Product 2</td><td>Product 3</td></tr><tr><td>Line 1</td><td>200</td><td>180</td><td>300</td></tr><tr><td>Line 2</td><td>250</td><td>200</td><td>174</td></tr></table>
+|  | Product 1 | Product 2 | Product 3 |
+| --- | --- | --- | --- |
+| Line 1 | 200 | 180 | 300 |
+| Line 2 | 250 | 200 | 174 |
 
-<table><tr><td rowspan="2"></td><td colspan="3">Production rate (units/month)</td><td colspan="3">Unit production cost (\$)</td></tr><tr><td>Product 1</td><td>Product 2</td><td>Product 3</td><td>Product 1</td><td>Product 2</td><td>Product 3</td></tr><tr><td>Line 1</td><td>40</td><td>60</td><td>80</td><td>10</td><td>8</td><td>15</td></tr><tr><td>Line 2</td><td>90</td><td>70</td><td>60</td><td>12</td><td>6</td><td>10</td></tr></table>
+|  | Production rate: Product 1 | 2 | 3 | Unit production cost ($): Product 1 | 2 | 3 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Line 1 | 40 | 60 | 80 | 10 | 8 | 15 |
+| Line 2 | 90 | 70 | 60 | 12 | 6 | 10 |
 
 Develop a model for determining the optimal production schedule.
 
 9-34. Jarvis and Associates (1978). Seven cities are being considered as potential locations for the construction of at most four wastewater treatment plants. The following table provides the data for the situation. Missing links indicate that a pipeline cannot be constructed.
 
-<table><tr><td colspan="8">Cost (\$) of pipeline construction between cities per 1000 gal/hr capacity</td></tr><tr><td>To <br> From</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr><tr><td>1</td><td></td><td>100</td><td></td><td>200</td><td></td><td>50</td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td>120</td><td></td><td>150</td><td></td></tr><tr><td>3</td><td>400</td><td></td><td></td><td></td><td>120</td><td></td><td>90</td></tr><tr><td>4</td><td></td><td></td><td>120</td><td></td><td>120</td><td></td><td></td></tr><tr><td>5</td><td></td><td>200</td><td></td><td></td><td></td><td>100</td><td>200</td></tr><tr><td>6</td><td></td><td></td><td>110</td><td>180</td><td></td><td></td><td>70</td></tr><tr><td>7</td><td>200</td><td></td><td></td><td>150</td><td></td><td></td><td></td></tr><tr><td>Cost (\$ million) of</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>plant construction</td><td>1.00</td><td>1.20</td><td>2.00</td><td>1.60</td><td>1.80</td><td>.90</td><td>1.40</td></tr><tr><td>Population (1000s)</td><td>50</td><td>100</td><td>45</td><td>90</td><td>75</td><td>60</td><td>30</td></tr></table>
+| To \ From | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 |  | 100 |  | 200 |  | 50 |  |
+| 2 |  |  |  | 120 |  | 150 |  |
+| 3 | 400 |  |  |  | 120 |  | 90 |
+| 4 |  |  | 120 |  | 120 |  |  |
+| 5 |  | 200 |  |  |  | 100 | 200 |
+| 6 |  |  | 110 | 180 |  |  | 70 |
+| 7 | 200 |  |  | 150 |  |  |  |
+| Plant construction cost ($ million) | 1.00 | 1.20 | 2.00 | 1.60 | 1.80 | .90 | 1.40 |
+| Population (1000s) | 50 | 100 | 45 | 90 | 75 | 60 | 30 |
 
 The capacity of a pipeline (in gallons per hour) is a direct function of the amount of wastewater generated, which is a function of the populations. Approximately 500 gallons per 1000 residents are discharged in the sewer system per hour. The maximum plant capacity is 100,000 gal/hr. Determine the optimal location and capacity of the plants.
 
@@ -1054,17 +1329,35 @@ The capacity of a pipeline (in gallons per hour) is a direct function of the amo
 
 *9-40. Gapco manufactures three products, whose daily labor and raw material requirements are given in the following table.
 
-<table><tr><td>Product</td><td>Required daily labor (hr/unit)</td><td>Required daily raw material (lb/unit)</td></tr><tr><td>1</td><td>3</td><td>4</td></tr><tr><td>2</td><td>4</td><td>3</td></tr><tr><td>3</td><td>5</td><td>6</td></tr></table>
+| Product | Required daily labor (hr/unit) | Required daily raw material (lb/unit) |
+| --- | --- | --- |
+| 1 | 3 | 4 |
+| 2 | 4 | 3 |
+| 3 | 5 | 6 |
 
 The profits per unit of the three products are \$20, \$25, and \$18, respectively. Gapco has two options for locating its plant. The two locations differ primarily in the availability of labor and raw material, as shown in the following table:
 
-<table><tr><td>Location</td><td>Available daily labor (hr)</td><td>Available daily raw material (lb)</td></tr><tr><td>1</td><td>150</td><td>150</td></tr><tr><td>2</td><td>135</td><td>180</td></tr></table>
+| Location | Available daily labor (hr) | Available daily raw material (lb) |
+| --- | --- | --- |
+| 1 | 150 | 150 |
+| 2 | 135 | 180 |
 
 Formulate the problem as an ILP, and determine the optimum location of the plant.
 
 9-41. Jobco Shop has 10 outstanding jobs to be processed on a single machine. The following table provides processing times and due dates. All times are in days, and due time is measured from time 0 :
 
-<table><tr><td>Job</td><td>Processing time (day)</td><td>Due time (day)</td></tr><tr><td>1</td><td>10</td><td>20</td></tr><tr><td>2</td><td>3</td><td>98</td></tr><tr><td>3</td><td>13</td><td>100</td></tr><tr><td>4</td><td>15</td><td>34</td></tr><tr><td>5</td><td>9</td><td>50</td></tr><tr><td>6</td><td>22</td><td>44</td></tr><tr><td>7</td><td>17</td><td>32</td></tr><tr><td>8</td><td>30</td><td>60</td></tr><tr><td>9</td><td>12</td><td>80</td></tr><tr><td>10</td><td>16</td><td>150</td></tr></table>
+| Job | Processing time (day) | Due time (day) |
+| --- | --- | --- |
+| 1 | 10 | 20 |
+| 2 | 3 | 98 |
+| 3 | 13 | 100 |
+| 4 | 15 | 34 |
+| 5 | 9 | 50 |
+| 6 | 22 | 44 |
+| 7 | 17 | 32 |
+| 8 | 30 | 60 |
+| 9 | 12 | 80 |
+| 10 | 16 | 150 |
 
 If job 4 precedes job 3, then job 9 must precede job 7. The objective is to process all 10 jobs in the shortest possible time. Formulate the model as an ILP, and determine the optimum solution by modifying the AMPL file amplEx9.1-4.txt.
 
@@ -1072,13 +1365,21 @@ If job 4 precedes job 3, then job 9 must precede job 7. The objective is to proc
 
 9-43. Jaco owns a plant in which three products are manufactured. The labor and raw material requirements for the three products are given in the following table.
 
-<table><tr><td>Product</td><td>Required daily labor (hr/unit)</td><td>Required daily raw material (lb/unit)</td></tr><tr><td>1</td><td>3</td><td>4</td></tr><tr><td>2</td><td>4</td><td>3</td></tr><tr><td>3</td><td>5</td><td>6</td></tr><tr><td>Daily availability</td><td>100</td><td>100</td></tr></table>
+| Product | Required daily labor (hr/unit) | Required daily raw material (lb/unit) |
+| --- | --- | --- |
+| 1 | 3 | 4 |
+| 2 | 4 | 3 |
+| 3 | 5 | 6 |
+| Daily availability | 100 | 100 |
 
 The profit per unit for the three products are \$25, \$30, and \$45, respectively. If product 2 is to be manufactured at all, then its production level must be at least 12 units daily. Formulate the problem as a mixed ILP, and find the optimal mix.
 
 9-44. UPak is a subsidiary of an LTL transportation company. Customers bring their shipments to the UPak terminal to be loaded on the trailer and can rent space up to 36 ft. The customer pays for the exact linear space (in foot increments) the shipment occupies. No partial shipment is allowed, in the sense that a shipment requiring no more than ${36}\mathrm{{ft}}$ must be loaded on one trailer. A movable barrier, called bulkhead, is installed to separate shipments. The per-foot fee UPak collects depends on the destination of the shipment. The following table provides the outstanding orders UPak needs to process:
 
-<table><tr><td>Order</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr><tr><td>Size (ft)</td><td>5</td><td>11</td><td>22</td><td>15</td><td>7</td><td>9</td><td>18</td><td>14</td><td>10</td><td>12</td></tr><tr><td>Rate (\$)</td><td>120</td><td>93</td><td>70</td><td>85</td><td>125</td><td>104</td><td>98</td><td>130</td><td>140</td><td>65</td></tr></table>
+| Order | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Size (ft) | 5 | 11 | 22 | 15 | 7 | 9 | 18 | 14 | 10 | 12 |
+| Rate ($) | 120 | 93 | 70 | 85 | 125 | 104 | 98 | 130 | 140 | 65 |
 
 The terminal currently has two trailers ready to be loaded. Determine the priority orders that will maximize the total income from the two trailers. (Hint: A formulation using binary ${x}_{ij}$ to represent load $i$ on trailer $j$ is straightforward. However, you are challenged to define ${x}_{ij}$ as feet assigned to load $i$ in trailer $j$ . Then use if-then constraint to prevent partial load shipping.)
 
@@ -1086,7 +1387,11 @@ The terminal currently has two trailers ready to be loaded. Determine the priori
 
 9-46. A manufacturing process uses four interchangeable raw materials. The raw materials differ in properties, which leads to different output units per unit of raw material. They also differ in cost and lot sizes. The following table summarizes the data of the situation:
 
-<table><tr><td></td><td>Material 1</td><td>Material 2</td><td>Material 3</td><td>Material 4</td><td>Material 5</td></tr><tr><td>Lot size (units)</td><td>100</td><td>160</td><td>80</td><td>310</td><td>50</td></tr><tr><td>Product units per unit of raw material</td><td>3</td><td>2</td><td>5</td><td>1</td><td>4</td></tr><tr><td>Cost per unit of raw material (\$)</td><td>30</td><td>80</td><td>200</td><td>10</td><td>120</td></tr></table>
+|  | Material 1 | Material 2 | Material 3 | Material 4 | Material 5 |
+| --- | --- | --- | --- | --- | --- |
+| Lot size (units) | 100 | 160 | 80 | 310 | 50 |
+| Product units per unit of raw material | 3 | 2 | 5 | 1 | 4 |
+| Cost per unit of raw material ($) | 30 | 80 | 200 | 10 | 120 |
 
 A raw material, if used, must be in the indicated lots only (e.g., Material 1 can be bought either as a lot of size 100 units or none at all). The number of output units must be at least 950. Formulate a model to determine the raw materials that should be used at minimum cost.
 

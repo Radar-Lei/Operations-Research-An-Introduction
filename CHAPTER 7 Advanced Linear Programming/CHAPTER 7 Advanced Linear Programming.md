@@ -1,16 +1,100 @@
-## CHAPTER 7 Advanced Linear Programming
+## CHAPTER 7 Advanced Linear Programming ^Chapter
 
-## Real-Life Application—Optimal Ship Routing and Personnel Assignment for Naval Recruitment in Thailand
+```markmap
+---
+markmap:
+  height: 643
+---
+# [[#^Chapter|CHAPTER 7: Advanced Linear Programming]]
+## [[#^Application|Real-Life Application: Optimal Ship Routing and Personnel Assignment]]
+## [[#^SimplexFundamentals|7.1 Simplex Method Fundamentals]]
+### [[#^Convexity|Convex Sets and Extreme Points]]
+### [[#^ConvexCombo|Optimum at Extreme Points and Convex Combinations]]
+### [[#^SimplexCrux|Why Simplex Works: Finite Extreme Points Define the Space]]
+### [[#^ExampleConvex|Example: Showing a Set Is Convex]]
+### [[#^ExtremeToBasic|From Extreme Points to Basic Solutions]]
+#### [[#^ExtremeBasicEquivalence|Extreme Points and Basic Solutions Are Equivalent]]
+#### [[#^ExampleBasicSolutions|Example: Listing Basic Feasible and Infeasible Solutions]]
+### [[#^TableauMatrix|Generalized Simplex Tableau in Matrix Form]]
+#### [[#^TableauDerivation|Computing z and XB from the Basis Inverse]]
+#### [[#^TableauColumn|Tableau Column for a Variable xj]]
+#### [[#^InverseTradeoff|Inverse Updates: Accuracy vs Speed]]
+#### [[#^ExampleTableau|Example: Generating a Simplex Tableau]]
+## [[#^RevisedSimplex|7.2 Revised Simplex Method]]
+### [[#^RevisedOverview|Matrix Computations vs Row Operations]]
+### [[#^OptimalityFeasibility|Optimality and Feasibility Conditions]]
+#### [[#^ReducedCost|Reduced Cost Formula]]
+#### [[#^OptimalityRule|Optimality Condition (Entering Variable)]]
+#### [[#^FeasibilityRule|Feasibility Condition (Leaving Variable)]]
+#### [[#^RatioTest|Ratio Test]]
+### [[#^RevisedAlgorithm|Revised Simplex Algorithm]]
+#### [[#^AlgorithmSteps|Algorithm Steps]]
+#### [[#^ExampleRevised|Example: Reddy Mikks via Revised Simplex]]
+### [[#^ComputationalIssues|Computational Issues]]
+#### [[#^AccuracySpeed|Accuracy vs Speed and Why Solvers Avoid Explicit Inversion]]
+#### [[#^ProductForm|Product Form Update of the Inverse]]
+#### [[#^LUDecomposition|LU Decomposition]]
+#### [[#^RefreshInverse|Reinversion (Refreshing) Strategy]]
+#### [[#^RoundoffError|Roundoff Error Diagnostics]]
+#### [[#^AhaHistory|Aha Moment: Early Simplex Implementations]]
+## [[#^BoundedVariables|7.3 Bounded-Variables Algorithm]]
+### [[#^LowerBounds|Handling Lower Bounds by Substitution]]
+### [[#^UpperBounds|Why Upper-Bound Substitution Needs Care]]
+### [[#^BoundedModel|Upper-Bounded LP Model Form]]
+### [[#^ModifiedFeasibility|Modified Feasibility Condition with Bounds]]
+### [[#^ThetaRules|How θ1, θ2, and uj Determine the Next Move]]
+## [[#^Duality|7.4 Duality]]
+### [[#^DualMatrix|Matrix Definition of the Dual Problem]]
+### [[#^WeakDuality|Weak Duality and Equality at Optimality]]
+### [[#^UnboundedInfeasible|Unboundedness and Infeasibility Relationships]]
+### [[#^OptimalDualSolution|Optimal Dual Solution from the Optimal Primal Basis]]
+### [[#^ShadowPrices|Shadow Prices (Dual Variables)]]
+### [[#^DualSimplexMotivation|Motivation for the Dual Simplex Algorithm]]
+### [[#^ExampleDual|Example: Writing the Dual and Solving from the Primal Basis]]
+## [[#^ParametricLP|7.5 Parametric Linear Programming]]
+### [[#^ParametricIdea|C(t), b(t), and the Parametric View]]
+### [[#^CriticalValues|Critical Values and Piecewise-Constant Bases]]
+### [[#^ParametricC|Parametric Changes in C]]
+#### [[#^OptimalityInequalities|Optimality Inequalities Determine the Next Breakpoint]]
+#### [[#^ExampleParametricC|Example: Tracking Optimality as t Changes]]
+#### [[#^ParametricSummaryC|Summary of the Optimal Solution over t]]
+### [[#^Parametricb|Parametric Changes in b]]
+#### [[#^FeasibilityInequalities|Feasibility Inequalities Determine the Next Breakpoint]]
+#### [[#^ExampleParametricb|Example: Tracking Feasibility as t Changes]]
+#### [[#^ParametricSummaryb|Summary of the Optimal Solution over t]]
+## [[#^MoreTopics|7.6 More Linear Programming Topics]]
+### [[#^MinCostFlow|Minimum-Cost Capacitated Flow and Network Simplex]]
+### [[#^DantzigWolfe|Dantzig-Wolfe Decomposition]]
+### [[#^Karmarkar|Karmarkar Interior-Point Algorithm]]
+## [[#^Bibliography|Bibliography]]
+## [[#^Problems|Problems]]
+### [[#^AssignedProblems|Assigned Problems Table]]
+```
+
+## Chapter Summary ^Summary
+
+- The feasible region of an LP is convex; optimum solutions occur at feasible extreme (corner) points.
+- Any feasible point in a convex polyhedron can be expressed as a convex combination of its extreme points.
+- Extreme points correspond exactly to basic solutions of $\mathbf{AX}=\mathbf{b}$; feasibility adds $\mathbf{X}\ge \mathbf{0}$.
+- The matrix simplex tableau highlights that $\mathbf{B}^{-1}$ drives the iteration; revised simplex improves numerical behavior.
+- Revised simplex pivots by reduced costs (optimality) and the ratio test (feasibility), rather than full row operations.
+- Practical solvers balance accuracy and speed via product-form or LU updates and periodic reinversion.
+- With variable bounds, feasibility must consider both lower/upper limits; the bounded-variables method modifies the ratio logic.
+- Duality provides bounds and certificates: weak duality, $\mathbf{Y}=\mathbf{C}_B\mathbf{B}^{-1}$ at optimum, and shadow-price interpretation.
+- Parametric LP traces how optimal bases change across critical values as $\mathbf{C}(t)$ or $\mathbf{b}(t)$ varies.
+- Additional advanced topics include capacitated network simplex, Dantzig-Wolfe decomposition, and interior-point methods.
+
+## Real-Life Application—Optimal Ship Routing and Personnel Assignment for Naval Recruitment in Thailand ^Application
 
 Thailand Navy recruits are drafted four times a year. A draftee reports to 1 of 34 local centers and is then transported by bus to one of four navy branch bases. From there, recruits are transported to the main naval base by ship. The docking facilities at the branch bases may restrict the type of ship that can visit each base. Branch bases have limited capacities but, as a whole, the four bases have sufficient capacity to accommodate all the draftees. During the summer of 1983, a total of 2929 draftees were transported from the drafting centers to the four branch bases and eventually to the main base. The problem deals with determining the optimal schedule for transporting the draftees, first from the drafting centers to the branch bases and then from the branch bases to the main base. The study uses a combination of linear and integer programming. Details of the study are presented in Case 5, Chapter 26 on the website.
 
-### 7.1 SIMPLEX METHOD FUNDAMENTALS
+### 7.1 SIMPLEX METHOD FUNDAMENTALS ^SimplexFundamentals
 
-In linear programming, the feasible solution space forms a convex set if the line segment joining any two distinct feasible points also falls in the set. An extreme point of the convex set is a feasible point that cannot lie on a line segment joining any two distinct feasible points in the set. Actually, extreme points are the same as corner points, as used in Chapters 2, 3, and 4.
+In linear programming, the feasible solution space forms a convex set if the line segment joining any two distinct feasible points also falls in the set. An extreme point of the convex set is a feasible point that cannot lie on a line segment joining any two distinct feasible points in the set. Actually, extreme points are the same as corner points, as used in Chapters 2, 3, and 4. ^Convexity
 
 Figure 7.1 illustrates two sets. Set (a) is convex (with six extreme points), and set (b) is not.
 
-The graphical LP solution given in Section 2.3 demonstrates that the optimum solution is always associated with a feasible extreme (corner) point of the solution space. This result makes sense intuitively, because every feasible point in the LP solution space can be determined as a function of its feasible extreme points. For example, in convex set (a) of Figure 7.1, a convex combination of the extreme points, ${\mathbf{X}}_{1},{\mathbf{X}}_{2},{\mathbf{X}}_{3},{\mathbf{X}}_{4}$ , ${\mathbf{X}}_{5}$ , and ${\mathbf{X}}_{6}$ , identifies any feasible point $\mathbf{X}$ as
+The graphical LP solution given in Section 2.3 demonstrates that the optimum solution is always associated with a feasible extreme (corner) point of the solution space. This result makes sense intuitively, because every feasible point in the LP solution space can be determined as a function of its feasible extreme points. For example, in convex set (a) of Figure 7.1, a convex combination of the extreme points, ${\mathbf{X}}_{1},{\mathbf{X}}_{2},{\mathbf{X}}_{3},{\mathbf{X}}_{4}$ , ${\mathbf{X}}_{5}$ , and ${\mathbf{X}}_{6}$ , identifies any feasible point $\mathbf{X}$ as ^ConvexCombo
 
 $$
 \mathbf{X} = {\alpha }_{1}{\mathbf{X}}_{1} + {\alpha }_{2}{\mathbf{X}}_{2} + {\alpha }_{3}{\mathbf{X}}_{3} + {\alpha }_{4}{\mathbf{X}}_{4} + {\alpha }_{5}{\mathbf{X}}_{5} + {\alpha }_{6}{\mathbf{X}}_{6}
@@ -30,9 +114,9 @@ FIGURE 7.1
 
 Examples of a convex and a nonconvex set
 
-This observation shows that a finite number of extreme points completely define the infinite number of points in the solution space. This result is the crux of the simplex method.
+This observation shows that a finite number of extreme points completely define the infinite number of points in the solution space. This result is the crux of the simplex method. ^SimplexCrux
 
-## Example 7.1-1
+## Example 7.1-1 ^ExampleConvex
 
 Show that the following set is convex:
 
@@ -48,7 +132,7 @@ $$
 
 Additionally, the nonnegativity conditions are satisfied because ${\alpha }_{1}$ and ${\alpha }_{2}$ are nonnegative.
 
-#### 7.1.1 From Extreme Points to Basic Solutions
+#### 7.1.1 From Extreme Points to Basic Solutions ^ExtremeToBasic
 
 It is convenient to express the general LP problem in equation form (see Section 3.1) using matrix notation. ${}^{1}$ Define $\mathbf{X}$ as an $n$ -vector representing the variables, $\mathbf{A}$ as an $\left( {m \times  n}\right)$ -matrix representing the constraint coefficients, $\mathbf{b}$ as a column vector representing the right-hand side, and $\mathbf{C}$ as an $n$ -vector representing the objective-function coefficients. The LP is then written as
 
@@ -80,7 +164,7 @@ $$
 \text{ Extreme points of }\{ \mathbf{X} \mid  \mathbf{{AX}} = \mathbf{b}\}  \Leftrightarrow  \text{ Basic solutions of }\mathbf{{AX}} = \mathbf{b}
 $$
 
-The relationship means that the extreme points of the LP solution space are defined by the basic solutions of $\mathbf{{AX}} = \mathbf{b}$ , and vice versa. Thus, the basic solutions of $\mathbf{{AX}} = \mathbf{b}$ provide all the information needed to determine the optimum solution of the LP problem. Furthermore, the nonnegativity restriction, $\mathbf{X} \geq  \mathbf{0}$ , limits the search for the optimum to the feasible basic solutions only.
+The relationship means that the extreme points of the LP solution space are defined by the basic solutions of $\mathbf{{AX}} = \mathbf{b}$ , and vice versa. Thus, the basic solutions of $\mathbf{{AX}} = \mathbf{b}$ provide all the information needed to determine the optimum solution of the LP problem. Furthermore, the nonnegativity restriction, $\mathbf{X} \geq  \mathbf{0}$ , limits the search for the optimum to the feasible basic solutions only. ^ExtremeBasicEquivalence
 
 To formalize the definition of a basic solution, the system $\mathbf{{AX}} = \mathbf{b}$ is written in vector form as
 
@@ -104,7 +188,7 @@ If ${\mathbf{B}}^{-1}\mathbf{b} \geq  \mathbf{0}$ , then ${\mathbf{X}}_{B}$ is f
 
 The previous result shows that in a system of $m$ equations and $n$ unknowns, the maximum number of (feasible and infeasible) basic solutions is $\left( \begin{array}{l} n \\  m \end{array}\right)  = \frac{n!}{m!\left( {n - m}\right) !}$ .
 
-## Example 7.1-2
+## Example 7.1-2 ^ExampleBasicSolutions
 
 Determine all the basic feasible and infeasible solutions of the following system of equations:
 
@@ -114,7 +198,11 @@ $$
 
 The following table summarizes the results. The inverse of $\mathbf{B}$ is determined by one of the methods in Section D.2.7 on the website.
 
-<table><tr><td>B</td><td>$\mathbf{B}{\mathbf{X}}_{B} = \mathbf{b}$</td><td>Solution</td><td>Type</td></tr><tr><td>$\left( {{\mathbf{P}}_{1},{\mathbf{P}}_{2}}\right)$</td><td>$\left( \begin{array}{rr} 1 & 3 \\  2 &  - 2 \end{array}\right) \left( \begin{array}{l} {x}_{1} \\  {x}_{2} \end{array}\right)  = \left( \begin{array}{l} 4 \\  2 \end{array}\right)$</td><td>$\left( \begin{array}{l} {x}_{1} \\  {x}_{2} \end{array}\right)  = \left( \frac{\frac{1}{4}}{\frac{1}{4}}\right. \; \left. \begin{array}{r} \frac{3}{8} \\   - \frac{1}{8} \end{array}\right) \left( \begin{array}{l} 4 \\  2 \end{array}\right)  = \left( \begin{array}{l} \frac{7}{4} \\  \frac{3}{4} \end{array}\right)$</td><td>Feasible</td></tr><tr><td>$\left( {{\mathbf{P}}_{1},{\mathbf{P}}_{3}}\right)$</td><td colspan="3">(Not a basis because ${\mathbf{P}}_{1}$ and ${\mathbf{P}}_{3}$ are dependent)</td></tr><tr><td>$\left( {{\mathbf{P}}_{2},{\mathbf{P}}_{3}}\right)$</td><td>$\left( \begin{array}{rr} 3 &  - 1 \\   - 2 &  - 2 \end{array}\right) \left( \begin{array}{l} {x}_{2} \\  {x}_{3} \end{array}\right)  = \left( \begin{array}{l} 4 \\  2 \end{array}\right)$</td><td>$\left( \begin{array}{l} {x}_{2} \\  {x}_{3} \end{array}\right)  = \left( \begin{matrix} \frac{1}{4} \\   - \frac{1}{4} \end{matrix}\right. \; \left. {-\frac{1}{8}}\right) \left( \begin{array}{l} 4 \\  2 \end{array}\right)  = \left( \begin{array}{r} \frac{3}{4} \\   - \frac{7}{4} \end{array}\right)$</td><td>Infeasible</td></tr></table>
+| B | $\mathbf{B}{\mathbf{X}}_{B} = \mathbf{b}$ | Solution | Type |
+| --- | --- | --- | --- |
+| $\left( {{\mathbf{P}}_{1},{\mathbf{P}}_{2}}\right)$ | $\left( \begin{array}{rr} 1 & 3 \\  2 &  - 2 \end{array}\right) \left( \begin{array}{l} {x}_{1} \\  {x}_{2} \end{array}\right)  = \left( \begin{array}{l} 4 \\  2 \end{array}\right)$ | $\left( \begin{array}{l} {x}_{1} \\  {x}_{2} \end{array}\right)  = \left( \frac{\frac{1}{4}}{\frac{1}{4}}\right. \; \left. \begin{array}{r} \frac{3}{8} \\   - \frac{1}{8} \end{array}\right) \left( \begin{array}{l} 4 \\  2 \end{array}\right)  = \left( \begin{array}{l} \frac{7}{4} \\  \frac{3}{4} \end{array}\right)$ | Feasible |
+| $\left( {{\mathbf{P}}_{1},{\mathbf{P}}_{3}}\right)$ | (Not a basis because ${\mathbf{P}}_{1}$ and ${\mathbf{P}}_{3}$ are dependent) |  |  |
+| $\left( {{\mathbf{P}}_{2},{\mathbf{P}}_{3}}\right)$ | $\left( \begin{array}{rr} 3 &  - 1 \\   - 2 &  - 2 \end{array}\right) \left( \begin{array}{l} {x}_{2} \\  {x}_{3} \end{array}\right)  = \left( \begin{array}{l} 4 \\  2 \end{array}\right)$ | $\left( \begin{array}{l} {x}_{2} \\  {x}_{3} \end{array}\right)  = \left( \begin{matrix} \frac{1}{4} \\   - \frac{1}{4} \end{matrix}\right. \; \left. {-\frac{1}{8}}\right) \left( \begin{array}{l} 4 \\  2 \end{array}\right)  = \left( \begin{array}{r} \frac{3}{4} \\   - \frac{7}{4} \end{array}\right)$ | Infeasible |
 
 We can also investigate the problem by expressing it in vector form as follows:
 
@@ -144,9 +232,9 @@ $$
 
 Vector representation of LP solution space
 
-#### 7.1.2 Generalized Simplex Tableau in Matrix Form
+#### 7.1.2 Generalized Simplex Tableau in Matrix Form ^TableauMatrix
 
-This section develops the general simplex tableau in matrix form. This representation is the basis for subsequent developments in the chapter.
+This section develops the general simplex tableau in matrix form. This representation is the basis for subsequent developments in the chapter. ^TableauDerivation
 
 Consider the LP in equation form:
 
@@ -180,9 +268,12 @@ $$
 \left( \begin{matrix} 1 & {\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{A} - \mathbf{C} \\  \mathbf{0} & {\mathbf{B}}^{-1}\mathbf{A} \end{matrix}\right) \left( \begin{matrix} z \\  \mathbf{X} \end{matrix}\right)  = \left( \begin{matrix} {\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b} \\  {\mathbf{B}}^{-1}\mathbf{b} \end{matrix}\right)
 $$
 
-Given the $j$ th vector ${\mathbf{P}}_{j}$ of $\mathbf{A}$ , the simplex tableau column associated with variable ${x}_{j}$ can be written as
+Given the $j$ th vector ${\mathbf{P}}_{j}$ of $\mathbf{A}$ , the simplex tableau column associated with variable ${x}_{j}$ can be written as ^TableauColumn
 
-<table><tr><td>Basic</td><td>${x}_{j}$</td><td>Solution</td></tr><tr><td>$z$</td><td>${\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{P}}_{j} - {c}_{j}$</td><td>${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b}$</td></tr><tr><td>${\mathbf{X}}_{B}$</td><td>${\mathbf{B}}^{-1}{\mathbf{P}}_{j}$</td><td>${\mathbf{B}}^{-1}\mathbf{b}$</td></tr></table>
+| Basic | ${x}_{j}$ | Solution |
+| --- | --- | --- |
+| $z$ | ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{P}}_{j} - {c}_{j}$ | ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b}$ |
+| ${\mathbf{X}}_{B}$ | ${\mathbf{B}}^{-1}{\mathbf{P}}_{j}$ | ${\mathbf{B}}^{-1}\mathbf{b}$ |
 
 In fact, the tableau above is the same one used in Chapter 3 (see Problem 7-13). It also includes all the primal-dual relationships developed in Section 4.2.4.
 
@@ -192,9 +283,9 @@ $$
 \left( \begin{matrix} \text{ Basic solution } \\  {\mathbf{X}}_{B} \\  \text{ at iteration }i \end{matrix}\right)  \rightarrow  \left( \begin{matrix} \text{ Original } \\  \text{ constraint columns } \\  \text{ of }{\mathbf{X}}_{B} \end{matrix}\right)  \rightarrow  \left( \begin{matrix} \text{ Basis }\mathbf{B}\text{ for } \\  \text{ iteration }i \end{matrix}\right)  \rightarrow  \left( \begin{matrix} \text{ Inverse }{\mathbf{B}}^{-1}\text{ for } \\  \text{ iteration }i \end{matrix}\right)
 $$
 
-That means that, once ${\mathbf{X}}_{B}$ is known, all the elements of the tableau can be determined directly from the original data of the model. Unlike the tableau method in Chapter 3 that propagates roundoff error when the next tableau is generated from the immediately preceding one, roundoff error in an iteration can be kept in check by computing ${\mathbf{B}}^{-1}$ from the original constraint columns. This result is one of the main reasons for the development of the revised simplex method in Section 7.2. Nonetheless, the golden rule in matrix algebra is to avoid inverting a matrix when possible because calculating ${\mathbf{B}}^{-1}$ anew from original data is very costly computationally. As will be explained in Section 7.2.3, it is essential to strike a balance between accuracy and computational speed by modulating the frequency of computing the inverse during the course of the simplex iterations
+That means that, once ${\mathbf{X}}_{B}$ is known, all the elements of the tableau can be determined directly from the original data of the model. Unlike the tableau method in Chapter 3 that propagates roundoff error when the next tableau is generated from the immediately preceding one, roundoff error in an iteration can be kept in check by computing ${\mathbf{B}}^{-1}$ from the original constraint columns. This result is one of the main reasons for the development of the revised simplex method in Section 7.2. Nonetheless, the golden rule in matrix algebra is to avoid inverting a matrix when possible because calculating ${\mathbf{B}}^{-1}$ anew from original data is very costly computationally. As will be explained in Section 7.2.3, it is essential to strike a balance between accuracy and computational speed by modulating the frequency of computing the inverse during the course of the simplex iterations ^InverseTradeoff
 
-## Example 7.1-3
+## Example 7.1-3 ^ExampleTableau
 
 ---
 
@@ -254,15 +345,19 @@ $$
 
 Thus, the entire tableau can be summarized as follows.
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>1</td><td>-3</td><td>19</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>2</td><td>3</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>2</td><td>0</td><td>4</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 1 | -3 | 19 |
+| ${x}_{1}$ | 1 | 0 | 0 | 2 | 3 |
+| ${x}_{2}$ | 0 | 1 | 2 | 0 | 4 |
 
-### 7.2 REVISED SIMPLEX METHOD
+### 7.2 REVISED SIMPLEX METHOD ^RevisedSimplex
 
 Section 7.1.1 shows that the optimum solution of a linear program is always associated with a basic (feasible) solution. The simplex method search moves from a feasible basis, $\mathbf{B}$ , to a better (actually, no-worse) basis, ${\mathbf{B}}_{\text{ next }}$ , until the optimum basis is reached.
 
-The iterative steps of the revised simplex method are exactly the same as in the tableau simplex method presented in Chapter 3. The main difference is that the computations in the revised method are based on matrix manipulations rather than on row operations. As such, the entire simplex tableau can be computed from the original data and the current inverse (see Section 7.1.2), thus improving the accuracy of computing ${\mathbf{B}}^{-1}$ and ameliorating the machine roundoff error problem. In the tableau simplex method of Chapter 3, generating a new tableau from the immediately preceding one propagates roundoff error rather rapidly.
+The iterative steps of the revised simplex method are exactly the same as in the tableau simplex method presented in Chapter 3. The main difference is that the computations in the revised method are based on matrix manipulations rather than on row operations. As such, the entire simplex tableau can be computed from the original data and the current inverse (see Section 7.1.2), thus improving the accuracy of computing ${\mathbf{B}}^{-1}$ and ameliorating the machine roundoff error problem. In the tableau simplex method of Chapter 3, generating a new tableau from the immediately preceding one propagates roundoff error rather rapidly. ^RevisedOverview
 
-#### 7.2.1 Development of the Optimality and Feasibility Conditions
+#### 7.2.1 Development of the Optimality and Feasibility Conditions ^OptimalityFeasibility
 
 The general LP problem can be written as
 
@@ -280,7 +375,7 @@ $$
 {\left( {\mathbf{X}}_{B}\right) }_{i} + \mathop{\sum }\limits_{{j = 1}}^{n}{\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i}{x}_{j} = {\left( {\mathbf{B}}^{-1}\mathbf{b}\right) }_{i}
 $$
 
-The reduced cost of ${x}_{j}$ , as defined in Section 4.3.2, is computed as
+The reduced cost of ${x}_{j}$ , as defined in Section 4.3.2, is computed as ^ReducedCost
 
 $$
 {z}_{j} - {c}_{j} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{P}}_{j} - {c}_{j}
@@ -288,9 +383,9 @@ $$
 
 The notation ${\left( \mathbf{V}\right) }_{i}$ represents element $i$ of the vector $\mathbf{V}$ .
 
-Optimality Condition. The $z$ -equation shows that, in the case of maximization, an increase in nonbasic ${x}_{j}$ above its current zero value can improve the value of $z$ (relative to its current value, ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b}$ ) only if ${z}_{j} - {c}_{j} < 0$ . For minimization, the condition is ${z}_{j} - {c}_{j} > 0$ . Thus, the entering vector is selected as the nonbasic vector with the most negative (most positive) ${z}_{j} - {c}_{j}$ in case of maximization (minimization).
+Optimality Condition. The $z$ -equation shows that, in the case of maximization, an increase in nonbasic ${x}_{j}$ above its current zero value can improve the value of $z$ (relative to its current value, ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b}$ ) only if ${z}_{j} - {c}_{j} < 0$ . For minimization, the condition is ${z}_{j} - {c}_{j} > 0$ . Thus, the entering vector is selected as the nonbasic vector with the most negative (most positive) ${z}_{j} - {c}_{j}$ in case of maximization (minimization). ^OptimalityRule
 
-Feasibility Condition. Given the entering vector ${\mathbf{P}}_{j}$ as determined by the optimality condition, the constraint equations reduce to
+Feasibility Condition. Given the entering vector ${\mathbf{P}}_{j}$ as determined by the optimality condition, the constraint equations reduce to ^FeasibilityRule
 
 $$
 {\left( {\mathbf{X}}_{B}\right) }_{i} = {\left( {\mathbf{B}}^{-1}\mathbf{b}\right) }_{i} - {\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i}{x}_{j}
@@ -308,11 +403,11 @@ $$
 {x}_{j} = \mathop{\min }\limits_{i}\left\{  {\left. \frac{{\left( {\mathbf{B}}^{-1}\mathbf{b}\right) }_{i}}{{\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i}}\right| \;{\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i} > 0}\right\}
 $$
 
-Suppose that ${\left( {\mathbf{X}}_{B}\right) }_{k}$ is the basic variable that corresponds to the minimum ratio. It then follows that ${\mathbf{P}}_{k}$ must be the leaving vector, and its associated (basic) variable must become nonbasic (at zero level) in the next simplex iteration.
+Suppose that ${\left( {\mathbf{X}}_{B}\right) }_{k}$ is the basic variable that corresponds to the minimum ratio. It then follows that ${\mathbf{P}}_{k}$ must be the leaving vector, and its associated (basic) variable must become nonbasic (at zero level) in the next simplex iteration. ^RatioTest
 
-#### 7.2.2 Revised Simplex Algorithm
+#### 7.2.2 Revised Simplex Algorithm ^RevisedAlgorithm
 
-Step 0. Construct a starting basic feasible solution, and let $\mathbf{B}$ and ${\mathbf{C}}_{B}$ be its associated basis and objective coefficients vector, respectively.
+Step 0. Construct a starting basic feasible solution, and let $\mathbf{B}$ and ${\mathbf{C}}_{B}$ be its associated basis and objective coefficients vector, respectively. ^AlgorithmSteps
 
 Step 1. Compute the inverse ${\mathbf{B}}^{-1}$ of the basis $\mathbf{B}$ by using an appropriate inversion method. ${}^{2}$
 
@@ -336,7 +431,7 @@ Step 3. Compute ${\mathbf{B}}^{-1}{\mathbf{P}}_{j}$ . If all the elements of ${\
 
 Step 4. Form the next basis by replacing the leaving vector ${\mathbf{P}}_{i}$ with the entering vector ${\mathbf{P}}_{j}$ in the current basis $\mathbf{B}$ . Go to step 1 to start a new iteration.
 
-## Example 7.2-1
+## Example 7.2-1 ^ExampleRevised
 
 The Reddy Mikks model (Section 2.1) is solved by the revised simplex algorithm. The same model was solved by the tableau method in Section 3.3.2. A comparison shows that the two methods are one and the same.
 
@@ -408,7 +503,13 @@ and ${\mathbf{P}}_{3}$ becomes the leaving vector.
 
 The results given above can be summarized in the familiar simplex tableau format, essentially demonstrating that the two methods are the same.
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-5</td><td>-4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{3}$</td><td>6</td><td></td><td></td><td></td><td></td><td></td><td>24</td></tr><tr><td>${x}_{4}$</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td>6</td></tr><tr><td>${x}_{5}$</td><td>-1</td><td></td><td></td><td></td><td></td><td></td><td>1</td></tr><tr><td>${x}_{6}$</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td>2</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -5 | -4 | 0 | 0 | 0 | 0 | 0 |
+| ${x}_{3}$ | 6 |  |  |  |  |  | 24 |
+| ${x}_{4}$ | 1 |  |  |  |  |  | 6 |
+| ${x}_{5}$ | -1 |  |  |  |  |  | 1 |
+| ${x}_{6}$ | 0 |  |  |  |  |  | 2 |
 
 Iteration 1
 
@@ -510,15 +611,15 @@ $$
 {x}_{1} = 3,{x}_{2} = {1.5}, z = {21}
 $$
 
-#### 7.2.3 Computational Issues in the Revised Simplex Method
+#### 7.2.3 Computational Issues in the Revised Simplex Method ^ComputationalIssues
 
-There are two overriding issues regarding the revised simplex algorithm: (1) computational accuracy (also known as numerical stability), and (2) computational speed. Computing the inverse ${\mathbf{B}}^{-1}$ from the original data will increase computational accuracy but it will slow down the execution of the revised simplex algorithm. In fact, the golden rule in numerical analysis is never to invert a matrix unless absolutely necessary. Available LP solvers follow this rule.
+There are two overriding issues regarding the revised simplex algorithm: (1) computational accuracy (also known as numerical stability), and (2) computational speed. Computing the inverse ${\mathbf{B}}^{-1}$ from the original data will increase computational accuracy but it will slow down the execution of the revised simplex algorithm. In fact, the golden rule in numerical analysis is never to invert a matrix unless absolutely necessary. Available LP solvers follow this rule. ^AccuracySpeed
 
 The revised simplex method utilizes two distinct methods for dealing with the inverse ${\mathbf{B}}^{-1}$ :
 
-1. The product form
+1. The product form ^ProductForm
 
-2. The LU decomposition ${}^{3}$
+2. The LU decomposition ${}^{3}$ ^LUDecomposition
 
 The product form is detailed in Section D.2.7 in Appendix D on the website.
 
@@ -548,7 +649,7 @@ $$
 
 The matrix $\mathbf{L}$ has all-zero above-diagonal elements and the matrix $\mathbf{U}$ has all-zero below-diagonal elements. Matrix $\mathbf{U}$ is determined by applying appropriate row operations to basis $\mathbf{B}$ , and the same process automatically yields the below-diagonal elements of $\mathbf{L}$ . As in the product form method, ${\mathbf{B}}_{\text{ next }}^{-1}$ is determined by modifying ${\mathbf{L}}_{\text{ current }}^{-1}$ and ${\mathbf{U}}_{\text{ current }}^{-1}$ appropriately using information from the current entering vector ${\mathbf{P}}_{j}$ .
 
-To avoid inverting $\mathbf{B}$ anew in each iteration (which is very costly computationally), the strategy in both methods is to keep on generating ${\mathbf{B}}_{\text{ next }}^{-1}$ from the immediately preceding inverse so long as computational accuracy is not impaired to the point of distorting the original model. When this happens, ${\mathbf{B}}_{\text{ current }}^{-1}$ loses its accuracy, and it is time to replace it with a more accurate one by constructing ${\mathbf{B}}_{\text{ next }}$ associated with ${\mathbf{X}}_{B\left( \text{ next }\right) }$ from the original column vectors ${\mathbf{P}}_{j}$ . The newly constructed basis ${\mathbf{B}}_{\text{ next }}$ is then inverted and its inverse is used as a "refreshed" start in successive simplex iterations until it again loses its accuracy. And so continues the process until the simplex method terminates. ${}^{4}$
+To avoid inverting $\mathbf{B}$ anew in each iteration (which is very costly computationally), the strategy in both methods is to keep on generating ${\mathbf{B}}_{\text{ next }}^{-1}$ from the immediately preceding inverse so long as computational accuracy is not impaired to the point of distorting the original model. When this happens, ${\mathbf{B}}_{\text{ current }}^{-1}$ loses its accuracy, and it is time to replace it with a more accurate one by constructing ${\mathbf{B}}_{\text{ next }}$ associated with ${\mathbf{X}}_{B\left( \text{ next }\right) }$ from the original column vectors ${\mathbf{P}}_{j}$ . The newly constructed basis ${\mathbf{B}}_{\text{ next }}$ is then inverted and its inverse is used as a "refreshed" start in successive simplex iterations until it again loses its accuracy. And so continues the process until the simplex method terminates. ${}^{4}$ ^RefreshInverse
 
 How is ${\mathbf{B}}_{\text{ current }}^{-1}$ judged to be no longer accurate during the course of the simplex iterations (thus signaling the need to start a new cycle with a refreshed new inverse)?
 
@@ -560,7 +661,7 @@ ${}^{4}$ See E. Hellerman and D. Rarick,"Reinversion with the Preassigned Pivot 
 
 ---
 
-Roundoff error manifests itself adversely in elements of the simplex tableau that are known to be zero; namely, in any iteration, LP theory dictates:
+Roundoff error manifests itself adversely in elements of the simplex tableau that are known to be zero; namely, in any iteration, LP theory dictates: ^RoundoffError
 
 1. The objective coefficients for all basic variables ${\mathbf{X}}_{B}$ must be zero, that is, ${\begin{Vmatrix}{z}_{j} - {c}_{j}\end{Vmatrix}}_{{\mathbf{X}}_{B}} = \mathbf{0}$ . (Incidentally, ${\begin{Vmatrix}{z}_{j} - {c}_{j}\end{Vmatrix}}_{{\mathbf{X}}_{B}} = \mathbf{0}$ represents the dual constraints associated with the basic variables.)
 
@@ -570,11 +671,11 @@ If these values exceed a specified threshold $\varepsilon$ , the roundoff error 
 
 The common thread between the product form and the LU decomposition methods is the cyclical need to refresh the inverse basis. It turned out, from reported computational experiences, that the LU method boasts approximately four times the cycle length between reinversions as the product form. For this reason, practically all current-day LP solvers use (a variant of) the LU method.
 
-## Aha! Moment: Early-On Implementations of the Simplex Algorithm, or How the Use of the Product Form of the Inverse Came About ${}^{5}$
+## Aha! Moment: Early-On Implementations of the Simplex Algorithm, or How the Use of the Product Form of the Inverse Came About ${}^{5}$ ^AhaHistory
 
 The first reported nontrivial application of Dantzig's simplex method was a 21-constraint by 74-variable instance of the diet problem (see Example 2.2-2), and it took only about 120 person-days to calculate the optimal solution. But that was the era when hand computations were the norm. Then in the early 1950s, conglomerations of wired panels, punched cards, "spaghetti" wires, and vacuum tubes ushered the birth of computers. But with computers in such a "primitive" state, the execution of the simplex algorithm was extremely slow particularly because each iteration required an explicit calculation of the basis inverse (very costly computationally, even with present-day computers). Discouraged by the results, Dantzig thought that the computational future of his simplex algorithm was doomed. Then his colleague W. Orchard-Hay suggested that he use the product form method (instead of Gauss-Jordan row operations) to generate the successive inverses. The use of the product form led to a more successful implementation of the simplex algorithm (it took only about 8 hrs to solve the 26-constraint by 74-variable instance of the diet problem-nothing to cheer about, but it was, to say the least, an in-leaps-and-bounds improvement over the hand solution of the same instance in 120 person-days!). And for over two decades, the product form remained the driving engine for computing the inverse in the simplex algorithm, until it was supplanted by the more efficient LU decomposition method.
 
-### 7.3 BOUNDED-VARIABLES ALGORITHM
+### 7.3 BOUNDED-VARIABLES ALGORITHM ^BoundedVariables
 
 In LP models, variables may have explicit upper and lower bounds. For example, in production facilities, lower and upper bounds can represent the minimum and maximum demands for certain products. Bounded variables also arise prominently in solving integer programs by the branch-and-bound algorithm (see Section 9.3.1).
 
@@ -584,17 +685,17 @@ ${}^{5}$ Robert E. Bixby,"A Brief History of Linear and Mixed-Integer Programmin
 
 ---
 
-The bounded algorithm is efficient computationally because it accounts implicitly for the bounds. We consider the lower bounds first because their treatment is simple. Given $\mathbf{X} \geq  \mathbf{L}$ , substitute $\mathbf{X} = \mathbf{L} + {\mathbf{X}}^{\prime },{\mathbf{X}}^{\prime } \geq  \mathbf{0}$ throughout, and solve the problem in terms of ${\mathbf{X}}^{\prime }$ (whose lower bound now equals zero). The original $\mathbf{X}$ is then determined by back-substitution, $\mathbf{X} = {\mathbf{X}}^{\prime } + \mathbf{L} \geq  0$ .
+The bounded algorithm is efficient computationally because it accounts implicitly for the bounds. We consider the lower bounds first because their treatment is simple. Given $\mathbf{X} \geq  \mathbf{L}$ , substitute $\mathbf{X} = \mathbf{L} + {\mathbf{X}}^{\prime },{\mathbf{X}}^{\prime } \geq  \mathbf{0}$ throughout, and solve the problem in terms of ${\mathbf{X}}^{\prime }$ (whose lower bound now equals zero). The original $\mathbf{X}$ is then determined by back-substitution, $\mathbf{X} = {\mathbf{X}}^{\prime } + \mathbf{L} \geq  0$ . ^LowerBounds
 
-Next, consider the upper-bounding constraints, $\mathbf{X} \leq  \mathbf{U}$ . The idea of direct substitution (i.e., $\mathbf{X} = \mathbf{U} - {\mathbf{X}}^{\prime \prime },{\mathbf{X}}^{\prime \prime } \geq  \mathbf{0}$ ) is not correct because back-substitution, $\mathbf{X} = \mathbf{U} - {\mathbf{X}}^{\prime \prime }$ , does not ensure that $\mathbf{X}$ will remain nonnegative. A different procedure is thus needed.
+Next, consider the upper-bounding constraints, $\mathbf{X} \leq  \mathbf{U}$ . The idea of direct substitution (i.e., $\mathbf{X} = \mathbf{U} - {\mathbf{X}}^{\prime \prime },{\mathbf{X}}^{\prime \prime } \geq  \mathbf{0}$ ) is not correct because back-substitution, $\mathbf{X} = \mathbf{U} - {\mathbf{X}}^{\prime \prime }$ , does not ensure that $\mathbf{X}$ will remain nonnegative. A different procedure is thus needed. ^UpperBounds
 
-Define the upper-bounded LP model as
+Define the upper-bounded LP model as ^BoundedModel
 
 $$
 \text{ Maximize }z = \{ \mathbf{{CX}} \mid  \left( {\mathbf{A},\mathbf{I}}\right) \mathbf{X} = \mathbf{b},\mathbf{0} \leq  \mathbf{X} \leq  \mathbf{U}\}
 $$
 
-The bounded algorithm uses only the main constraints $\left( {\mathbf{A},\mathbf{I}}\right) \mathbf{X} = \mathbf{b},\mathbf{X} \geq  \mathbf{0}$ . It accounts for the upper bounds, $\mathbf{X} \leq  \mathbf{U}$ , implicitly by modifying the feasibility condition.
+The bounded algorithm uses only the main constraints $\left( {\mathbf{A},\mathbf{I}}\right) \mathbf{X} = \mathbf{b},\mathbf{X} \geq  \mathbf{0}$ . It accounts for the upper bounds, $\mathbf{X} \leq  \mathbf{U}$ , implicitly by modifying the feasibility condition. ^ModifiedFeasibility
 
 Let ${\mathbf{X}}_{B} = {\mathbf{B}}^{-1}\mathbf{b}$ be a current basic feasible solution of $\left( {\mathbf{A},\mathbf{I}}\right) \mathbf{X} = \mathbf{b},\mathbf{X} \geq  \mathbf{0}$ , and assume that ${\mathbf{P}}_{j}$ is the entering vector (as determined by the regular optimality condition). Then, given that all the nonbasic variables are zero, the constraint equation of the $i$ th basic variable is
 
@@ -602,7 +703,7 @@ $$
 {\left( {\mathbf{X}}_{B}\right) }_{i} = {\left( {\mathbf{B}}^{-1}\mathbf{b}\right) }_{i} - {\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i}{x}_{j}
 $$
 
-When the entering variable ${x}_{j}$ increases above zero level, ${\left( {\mathbf{X}}_{\mathbf{B}}\right) }_{i}$ will increase or decrease depending on whether ${\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i}$ is negative or positive, respectively. Thus, in determining the value of the entering vector ${\mathbf{P}}_{j}$ , three conditions must be satisfied:
+When the entering variable ${x}_{j}$ increases above zero level, ${\left( {\mathbf{X}}_{\mathbf{B}}\right) }_{i}$ will increase or decrease depending on whether ${\left( {\mathbf{B}}^{-1}{\mathbf{P}}_{j}\right) }_{i}$ is negative or positive, respectively. Thus, in determining the value of the entering vector ${\mathbf{P}}_{j}$ , three conditions must be satisfied: ^ThetaRules
 
 1. The basic variable remains nonnegative - that is, ${\left( {\mathbf{X}}_{\mathbf{B}}\right) }_{i} \geq  0$ .
 
@@ -680,7 +781,11 @@ To avoid being "sidetracked" by the computational details, we will not use the r
 
 Iteration 0
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-3</td><td>-5</td><td>-2</td><td>0</td><td>0</td><td>35</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>1</td><td>2</td><td>1</td><td>0</td><td>7</td></tr><tr><td>${x}_{5}$</td><td>2</td><td>4</td><td>3</td><td>0</td><td>1</td><td>15</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -3 | -5 | -2 | 0 | 0 | 35 |
+| ${x}_{4}$ | 1 | 1 | 2 | 1 | 0 | 7 |
+| ${x}_{5}$ | 2 | 4 | 3 | 0 | 1 | 15 |
 
 We have $\mathbf{B} = {\mathbf{B}}^{-1} = \mathbf{I}$ and ${\mathbf{X}}_{B} = {\left( {x}_{4},{x}_{5}\right) }^{T} = {\mathbf{B}}^{-1}\mathbf{b} = {\left( 7,{15}\right) }^{T}$ . Given that ${x}_{2}$ is the entering variable $\left( {{z}_{2} - {c}_{2} =  - 5}\right)$ , we get ${\mathbf{B}}^{-1}{\mathbf{P}}_{2} = {\left( 1,4\right) }^{T}$ , which yields
 
@@ -700,7 +805,11 @@ $$
 
 Because ${x}_{2} = {u}_{2},{\mathbf{X}}_{B}$ remains unchanged, and ${x}_{2}$ becomes nonbasic at its upper bound. The substitution ${x}_{2} = 3 - {x}_{2}^{\prime }$ yields the following new tableau:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}^{\prime }$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-3</td><td>5</td><td>-2</td><td>0</td><td>0</td><td>50</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>-1</td><td>2</td><td>1</td><td>0</td><td>4</td></tr><tr><td>${x}_{5}$</td><td>2</td><td>-4</td><td>3</td><td>0</td><td>1</td><td>3</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}^{\prime }$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -3 | 5 | -2 | 0 | 0 | 50 |
+| ${x}_{4}$ | 1 | -1 | 2 | 1 | 0 | 4 |
+| ${x}_{5}$ | 2 | -4 | 3 | 0 | 1 | 3 |
 
 The substitution changes the original right-hand side vector from $\mathbf{b} = {\left( 7,{15}\right) }^{T}$ to ${\mathbf{b}}^{\prime } = {\left( 4,3\right) }^{T}$ . Thus, ${\mathbf{b}}^{\prime }$ replaces $\mathbf{b}$ in future iterations.
 
@@ -724,7 +833,11 @@ $$
 
 Because ${x}_{1} = {\theta }_{1}$ , the entering variable ${x}_{1}$ becomes basic, and the leaving variable ${x}_{5}$ becomes nonbasic at zero level, which yields
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}^{\prime }$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>-1</td><td>$\frac{5}{2}$</td><td>0</td><td>$\frac{3}{2}$</td><td>109</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>1</td><td>$\frac{1}{2}$</td><td>1</td><td>$- \frac{1}{2}$</td><td>5</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>-2</td><td>$\frac{3}{2}$</td><td>0</td><td>$\frac{1}{2}$</td><td>$\frac{3}{2}$</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}^{\prime }$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | -1 | $\frac{5}{2}$ | 0 | $\frac{3}{2}$ | 109 |
+| ${x}_{4}$ | 0 | 1 | $\frac{1}{2}$ | 1 | $- \frac{1}{2}$ | 5 |
+| ${x}_{1}$ | 1 | -2 | $\frac{3}{2}$ | 0 | $\frac{1}{2}$ | $\frac{3}{2}$ |
 
 Iteration 2
 
@@ -758,21 +871,29 @@ $$
 
 Because ${x}_{2}^{\prime } = {\theta }_{1},{x}_{1}$ becomes nonbasic at upper bound resulting in the substitution ${x}_{1} = 4 - {x}_{1}^{\prime }$ . The new tableau is
 
-<table><tr><td>Basic</td><td>${x}_{1}^{\prime }$</td><td>${x}_{2}^{\prime }$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>-1</td><td>$\frac{5}{2}$</td><td>0</td><td>$\frac{3}{2}$</td><td>199</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>1</td><td>$\frac{1}{2}$</td><td>1</td><td>- $\frac{1}{2}$</td><td>5</td></tr><tr><td>${x}_{1}^{\prime }$</td><td>-1</td><td>-2</td><td>$\frac{3}{2}$</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{5}{2}$</td></tr></table>
+| Basic | ${x}_{1}^{\prime }$ | ${x}_{2}^{\prime }$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | -1 | $\frac{5}{2}$ | 0 | $\frac{3}{2}$ | 199 |
+| ${x}_{4}$ | 0 | 1 | $\frac{1}{2}$ | 1 | $- \frac{1}{2}$ | 5 |
+| ${x}_{1}^{\prime }$ | -1 | -2 | $\frac{3}{2}$ | 0 | $\frac{1}{2}$ | $- \frac{5}{2}$ |
 
 Next, the entering variable ${x}_{2}^{\prime }$ becomes basic and the leaving variable ${x}_{1}^{\prime }$ becomes nonbasic, which yields
 
-<table><tr><td>Basic</td><td>${x}_{1}^{\prime }$</td><td>${x}_{2}^{\prime }$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>乙</td><td>$\frac{1}{2}$</td><td>0</td><td>7</td><td>0</td><td>5</td><td>223 4</td></tr><tr><td>${x}_{4}$</td><td>$- \frac{1}{2}$</td><td>0</td><td>5</td><td>1</td><td>$- \frac{1}{4}$</td><td>5 4</td></tr><tr><td>${x}_{2}^{\prime }$</td><td>$\frac{1}{2}$</td><td>1</td><td>$- \frac{3}{4}$</td><td>0</td><td>$- \frac{1}{4}$</td><td>5 4</td></tr></table>
+| Basic | ${x}_{1}^{\prime }$ | ${x}_{2}^{\prime }$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| 乙 | $\frac{1}{2}$ | 0 | 7 | 0 | 5 | 223 4 |
+| ${x}_{4}$ | $- \frac{1}{2}$ | 0 | 5 | 1 | $- \frac{1}{4}$ | 5 4 |
+| ${x}_{2}^{\prime }$ | $\frac{1}{2}$ | 1 | $- \frac{3}{4}$ | 0 | $- \frac{1}{4}$ | 5 4 |
 
 The last tableau is feasible and optimal. Note that the last two steps could have been reversed-meaning that we could first make ${x}_{2}^{\prime }$ basic and then apply the substitution ${x}_{1} = 4 - {x}_{1}^{\prime }$ (try it!). The sequence presented here involves less computation, however.
 
 The optimal values of ${x}_{1},{x}_{2}$ , and ${x}_{3}$ are obtained by back-substitution as ${x}_{1} = {u}_{1} - {x}_{1}^{\prime } = \; 4 - 0 = 4,{x}_{2} = {u}_{2} - {x}_{2}^{\prime } = 3 - \frac{5}{4} = \frac{7}{4}$ , and ${x}_{3} = 0$ . Finally, we get $y = {l}_{2} + {x}_{2} = 7 + \frac{7}{4} = \frac{35}{4}$ . The associated optimal value of the objective function is $\frac{223}{4}$ .
 
-### 7.4 DUALITY
+### 7.4 DUALITY ^Duality
 
 This section presents a rigorous treatment of duality. The presentation also lays the foundation for the development of parametric programming.
 
-#### 7.4.1 Matrix Definition of the Dual Problem
+#### 7.4.1 Matrix Definition of the Dual Problem ^DualMatrix
 
 Suppose that the primal problem in equation form with $m$ constraints and $n$ variables is defined as
 
@@ -806,11 +927,11 @@ $\mathbf{Y}$ unrestricted
 
 Some of the constraints in $\mathbf{{YA}} \geq  \mathbf{C}$ may override unrestricted $\mathbf{Y}$ , as explained in the examples of Section 4.1, Chapter 4.
 
-#### 7.4.2 Optimal Dual Solution
+#### 7.4.2 Optimal Dual Solution ^OptimalDualSolution
 
 This section establishes relationships between the primal and dual problems and shows how the optimal dual solution can be determined from the optimal primal solution. Let B be the current optimal primal basis, and define ${\mathbf{C}}_{B}$ as the objective-function coefficients associated with the optimal vector ${\mathbf{X}}_{B}$ .
 
-Theorem 7.4-1 (Weak duality theory). For any pair of feasible primal and dual solutions, $\left( {\mathbf{X},\mathbf{Y}}\right)$ , the value of the objective function in the minimization problem sets an upper bound on the value of the objective function in the maximization problem. For the optimal pair $\left( {{\mathbf{X}}^{ * },{\mathbf{Y}}^{ * }}\right)$ , the two objective values are equal.
+Theorem 7.4-1 (Weak duality theory). For any pair of feasible primal and dual solutions, $\left( {\mathbf{X},\mathbf{Y}}\right)$ , the value of the objective function in the minimization problem sets an upper bound on the value of the objective function in the maximization problem. For the optimal pair $\left( {{\mathbf{X}}^{ * },{\mathbf{Y}}^{ * }}\right)$ , the two objective values are equal. ^WeakDuality
 
 Proof. The feasible pair $\left( {\mathbf{X},\mathbf{Y}}\right)$ satisfies all the restrictions of the two problems. Premultiplying both sides of the constraints of the maximization problem with (unrestricted) $\mathbf{Y}$ , we get
 
@@ -830,7 +951,7 @@ Note that the feasibility requirement of $\mathbf{X}$ and $\mathbf{Y}$ is implie
 
 The implication of the theorem is that, given $z \leq  w$ for any pair of feasible solutions, the maximum of $z$ and the minimum of $w$ are achieved when the two objective values are equal. A consequence of this result is that the "goodness" of any feasible primal and dual solutions relative to the optimum can be checked by comparing the difference $\left( {w - z}\right)$ to $\frac{z + w}{2}$ . The smaller the ratio $\frac{2\left( {w - z}\right) }{z + w}$ , the closer the two solutions are to being optimal. The given rule of thumb does not suggest that the optimal objective value is $\frac{z + w}{2}$ .
 
-Unboundedness and infeasibility. If the objective value of one of the two problems is unbounded, then the other problem must be infeasible. For if it is not, then both problems have feasible solutions, and the relationship $z \leq  w$ must hold - an impossible result because unbounded objective value means $z =  + \infty$ or $w =  - \infty$ .
+Unboundedness and infeasibility. If the objective value of one of the two problems is unbounded, then the other problem must be infeasible. For if it is not, then both problems have feasible solutions, and the relationship $z \leq  w$ must hold - an impossible result because unbounded objective value means $z =  + \infty$ or $w =  - \infty$ . ^UnboundedInfeasible
 
 If one problem is infeasible, then the other problem can be infeasible also, as the following example demonstrates (verify graphically!):
 
@@ -870,11 +991,11 @@ $$
 z = {\mathbf{C}}_{B}{\mathbf{X}}_{B} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b} \tag{2}
 $$
 
-The dual variables $\mathbf{Y} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}$ are referred to by the standard names dual or shadow prices (see Section 4.3.1).
+The dual variables $\mathbf{Y} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}$ are referred to by the standard names dual or shadow prices (see Section 4.3.1). ^ShadowPrices
 
-Motivation for the dual simplex algorithm. Given that ${\mathbf{P}}_{j}$ is the $j$ th column of $\mathbf{A}$ , we note from Theorem 7.4-2 that ${z}_{j} - {c}_{j} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{P}}_{j} - {c}_{j} = {\mathbf{{YP}}}_{j} - {c}_{j}$ represents the difference between the left- and right-hand sides of the dual constraints. The maximization primal problem starts with ${z}_{j} - {c}_{j} < 0$ for at least one $j$ , which means that the corresponding dual constraint, $\mathbf{Y}{\mathbf{P}}_{j} \geq  {c}_{j}$ , is not satisfied. When the primal optimal is reached, we get ${z}_{j} - {c}_{j} \geq  0$ , for all $j$ , rendering the dual solution $\mathbf{Y} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}$ feasible. Thus, as the primal problem seeks optimality, the dual problem seeks feasibility. This point is the basis for the development of the dual simplex method (Section 4.4.1), in which the iterations start (better than) optimal and infeasible and remain so until feasibility is attained at the last iteration. This is in contrast with the (primal) simplex method (Chapter 3), which remains worse than optimal but feasible until the optimal iteration is reached.
+Motivation for the dual simplex algorithm. Given that ${\mathbf{P}}_{j}$ is the $j$ th column of $\mathbf{A}$ , we note from Theorem 7.4-2 that ${z}_{j} - {c}_{j} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{P}}_{j} - {c}_{j} = {\mathbf{{YP}}}_{j} - {c}_{j}$ represents the difference between the left- and right-hand sides of the dual constraints. The maximization primal problem starts with ${z}_{j} - {c}_{j} < 0$ for at least one $j$ , which means that the corresponding dual constraint, $\mathbf{Y}{\mathbf{P}}_{j} \geq  {c}_{j}$ , is not satisfied. When the primal optimal is reached, we get ${z}_{j} - {c}_{j} \geq  0$ , for all $j$ , rendering the dual solution $\mathbf{Y} = {\mathbf{C}}_{B}{\mathbf{B}}^{-1}$ feasible. Thus, as the primal problem seeks optimality, the dual problem seeks feasibility. This point is the basis for the development of the dual simplex method (Section 4.4.1), in which the iterations start (better than) optimal and infeasible and remain so until feasibility is attained at the last iteration. This is in contrast with the (primal) simplex method (Chapter 3), which remains worse than optimal but feasible until the optimal iteration is reached. ^DualSimplexMotivation
 
-## Example 7.4-1
+## Example 7.4-1 ^ExampleDual
 
 ---
 
@@ -944,7 +1065,7 @@ Both solutions are feasible, and $z = w = {15}$ (verify!). Thus, the two solutio
 
 ---
 
-### 7.5 PARAMETRIC LINEAR PROGRAMMING
+### 7.5 PARAMETRIC LINEAR PROGRAMMING ^ParametricLP
 
 Parametric linear programming is an extension of the post-optimal analysis presented in Section 4.5. It investigates the effect of predetermined continuous variations in the objective-function coefficients and the right-hand side of the constraints on the optimum solution.
 
@@ -954,13 +1075,13 @@ $$
 \text{ Maximize }z = \left\{  {\mathbf{{CX}}\left| {\;\mathop{\sum }\limits_{{j = 1}}^{n}{\mathbf{P}}_{j}{x}_{j} = \mathbf{b}}\right. ,\mathbf{X} \geq  \mathbf{0}}\right\}
 $$
 
-In parametric analysis, the objective function and right-hand side vectors, $\mathbf{C}$ and $\mathbf{b}$ , are replaced with the parameterized functions $\mathbf{C}\left( t\right)$ and $\mathbf{b}\left( t\right)$ , where $t$ is the parameter of variation. Mathematically, $t$ can assume any positive or negative value. In this presentation, we will assume that $t \geq  0$ .
+In parametric analysis, the objective function and right-hand side vectors, $\mathbf{C}$ and $\mathbf{b}$ , are replaced with the parameterized functions $\mathbf{C}\left( t\right)$ and $\mathbf{b}\left( t\right)$ , where $t$ is the parameter of variation. Mathematically, $t$ can assume any positive or negative value. In this presentation, we will assume that $t \geq  0$ . ^ParametricIdea
 
-The general idea of parametric analysis is to start with the optimal solution at $t = 0$ . Then, using the optimality and feasibility conditions of the simplex method, we determine the range $0 \leq  t \leq  {t}_{1}$ for which the solution at $t = 0$ remains optimal and feasible. In this case, ${t}_{1}$ is referred to as a critical value. The process continues by determining successive critical values and their corresponding optimal feasible solutions. Termination of post-optimal analysis occurs when, regardless of $t$ , the last solution remains unchanged or there is indication that no feasible solution exists.
+The general idea of parametric analysis is to start with the optimal solution at $t = 0$ . Then, using the optimality and feasibility conditions of the simplex method, we determine the range $0 \leq  t \leq  {t}_{1}$ for which the solution at $t = 0$ remains optimal and feasible. In this case, ${t}_{1}$ is referred to as a critical value. The process continues by determining successive critical values and their corresponding optimal feasible solutions. Termination of post-optimal analysis occurs when, regardless of $t$ , the last solution remains unchanged or there is indication that no feasible solution exists. ^CriticalValues
 
-#### 7.5.1 Parametric Changes in C
+#### 7.5.1 Parametric Changes in C ^ParametricC
 
-Let ${\mathbf{X}}_{{B}_{i}},{\mathbf{B}}_{i},{\mathbf{C}}_{{B}_{i}}\left( t\right)$ be the elements that define the optimal solution associated with critical ${t}_{i}$ (the computations start at ${t}_{0} = 0$ with ${\mathbf{B}}_{0}$ as its optimal basis). Next, the critical value ${t}_{i + 1}$ and its optimal basis, if one exists, are determined. Because changes in $\mathbf{C}$ can affect only the optimality of the problem, the current solution ${\mathbf{X}}_{{B}_{i}} = {\mathbf{B}}_{i}^{-1}\mathbf{b}$ will remain optimal for some $t \geq  {t}_{i}$ so long as the reduced cost, ${z}_{j}\left( t\right)  - {c}_{j}\left( t\right)$ , satisfies the following optimality condition:
+Let ${\mathbf{X}}_{{B}_{i}},{\mathbf{B}}_{i},{\mathbf{C}}_{{B}_{i}}\left( t\right)$ be the elements that define the optimal solution associated with critical ${t}_{i}$ (the computations start at ${t}_{0} = 0$ with ${\mathbf{B}}_{0}$ as its optimal basis). Next, the critical value ${t}_{i + 1}$ and its optimal basis, if one exists, are determined. Because changes in $\mathbf{C}$ can affect only the optimality of the problem, the current solution ${\mathbf{X}}_{{B}_{i}} = {\mathbf{B}}_{i}^{-1}\mathbf{b}$ will remain optimal for some $t \geq  {t}_{i}$ so long as the reduced cost, ${z}_{j}\left( t\right)  - {c}_{j}\left( t\right)$ , satisfies the following optimality condition: ^OptimalityInequalities
 
 $$
 {z}_{j}\left( t\right)  - {c}_{j}\left( t\right)  = {\mathbf{C}}_{{B}_{i}}\left( t\right) {\mathbf{B}}_{i}^{-1}{\mathbf{P}}_{j} - {c}_{j}\left( t\right)  \geq  0\text{ , for all }j
@@ -970,7 +1091,7 @@ The value of ${t}_{i + 1}$ equals the largest $t > {t}_{i}$ that satisfies all t
 
 Note that nothing in the inequalities requires $\mathbf{C}\left( t\right)$ to be linear in $t$ . Any function $\mathbf{C}\left( t\right)$ , linear or nonlinear, is acceptable. However, with nonlinearity the numerical manipulation of the resulting inequalities can be cumbersome. (See Problem 7-53, for an illustration of the nonlinear case.)
 
-Example 7.5-1
+Example 7.5-1 ^ExampleParametricC
 
 $$
 \text{ Maximize }z = \left( {3 - {6t}}\right) {x}_{1} + \left( {2 - {2t}}\right) {x}_{2} + \left( {5 + {5t}}\right) {x}_{3}
@@ -1016,7 +1137,12 @@ $$
 {\mathbf{B}}_{0}^{-1} = \left( \begin{array}{rrr} \frac{1}{2} &  - \frac{1}{4} & 0 \\  0 & \frac{1}{2} & 0 \\   - 2 & 1 & 1 \end{array}\right)
 $$
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>160</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>5</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>30</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>10</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 160 |
+| ${x}_{2}$ | $- \frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $- \frac{1}{4}$ | 0 | 5 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | 1 | 0 | 30 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 10 |
 
 The optimality conditions for the current nonbasic vectors, ${\mathbf{P}}_{1},{\mathbf{P}}_{4}$ , and ${\mathbf{P}}_{5}$ , are
 
@@ -1056,19 +1182,22 @@ $$
 
 According to these conditions, the basic solution ${\mathbf{X}}_{{B}_{1}}$ remains optimal for all $t \geq  1$ . Observe that the optimality condition, $- 2 + {2t} \geq  0$ , automatically "remembers" that ${\mathbf{X}}_{{B}_{1}}$ is optimal for a range of $t$ that starts from the last critical value ${t}_{1} = 1$ . This will always be the case in parametric programming computations.
 
-The optimal solution for the entire range of $t$ is summarized in the following table (the value of $z$ is computed by direct substitution):
+The optimal solution for the entire range of $t$ is summarized in the following table (the value of $z$ is computed by direct substitution): ^ParametricSummaryC
 
-<table><tr><td>$t$</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>$z$</td></tr><tr><td>$0 \leq  t \leq  1$</td><td>0</td><td>5</td><td>30</td><td>${160} + {140t}$</td></tr><tr><td>$t \geq  1$</td><td>0</td><td>0</td><td>30</td><td>${150} + {150t}$</td></tr></table>
+| $t$ | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | $z$ |
+| --- | --- | --- | --- | --- |
+| $0 \leq  t \leq  1$ | 0 | 5 | 30 | ${160} + {140t}$ |
+| $t \geq  1$ | 0 | 0 | 30 | ${150} + {150t}$ |
 
-#### 7.5.2 Parametric Changes in b
+#### 7.5.2 Parametric Changes in b ^Parametricb
 
-The parameterized right-hand side $\mathbf{b}\left( t\right)$ can affect the feasibility of the problem only. The critical values of $t$ are thus determined from the condition
+The parameterized right-hand side $\mathbf{b}\left( t\right)$ can affect the feasibility of the problem only. The critical values of $t$ are thus determined from the condition ^FeasibilityInequalities
 
 $$
 {\mathbf{X}}_{B}\left( t\right)  = {\mathbf{B}}^{-1}\mathbf{b}\left( t\right)  \geq  \mathbf{0}
 $$
 
-Example 7.5-2
+Example 7.5-2 ^ExampleParametricb
 
 $$
 \text{ Maximize }z = 3{x}_{1} + 2{x}_{2} + 5{x}_{3}
@@ -1196,21 +1325,25 @@ $$
 
 Because all the denominator elements, $\left( {\frac{1}{4},0,\frac{1}{4}}\right)$ , are $\geq  0$ , the problem has no feasible solution for $t > \frac{30}{7}$ , and the parametric analysis ends at $t = {t}_{2} = \frac{30}{7}$ .
 
-The optimal solution is summarized as
+The optimal solution is summarized as ^ParametricSummaryb
 
-<table><tr><td>$t$</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>$z$</td></tr><tr><td>$0 \leq  t \leq  \frac{10}{3}$</td><td>0</td><td>$5 - t$</td><td>${30} + t$</td><td>${160} + {3t}$</td></tr><tr><td>$\frac{10}{3} \leq  t \leq  \frac{30}{7}$</td><td>0</td><td>$\frac{{30} - {7t}}{4}$</td><td>${30} + t$</td><td>${165} + \frac{3}{2}t$</td></tr><tr><td>$t > \frac{30}{7}$</td><td colspan="4">(No feasible solution exists)</td></tr></table>
+| $t$ | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | $z$ |
+| --- | --- | --- | --- | --- |
+| $0 \leq  t \leq  \frac{10}{3}$ | 0 | $5 - t$ | ${30} + t$ | ${160} + {3t}$ |
+| $\frac{10}{3} \leq  t \leq  \frac{30}{7}$ | 0 | $\frac{{30} - {7t}}{4}$ | ${30} + t$ | ${165} + \frac{3}{2}t$ |
+| $t > \frac{30}{7}$ | (No feasible solution exists) |  |  |  |
 
-### 7.6 MORE LINEAR PROGRAMMING TOPICS
+### 7.6 MORE LINEAR PROGRAMMING TOPICS ^MoreTopics
 
 The following list provides additional LP topics (normally covered in specialized OR courses) that can be found in Chapter 22 on the website. The reason these topics are not included in the text is to maintain the number of printed pages at a reasonable level.
 
-1. Minimum-cost capacitated flow problem, including LP formulation, and capacitated network simplex algorithm model.
+1. Minimum-cost capacitated flow problem, including LP formulation, and capacitated network simplex algorithm model. ^MinCostFlow
 
-2. Dantzig-Wolfe decomposition algorithm.
+2. Dantzig-Wolfe decomposition algorithm. ^DantzigWolfe
 
-3. Karmarkar interior-point algorithm.
+3. Karmarkar interior-point algorithm. ^Karmarkar
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^Bibliography
 
 Bazaraa, M., J. Jarvis, and H. Sherali, Linear Programming and Network Flows, 4th ed., Wiley, New York, 2009.
 
@@ -1222,9 +1355,15 @@ Saigal, R. Linear Programming: A Modern Integrated Analysis, Kluwer Academic Pub
 
 Vanderbei, R., Linear Programming: Foundation and Extensions, 3rd ed., Springer, New York, 2008.
 
-## PROBLEMS
+## PROBLEMS ^Problems
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>7.1.1</td><td>7-1 to 7-4</td><td>7.3</td><td>7-32 to 7-39</td></tr><tr><td>7.1.1</td><td>7-5 to 7-8</td><td>7.4.1</td><td>7-40 to 7-41</td></tr><tr><td>7.1.2</td><td>7-9 to 7-13</td><td>7.4.2</td><td>7-42 to 7-48</td></tr><tr><td>7.2.1</td><td>7-14 to 7-26</td><td>7.5.1</td><td>7-49 to 7-53</td></tr><tr><td>7.2.2</td><td>7-27 to 7-31</td><td>7.5.2</td><td>7-54 to 7-57</td></tr></table>
+| Section | Assigned Problems | Section | Assigned Problems |
+| --- | --- | --- | --- |
+| 7.1.1 | 7-1 to 7-4 | 7.3 | 7-32 to 7-39 |
+| 7.1.1 | 7-5 to 7-8 | 7.4.1 | 7-40 to 7-41 |
+| 7.1.2 | 7-9 to 7-13 | 7.4.2 | 7-42 to 7-48 |
+| 7.2.1 | 7-14 to 7-26 | 7.5.1 | 7-49 to 7-53 |
+| 7.2.2 | 7-27 to 7-31 | 7.5.2 | 7-54 to 7-57 | ^AssignedProblems
 
 7-1. Show that the set $Q = \left\{  {{x}_{1},{x}_{2} \mid  {x}_{1} + {x}_{2} \leq  3,{x}_{1} \geq  0,{x}_{2} \geq  0}\right\}$ is convex. Is the nonnegativity condition essential for the proof?
 
@@ -1338,13 +1477,21 @@ $$
 
 *7-12. The following is an optimal LP tableau:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>0</td><td>3</td><td>2</td><td>?</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>0</td><td>1</td><td>1</td><td>-1</td><td>2</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>6</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>-1</td><td>1</td><td>2</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 0 | 3 | 2 | ? |
+| ${x}_{3}$ | 0 | 0 | 1 | 1 | -1 | 2 |
+| ${x}_{2}$ | 0 | 1 | 0 | 1 | 0 | 6 |
+| ${x}_{1}$ | 1 | 0 | 0 | -1 | 1 | 2 |
 
 The variables ${x}_{3},{x}_{4}$ , and ${x}_{5}$ are slacks in the original problem. Use matrix manipulations to reconstruct the original LP, and then compute the optimum objective value.
 
 7-13. In the matrix simplex tableau, suppose that $\mathbf{X} = {\left( {\mathbf{X}}_{\mathrm{I}},{\mathbf{X}}_{\mathrm{{II}}}\right) }^{T}$ , where ${\mathbf{X}}_{\mathrm{{II}}}$ corresponds to a typical starting basic solution (consisting of slack and/or artificial variables) with $\mathbf{B} = \mathbf{I}$ , and let $\mathbf{C} = \left( {{\mathbf{C}}_{\mathrm{I}},{\mathbf{C}}_{\mathrm{{II}}}}\right)$ and $\mathbf{A} = \left( {\mathbf{D},\mathbf{I}}\right)$ be the corresponding partitions of $\mathbf{C}$ and $\mathbf{A}$ , respectively. Show that the matrix simplex tableau reduces to the same form used in Chapter 3 - namely,
 
-<table><tr><td>Basic</td><td>${\mathbf{X}}_{\mathrm{I}}$</td><td>${\mathbf{X}}_{\text{ II }}$</td><td>Solution</td></tr><tr><td>$z$</td><td>${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{D} - {\mathbf{C}}_{\mathrm{I}}$</td><td>${\mathbf{C}}_{B}{\mathbf{B}}^{-1} - {\mathbf{C}}_{\text{ II }}$</td><td>${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b}$</td></tr><tr><td>${\mathbf{X}}_{B}$</td><td>${\mathbf{B}}^{-1}\mathbf{D}$</td><td>${\mathbf{B}}^{-1}$</td><td>${\mathbf{B}}^{-1}\mathbf{b}$</td></tr></table>
+| Basic | ${\mathbf{X}}_{\mathrm{I}}$ | ${\mathbf{X}}_{\text{ II }}$ | Solution |
+| --- | --- | --- | --- |
+| $z$ | ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{D} - {\mathbf{C}}_{\mathrm{I}}$ | ${\mathbf{C}}_{B}{\mathbf{B}}^{-1} - {\mathbf{C}}_{\text{ II }}$ | ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}\mathbf{b}$ |
+| ${\mathbf{X}}_{B}$ | ${\mathbf{B}}^{-1}\mathbf{D}$ | ${\mathbf{B}}^{-1}$ | ${\mathbf{B}}^{-1}\mathbf{b}$ |
 
 *7-14. Consider the following LP:
 
@@ -1702,7 +1849,10 @@ $$
 
 Using ${\mathbf{X}}_{u} = {\mathbf{U}}_{u} - {\mathbf{X}}_{u}^{\prime }$ where ${\mathbf{U}}_{u}$ is a subset of $\mathbf{U}$ representing the upper bounds for ${\mathbf{X}}_{u}$ , let $\mathbf{B}$ (and ${\mathbf{X}}_{B}$ ) be the basis of the current simplex iteration after ${\mathbf{X}}_{u}$ has been substituted out. Show that the associated general simplex tableau is given as
 
-<table><tr><td>Basic</td><td>${\mathbf{X}}_{z}^{T}$</td><td>${\mathbf{X}}^{\prime }{}_{u}^{T}$</td><td>Solution</td></tr><tr><td>$z$</td><td>${\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{D}}_{z} - {\mathbf{C}}_{z}$</td><td>$- {\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{D}}_{u} + {\mathbf{C}}_{u}$</td><td>${\mathbf{C}}_{u}{\mathbf{B}}^{-1}{\mathbf{B}}^{-1}\left( {\mathbf{b} - {\mathbf{D}}_{u}{\mathbf{U}}_{u}}\right)  + {\mathbf{C}}_{u}{\mathbf{U}}_{u}$</td></tr><tr><td>${\mathbf{X}}_{B}$</td><td>${\mathbf{B}}^{-1}{\mathbf{D}}_{z}$</td><td>$- {\mathbf{B}}^{-1}{\mathbf{D}}_{u}$</td><td>${\mathbf{B}}^{-1}\left( {\mathbf{b} - {\mathbf{D}}_{u}{\mathbf{U}}_{u}}\right)$</td></tr></table>
+| Basic | ${\mathbf{X}}_{z}^{T}$ | ${\mathbf{X}}^{\prime }{}_{u}^{T}$ | Solution |
+| --- | --- | --- | --- |
+| $z$ | ${\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{D}}_{z} - {\mathbf{C}}_{z}$ | $- {\mathbf{C}}_{B}{\mathbf{B}}^{-1}{\mathbf{D}}_{u} + {\mathbf{C}}_{u}$ | ${\mathbf{C}}_{u}{\mathbf{B}}^{-1}{\mathbf{B}}^{-1}\left( {\mathbf{b} - {\mathbf{D}}_{u}{\mathbf{U}}_{u}}\right)  + {\mathbf{C}}_{u}{\mathbf{U}}_{u}$ |
+| ${\mathbf{X}}_{B}$ | ${\mathbf{B}}^{-1}{\mathbf{D}}_{z}$ | $- {\mathbf{B}}^{-1}{\mathbf{D}}_{u}$ | ${\mathbf{B}}^{-1}\left( {\mathbf{b} - {\mathbf{D}}_{u}{\mathbf{U}}_{u}}\right)$ |
 
 7-37. In Example 7.3-1, do the following:
 

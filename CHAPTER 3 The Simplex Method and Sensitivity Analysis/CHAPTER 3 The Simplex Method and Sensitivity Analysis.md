@@ -1,18 +1,100 @@
-## CHAPTER 3 The Simplex Method and Sensitivity Analysis
+## CHAPTER 3 The Simplex Method and Sensitivity Analysis ^chapterthree
 
-## Real-Life Application-Optimization of Heart Valve Production
+```markmap
+---
+markmap:
+  height: 720
+---
+# [[#^chapterthree|CHAPTER 3: The Simplex Method and Sensitivity Analysis]]
+
+## [[#^heartvalve|Real-Life Application: Heart Valve Production Optimization]]
+
+## [[#^lpequation|LP Model in Equation Form]]
+### [[#^simplexreq|Simplex-Ready Requirements]]
+### [[#^slackvar|Convert (≤) Constraints: Slack Variables]]
+### [[#^surplusvar|Convert (≥) Constraints: Surplus Variables]]
+### [[#^rhsnonneg|Ensure Nonnegative Right-Hand Side]]
+### [[#^unrestricted|Handle Unrestricted Variables]]
+
+## [[#^transition|From Graphical to Algebraic Solution]]
+### [[#^algebraicspace|Why LP Has Infinitely Many Solutions (m < n)]]
+### [[#^basicsolutions|Basic Solutions = Corner Points]]
+### [[#^combinations|Maximum Number of Corner Points]]
+### [[#^enumeration|Why Enumeration Explodes (and Why Simplex Helps)]]
+
+## [[#^simplexmethod|The Simplex Method]]
+### [[#^iterative|Iterative Path Along Edges (One Variable at a Time)]]
+### [[#^optimality|Optimality Condition: Choose Entering Variable]]
+### [[#^feasibility|Feasibility Condition: Ratio Test for Leaving Variable]]
+### [[#^pivot|Pivot Mechanics (Pivot Row/Column/Element)]]
+### [[#^gaussjordan|Gauss–Jordan Row Operations for Tableau Updates]]
+### [[#^readtableau|Reading the Solution from the Tableau]]
+### [[#^resourcestatus|Interpreting Slack: Scarce vs Abundant Resources]]
+### [[#^toramoment|TORA Moment: Interactive Simplex Iterations]]
+### [[#^simplexsummary|Summary of the Simplex Method (Max vs Min)]]
+
+## [[#^dantzig|Aha! Moment: Dantzig and the Birth of the Simplex Method]]
+
+## [[#^artificialstart|Artificial Starting Solution]]
+### [[#^mmethod|M-Method (Big-M Penalty)]]
+### [[#^twophase|Two-Phase Method]]
+### [[#^twophasesummary|Summary of the Two-Phase Method]]
+
+## [[#^specialcases|Special Cases in the Simplex Method]]
+### [[#^degeneracy|Degeneracy]]
+### [[#^altoptima|Alternative Optima]]
+### [[#^unbounded|Unbounded Solution]]
+### [[#^infeasible|Infeasible Solution]]
+
+## [[#^sensitivity|Sensitivity Analysis]]
+### [[#^graphicalsa|Graphical Sensitivity Analysis]]
+#### [[#^rhschanges|Changes in the Right-Hand Side (Dual/Shadow Price)]]
+#### [[#^dualprice|Dual Price and Feasibility Range]]
+#### [[#^objchanges|Changes in Objective Coefficients (Optimality Range)]]
+### [[#^algebraicrhs|Algebraic Sensitivity: Right-Hand Side]]
+#### [[#^toyco|TOYCO Model (Worked Example)]]
+#### [[#^rhsperturb|RHS Perturbations, Dual Prices, and Feasibility Conditions]]
+### [[#^algebraicobj|Algebraic Sensitivity: Objective Function]]
+#### [[#^reducedcost|Reduced Cost and Coefficient Ranges]]
+### [[#^software|Sensitivity Analysis with TORA, Solver, and AMPL]]
+
+## [[#^computational|Computational Issues in Linear Programming]]
+## [[#^bibliography|Bibliography]]
+
+## [[#^casestudy|Case Study: Optimization of Heart Valves Production]]
+### [[#^situation|Description of the Situation]]
+### [[#^lpmodel|LP Model]]
+### [[#^amplimpl|AMPL Implementation]]
+### [[#^analysisresults|Analysis of the Results]]
+### [[#^implementationcomments|Comments on the Implementation of the Model]]
+
+## [[#^problems|Problems]]
+```
+
+## Summary
+
+- Simplex requires an LP written in equation form with nonnegative right-hand sides and nonnegative variables; inequalities and unrestricted variables are transformed systematically.
+- Basic solutions (obtained by setting nonbasic variables to zero) correspond to corner points; enumerating all corner points grows combinatorially, motivating the simplex method.
+- Simplex moves along edges from one basic feasible solution to another using the optimality condition (entering variable) and feasibility condition (leaving variable via ratio test).
+- Tableau updates are performed by pivoting with Gauss–Jordan row operations; the tableau also supports interpretation of variable values and resource slack (scarce vs abundant).
+- Artificial variables provide a starting basis when an all-slack start is impossible; the two-phase method is the practical approach (Big-M is conceptually useful but numerically fragile).
+- Sensitivity analysis quantifies how much LP data can change without altering the optimal basis, including dual/shadow prices with feasibility ranges and reduced costs with objective-coefficient ranges.
+
+## Real-Life Application-Optimization of Heart Valve Production ^heartvalve
 
 Biological heart valves are bioprostheses manufactured in different sizes from porcine hearts for human implantation. On the supply side, porcine hearts cannot be "produced" to specific sizes. On the demand side, the exact size of a manufactured valve cannot be determined until the biological component of a pig heart has been processed. As a result, some sizes may be overstocked and others understocked. A linear programming model was developed to reduce the overstocked sizes and increase the quantity of understocked sizes. The resulting savings exceeded \$1,476,000 in 1981, the year the study was made. Details of the study are presented at the end of the chapter.
 
-### 3.1 LP MODEL IN EQUATION FORM
+### 3.1 LP MODEL IN EQUATION FORM ^lpequation
 
-The development of the simplex method computations is facilitated by imposing two requirements on the LP model:
+The development of the simplex method computations is facilitated by imposing two requirements on the LP model: ^simplexreq
 
 1. All the constraints are equations with nonnegative right-hand side.
 
 2. All the variables are nonnegative. ${}^{1}$
 
-Converting inequalities into equations with nonnegative right-hand side. To convert a (≤)-inequality to an equation, a nonnegative slack variable is added to the left-hand side of the constraint. For example, the M1-constraint of the Reddy Mikks model (Example 2.1-1) is converted into an equation as
+Converting inequalities into equations with nonnegative right-hand side. To convert a (≤)-inequality to an equation, a nonnegative slack variable is added to the left-hand side of the constraint. ^slackvar
+
+For example, the M1-constraint of the Reddy Mikks model (Example 2.1-1) is converted into an equation as
 
 $$
 6{x}_{1} + 4{x}_{2} + {s}_{1} = {24},{s}_{1} \geq  0
@@ -26,7 +108,9 @@ ${}^{1}$ Commercial packages (and TORA) accept inequality constraints, nonnegati
 
 The nonnegative variable ${s}_{1}$ is the slack (or unused amount) of resource ${M1}$ .
 
-Conversion from $\left(  \geq  \right)$ to $\left(  = \right)$ is achieved by subtracting a nonnegative surplus variable from the left-hand side of the inequality. For example, in the diet model (Example 2.2-2), the surplus variable ${S}_{1}\left( { \geq  0}\right)$ converts the $\left(  \geq  \right)$ feed mix constraint to the equation
+Conversion from $\left(  \geq  \right)$ to $\left(  = \right)$ is achieved by subtracting a nonnegative surplus variable from the left-hand side of the inequality. ^surplusvar
+
+For example, in the diet model (Example 2.2-2), the surplus variable ${S}_{1}\left( { \geq  0}\right)$ converts the $\left(  \geq  \right)$ feed mix constraint to the equation
 
 $$
 {x}_{1} + {x}_{2} - {S}_{1} = {800},{S}_{1} \geq  0
@@ -34,9 +118,11 @@ $$
 
 The amount of ${S}_{1}$ represents the excess tons of the mix over the required minimum (= 800 tons).
 
-The only remaining requirement is for the right-hand side of the resulting equation to be nonnegative. The requirement can be satisfied simply by multiplying both sides of the equation by -1 , if necessary.
+The only remaining requirement is for the right-hand side of the resulting equation to be nonnegative. The requirement can be satisfied simply by multiplying both sides of the equation by -1 , if necessary. ^rhsnonneg
 
-Dealing with unrestricted variables. The use of an unrestricted variable in an LP model is demonstrated in the multiperiod production smoothing model of Example 2.4-4, where the unrestricted variable ${S}_{i}$ represents the number of workers hired or fired in period $i$ . In the same example, the unrestricted variable is replaced by two nonnegative variables by using the substitution
+Dealing with unrestricted variables. ^unrestricted
+
+The use of an unrestricted variable in an LP model is demonstrated in the multiperiod production smoothing model of Example 2.4-4, where the unrestricted variable ${S}_{i}$ represents the number of workers hired or fired in period $i$ . In the same example, the unrestricted variable is replaced by two nonnegative variables by using the substitution
 
 $$
 {S}_{i} = {S}_{i}^{ - } - {S}_{i}^{ + },{S}_{i}^{ - } \geq  0,{S}_{i}^{ + } \geq  0
@@ -44,9 +130,9 @@ $$
 
 In this case, ${S}_{i}^{ - }$ represents the number of workers hired and ${S}_{i}^{ + }$ the number of workers fired. As explained in Example 2.4-4, it is impossible (both intuitively and mathematically) that ${S}_{i}^{ - }$ and ${S}_{i}^{ + }$ assume positive values simultaneously.
 
-### 3.2 TRANSITION FROM GRAPHICAL TO ALGEBRAIC SOLUTION
+### 3.2 TRANSITION FROM GRAPHICAL TO ALGEBRAIC SOLUTION ^transition
 
-The development of the algebraic simplex method is based on ideas conveyed by the graphical LP solution in Section 2.2. Figure 3.1 compares the two methods. In the graphical method, the solution space is the intersection of the half-spaces representing the constraints, and in the simplex method, the solution space is represented by $m$ simultaneous linear equations and $n$ nonnegative variables. We can see that the graphical solution space has an infinite number of solution points, but how can we draw a similar conclusion from the algebraic representation of the solution space? The answer is that, in all nontrivial LPs, the number of equations $m$ is always less than the number of variables $n$ , thus yielding an infinite number of solutions (provided the equations are consistent). ${}^{2}$ For example, the equation $x + y = 1$ has $m = 1$ and $n = 2$ and yields an infinite number of solutions because any point on the straight line $x + y = 1$ is a solution.
+The development of the algebraic simplex method is based on ideas conveyed by the graphical LP solution in Section 2.2. Figure 3.1 compares the two methods. In the graphical method, the solution space is the intersection of the half-spaces representing the constraints, and in the simplex method, the solution space is represented by $m$ simultaneous linear equations and $n$ nonnegative variables. We can see that the graphical solution space has an infinite number of solution points, but how can we draw a similar conclusion from the algebraic representation of the solution space? The answer is that, in all nontrivial LPs, the number of equations $m$ is always less than the number of variables $n$ , thus yielding an infinite number of solutions (provided the equations are consistent). ${}^{2}$ For example, the equation $x + y = 1$ has $m = 1$ and $n = 2$ and yields an infinite number of solutions because any point on the straight line $x + y = 1$ is a solution. ^algebraicspace
 
 ---
 
@@ -60,7 +146,9 @@ FIGURE 3.1
 
 Transition from graphical to algebraic solution
 
-In the algebraic solution space (defined by $m \times  n$ equations, $m < n$ ), basic solutions correspond to the corner points in the graphical solution space. They are determined by setting $n - m$ variables equal to zero and solving the $m$ equations for the remaining $m$ variables, provided the resulting solution is unique. This means that the maximum number of corner points is
+In the algebraic solution space (defined by $m \times  n$ equations, $m < n$ ), basic solutions correspond to the corner points in the graphical solution space. ^basicsolutions
+
+They are determined by setting $n - m$ variables equal to zero and solving the $m$ equations for the remaining $m$ variables, provided the resulting solution is unique. This means that the maximum number of corner points is ^combinations
 
 $$
 {C}_{m}^{n} = \frac{n!}{m!\left( {n - m}\right) !}
@@ -136,15 +224,22 @@ In the present example, the (maximum) number of corner points is ${C}_{2}^{4} = 
 
 To complete the transition from the graphical to the algebraic solution, the zero $n - m$ variables are known as nonbasic variables. The remaining $m$ variables are called basic variables, and their solution (obtained by solving the $m$ equations) is referred to as basic solution. The following table provides all the basic and nonbasic solutions of the current example.
 
-<table><tr><td>Nonbasic (zero) variables</td><td>Basic variables</td><td>Basic solution</td><td>Associated corner point</td><td>Feasible?</td><td>Objective value, $z$</td></tr><tr><td>$\left( {{x}_{1},{x}_{2}}\right)$</td><td>$\left( {{s}_{1},{s}_{2}}\right)$</td><td>(4,5)</td><td>$A$</td><td>Yes</td><td>0</td></tr><tr><td>$\left( {{x}_{1},{s}_{1}}\right)$</td><td>$\left( {{x}_{2},{s}_{2}}\right)$</td><td>(4, -3)</td><td>$F$</td><td>No</td><td>-</td></tr><tr><td>$\left( {{x}_{1},{s}_{2}}\right)$</td><td>$\left( {{x}_{2},{s}_{1}}\right)$</td><td>(2.5, 1.5)</td><td>$B$</td><td>Yes</td><td>7.5</td></tr><tr><td>$\left( {{x}_{2},{s}_{1}}\right)$</td><td>$\left( {{x}_{1},{s}_{2}}\right)$</td><td>(2,3)</td><td>$D$</td><td>Yes</td><td>4</td></tr><tr><td>$\left( {{x}_{2},{s}_{2}}\right)$</td><td>$\left( {{x}_{1},{s}_{1}}\right)$</td><td>(5, -6)</td><td>$E$</td><td>No</td><td>-</td></tr><tr><td>$\left( {{s}_{1},{s}_{2}}\right)$</td><td>$\left( {{x}_{1},{x}_{2}}\right)$</td><td>(1, 2)</td><td>$\mathbf{\mathit{C}}$</td><td>Yes</td><td>8 <br> (optimum)</td></tr></table>
+| Nonbasic (zero) variables | Basic variables | Basic solution | Associated corner point | Feasible? | Objective value, $z$ |
+| --- | --- | --- | --- | --- | --- |
+| $\left( {{x}_{1},{x}_{2}}\right)$ | $\left( {{s}_{1},{s}_{2}}\right)$ | (4,5) | $A$ | Yes | 0 |
+| $\left( {{x}_{1},{s}_{1}}\right)$ | $\left( {{x}_{2},{s}_{2}}\right)$ | (4, -3) | $F$ | No | - |
+| $\left( {{x}_{1},{s}_{2}}\right)$ | $\left( {{x}_{2},{s}_{1}}\right)$ | (2.5, 1.5) | $B$ | Yes | 7.5 |
+| $\left( {{x}_{2},{s}_{1}}\right)$ | $\left( {{x}_{1},{s}_{2}}\right)$ | (2,3) | $D$ | Yes | 4 |
+| $\left( {{x}_{2},{s}_{2}}\right)$ | $\left( {{x}_{1},{s}_{1}}\right)$ | (5, -6) | $E$ | No | - |
+| $\left( {{s}_{1},{s}_{2}}\right)$ | $\left( {{x}_{1},{x}_{2}}\right)$ | (1, 2) | $\mathbf{\mathit{C}}$ | Yes | 8 (optimum) |
 
-Remarks. We can see from the preceding illustration that, as the size of the problem increases, enumerating all the corner points becomes a prohibitive task. For example, for $m = {10}$ and $n = {20}$ , it is necessary to solve ${C}_{10}^{20}\left( { = {184},{756}}\right)$ sets of ${10} \times  {10}$ equations, a staggering task, particularly when we realize that a $\left( {{10} \times  {20}}\right)$ -LP is a very small size (real-life LPs can include thousands of variables and constraints). The simplex method alleviates this computational burden dramatically by investigating only a subset of all possible basic feasible solutions (corner points). This is what the simplex algorithm does.
+Remarks. We can see from the preceding illustration that, as the size of the problem increases, enumerating all the corner points becomes a prohibitive task. For example, for $m = {10}$ and $n = {20}$ , it is necessary to solve ${C}_{10}^{20}\left( { = {184},{756}}\right)$ sets of ${10} \times  {10}$ equations, a staggering task, particularly when we realize that a $\left( {{10} \times  {20}}\right)$ -LP is a very small size (real-life LPs can include thousands of variables and constraints). The simplex method alleviates this computational burden dramatically by investigating only a subset of all possible basic feasible solutions (corner points). This is what the simplex algorithm does. ^enumeration
 
-### 3.3 THE SIMPLEX METHOD
+### 3.3 THE SIMPLEX METHOD ^simplexmethod
 
 Rather than enumerating all the basic solutions (corner points) of the LP problem (as we did in Section 3.2), the simplex method investigates only a "select few" of these solutions. Section 3.3.1 describes the iterative nature of the method, and Section 3.3.2 provides the computational details of the simplex algorithm.
 
-#### 3.3.1 Iterative Nature of the Simplex Method
+#### 3.3.1 Iterative Nature of the Simplex Method ^iterative
 
 Figure 3.3 provides the solution space of the LP of Example 3.2-1. For the sake of standardizing the algorithm, the simplex method always starts at the origin where all the decision variables, ${x}_{j}, j = 1,2,\ldots , n$ , are zero. In Figure 3.3, point $A$ is the origin $\left( {{x}_{1} = {x}_{2} = 0}\right)$ and the associated objective value, $z$ , is zero. The logical question now is whether an increase in the values of nonbasic ${x}_{1}$ and ${x}_{2}$ above their current zero values can improve (increase) the value of $z$ . We can answer this question by investigating the objective function:
 
@@ -162,7 +257,7 @@ An increase in ${x}_{1}$ or ${x}_{2}$ (or both) above their current zero values 
 
 The path of the simplex algorithm always connects corner points. In the present example the path to the optimum is $A \rightarrow  B \rightarrow  C$ . Each corner point along the path is associated with an iteration. It is important to note that the simplex method always moves alongside the edges of the solution space, which means that the method does not cut across the solution space. For example, the simplex algorithm cannot go from $A$ to $C$ directly.
 
-## Aha! Moment: The Birth of Optimization, or How Dantzig Developed the Simplex Method. ${}^{3}$
+## Aha! Moment: The Birth of Optimization, or How Dantzig Developed the Simplex Method. ${}^{3}$ ^dantzig
 
 Nobel Laureate Russian mathematician Leonid Kantorovich (1912-1986) is regarded as the founder of the theory of linear programming. But it was the simplex algorithm developed by American mathematician Goerge B. Dantzig (1914-2005) that rendered (large) LPs solvable in practice. The success of Dantzig's algorithm ushered innovative developments in previously unexplored areas of optimization.
 
@@ -224,21 +319,34 @@ $$
 
 In this manner, the starting simplex tableau can be represented as follows:
 
-<table><tr><td>Basic</td><td>$z$</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>${s}_{3}$</td><td>${s}_{4}$</td><td>Solution</td><td></td></tr><tr><td>$z$</td><td>1</td><td>-5</td><td>-4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>$z$ -row</td></tr><tr><td>${s}_{1}$</td><td>0</td><td>6</td><td>4</td><td>1</td><td>0</td><td>0</td><td>0</td><td>24</td><td>${s}_{1}$ -row</td></tr><tr><td>${s}_{2}$</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>6</td><td>${s}_{2}$ -row</td></tr><tr><td>${s}_{3}$</td><td>0</td><td>-1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>${s}_{3}$ -row</td></tr><tr><td>${s}_{4}$</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>${s}_{4}$ -row</td></tr></table>
+| Basic | $z$ | ${x}_{1}$ | ${x}_{2}$ | ${s}_{1}$ | ${s}_{2}$ | ${s}_{3}$ | ${s}_{4}$ | Solution | Row |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 1 | -5 | -4 | 0 | 0 | 0 | 0 | 0 | $z$-row |
+| ${s}_{1}$ | 0 | 6 | 4 | 1 | 0 | 0 | 0 | 24 | ${s}_{1}$-row |
+| ${s}_{2}$ | 0 | 1 | 2 | 0 | 1 | 0 | 0 | 6 | ${s}_{2}$-row |
+| ${s}_{3}$ | 0 | -1 | 1 | 0 | 0 | 1 | 0 | 1 | ${s}_{3}$-row |
+| ${s}_{4}$ | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 2 | ${s}_{4}$-row |
 
 The layout of the simplex tableau automatically provides the solution at the starting iteration. The solution starts at the origin $\left\lbrack  {\left( {{x}_{1},{x}_{2}}\right)  = \left( {0,0}\right) }\right\rbrack$ , thus defining $\left( {{x}_{1},{x}_{2}}\right)$ as the nonbasic variables and $\left( {{s}_{1},{s}_{2},{s}_{3},{s}_{4}}\right)$ as the basic variables. The associated objective $z$ and the basic variables $\left( {{s}_{1},{s}_{2},{s}_{3},{s}_{4}}\right)$ are listed in the leftmost Basic-column. Their values, $z = 0,{s}_{1} = {24},{s}_{2} = 6$ , ${s}_{3} = 1,{s}_{4} = 2$ , appearing in the rightmost Solution-column, are given directly by the right-hand sides of the model's equations (a convenient consequence of starting at the origin). The result can be seen by setting the nonbasic variables $\left( {{x}_{1},{x}_{2}}\right)$ equal to zero in all the equations, and also by noting the special identity-matrix arrangement of the constraint coefficients of the basic variables (all diagonal elements are 1, and all off-diagonal elements are 0).
 
-Is the starting solution optimal? The objective function $z = 5{x}_{1} + 4{x}_{2}$ shows that the solution can be improved by increasing the value of nonbasic ${x}_{1}$ or ${x}_{2}$ above zero. As argued in Section 3.3.1, ${x}_{1}$ is to be increased because it has the most positive objective coefficient. Equivalently, in the simplex tableau where the objective function is written as $z - 5{x}_{1} - 4{x}_{2} = 0$ , the selected variable is the nonbasic variable with the most negative coefficient in the objective equation. This rule defines the so-called simplex optimality condition. In the terminology of the simplex algorithm, ${x}_{1}$ is known as the entering variable because it enters the basic solution.
+Is the starting solution optimal? The objective function $z = 5{x}_{1} + 4{x}_{2}$ shows that the solution can be improved by increasing the value of nonbasic ${x}_{1}$ or ${x}_{2}$ above zero. As argued in Section 3.3.1, ${x}_{1}$ is to be increased because it has the most positive objective coefficient. Equivalently, in the simplex tableau where the objective function is written as $z - 5{x}_{1} - 4{x}_{2} = 0$ , the selected variable is the nonbasic variable with the most negative coefficient in the objective equation. This rule defines the so-called simplex optimality condition. In the terminology of the simplex algorithm, ${x}_{1}$ is known as the entering variable because it enters the basic solution. ^optimality
 
 If ${x}_{1}$ is the entering variable, one of the current basic variables must leave - that is, it becomes nonbasic at zero level (recall that the number of nonbasic variable must always be $n - m$ ). The mechanics for determining the leaving variable calls for computing the ratios of the righthand side of the equations (Solution column) to the corresponding (strictly) positive constraint coefficients under the entering variable, ${x}_{1}$ , as the following table shows.
 
-<table><tr><td>Basic</td><td>Entering ${x}_{1}$</td><td>Solution</td><td>Ratio (or intercept)</td></tr><tr><td>${s}_{1}$</td><td>6</td><td>24</td><td>${x}_{1} = \frac{24}{6} = 4 \leftarrow$ minimum</td></tr><tr><td>${s}_{2}$</td><td>1</td><td>6</td><td>${x}_{1} = \frac{6}{1} = 6$</td></tr><tr><td>${s}_{3}$</td><td>-1</td><td>1</td><td>${x}_{1} = \frac{1}{-1} =  - 1$ (negative denominator, ignore)</td></tr><tr><td>${s}_{4}$</td><td>0</td><td>2</td><td>${x}_{1} = \frac{2}{0} = \infty$ (zero denominator, ignore)</td></tr><tr><td colspan="4">Conclusion: ${x}_{1}$ enters (at level 4) and ${s}_{1}$ leaves (at level zero)</td></tr></table>
+| Basic | Entering ${x}_{1}$ | Solution | Ratio (or intercept) |
+| --- | --- | --- | --- |
+| ${s}_{1}$ | 6 | 24 | ${x}_{1} = \frac{24}{6} = 4$ (minimum) |
+| ${s}_{2}$ | 1 | 6 | ${x}_{1} = \frac{6}{1} = 6$ |
+| ${s}_{3}$ | -1 | 1 | ${x}_{1} = \frac{1}{-1} = -1$ (negative denominator, ignore) |
+| ${s}_{4}$ | 0 | 2 | ${x}_{1} = \frac{2}{0} = \infty$ (zero denominator, ignore) |
+
+Conclusion: ${x}_{1}$ enters (at level 4) and ${s}_{1}$ leaves (at level zero).
 
 How do the computed ratios determine the leaving variable and the value of the entering variable? Figure 3.4 shows that the computed ratios are actually the intercepts of the constraint lines with the (entering variable) ${x}_{1}$ -axis. We can see that the value of ${x}_{1}$ must be increased to the
 
 ## FIGURE 3.4
 
-Graphical interpretation of the simplex method ratios in the Reddy Mikks model smallest nonnegative intercept with the ${x}_{1}$ -axis (=4) to reach corner point $B$ . Any increase beyond $B$ is infeasible. At point $B$ , the current basic variable ${s}_{1}$ associated with constraint 1 assumes a zero value and becomes the leaving variable. The rule associated with the ratio computations is referred to as the simplex feasibility condition because it guarantees the feasibility of the new solution.
+Graphical interpretation of the simplex method ratios in the Reddy Mikks model smallest nonnegative intercept with the ${x}_{1}$ -axis (=4) to reach corner point $B$ . Any increase beyond $B$ is infeasible. At point $B$ , the current basic variable ${s}_{1}$ associated with constraint 1 assumes a zero value and becomes the leaving variable. The rule associated with the ratio computations is referred to as the simplex feasibility condition because it guarantees the feasibility of the new solution. ^feasibility
 
 ![bo_d56m4777aajc73800n3g_8_460_1285_1037_916_0.jpg](images/bo_d56m4777aajc73800n3g_8_460_1285_1037_916_0.jpg)
 
@@ -252,9 +360,17 @@ $$
 \text{ Basic variables at }B : \left( {{x}_{1},{s}_{2},{s}_{3},{s}_{4}}\right)
 $$
 
-The swapping process is based on the Gauss-Jordan row operations. It identifies the entering variable column as the pivot column and the leaving variable row as the pivot row with their intersection being the pivot element. The following tableau is a restatement of the starting tableau with its pivot row and column highlighted.
+The swapping process is based on the Gauss-Jordan row operations. It identifies the entering variable column as the pivot column and the leaving variable row as the pivot row with their intersection being the pivot element. The following tableau is a restatement of the starting tableau with its pivot row and column highlighted. ^pivot
 
-<table><tr><td colspan="11">Enter <br> ↓</td></tr><tr><td></td><td>Basic</td><td>$z$</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>${s}_{3}$</td><td>S4</td><td>Solution</td><td></td></tr><tr><td></td><td>$z$</td><td>1</td><td>-5</td><td>-4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td></tr><tr><td>Leave $\leftarrow$</td><td>${s}_{1}$</td><td>0</td><td>6</td><td>4</td><td>1</td><td>0</td><td>0</td><td>0</td><td>24</td><td rowspan="5">Pivot row</td></tr><tr><td></td><td>${s}_{2}$</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>6</td></tr><tr><td></td><td>${s}_{3}$</td><td>0</td><td>-1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><td></td><td>${s}_{4}$</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td></tr><tr><td></td><td></td><td></td><td>Pivot column</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>
+| Basic | $z$ | ${x}_{1}$ | ${x}_{2}$ | ${s}_{1}$ | ${s}_{2}$ | ${s}_{3}$ | ${s}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 1 | -5 | -4 | 0 | 0 | 0 | 0 | 0 |
+| ${s}_{1}$ (leaves) | 0 | 6 (pivot) | 4 | 1 | 0 | 0 | 0 | 24 |
+| ${s}_{2}$ | 0 | 1 | 2 | 0 | 1 | 0 | 0 | 6 |
+| ${s}_{3}$ | 0 | -1 | 1 | 0 | 0 | 1 | 0 | 1 |
+| ${s}_{4}$ | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 2 |
+
+Pivot column: ${x}_{1}$. Pivot row: ${s}_{1}$. Pivot element: 6.
 
 The Gauss-Jordan computations needed to produce the new basic solution include two types.
 
@@ -298,7 +414,13 @@ $$
 
 The new basic solution is $\left( {{x}_{1},{s}_{2},{s}_{3},{s}_{4}}\right)$ , and the new tableau becomes
 
-<table><tr><td colspan="10">↓</td></tr><tr><td></td><td>Basic</td><td>$z$</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>${s}_{3}$</td><td>${s}_{4}$</td><td>Solution</td></tr><tr><td></td><td>$z$</td><td>1</td><td>0</td><td>$- \frac{2}{3}$</td><td>5</td><td>0</td><td>0</td><td>0</td><td>20</td></tr><tr><td rowspan="4">一</td><td>${x}_{1}$</td><td>0</td><td>1</td><td>2</td><td>$\frac{1}{6}$</td><td>0</td><td>0</td><td>0</td><td>4</td></tr><tr><td>${s}_{2}$</td><td>0</td><td>0</td><td>4 3</td><td>$- \frac{1}{6}$</td><td>1</td><td>0</td><td>0</td><td>2</td></tr><tr><td>${s}_{3}$</td><td>0</td><td>0</td><td>5</td><td>$\frac{1}{6}$</td><td>0</td><td>1</td><td>0</td><td>5</td></tr><tr><td>${s}_{4}$</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td></tr></table>
+| Basic | $z$ | ${x}_{1}$ | ${x}_{2}$ | ${s}_{1}$ | ${s}_{2}$ | ${s}_{3}$ | ${s}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 1 | 0 | $- \frac{2}{3}$ | $\frac{5}{6}$ | 0 | 0 | 0 | 20 |
+| ${x}_{1}$ | 0 | 1 | $\frac{2}{3}$ | $\frac{1}{6}$ | 0 | 0 | 0 | 4 |
+| ${s}_{2}$ | 0 | 0 | $\frac{4}{3}$ | $- \frac{1}{6}$ | 1 | 0 | 0 | 2 |
+| ${s}_{3}$ | 0 | 0 | $\frac{5}{3}$ | $\frac{1}{6}$ | 0 | 1 | 0 | 5 |
+| ${s}_{4}$ | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 2 |
 
 Observe that the structure of the new tableau is similar to that of the starting tableau, in the sense that the constraint coefficients of the basic variable form an identity matrix. As a result, when we set the new nonbasic variables ${x}_{2}$ and ${s}_{1}$ to zero, the Solution-column automatically yields the new basic solution $\left( {{x}_{1} = 4,{s}_{2} = 2,{s}_{3} = 5,{s}_{4} = 2}\right)  \cdot  {}^{5}$ This "conditioning" of the tableau is the result of the application of the Gauss-Jordan row operations. The corresponding new objective value is $z = {20}$ , which is consistent with
 
@@ -314,7 +436,12 @@ Alternatively, $z = \left( {4 \times  {x}_{1}}\right.$ -value $+ 0 \times  {s}_{
 
 In the last tableau, the optimality condition shows that ${x}_{2}$ (with the most negative $z$ -row coefficient) is the entering variable. The feasibility condition produces the following information:
 
-<table><tr><td colspan="3">Basic Entering ${x}_{2}$ Solution</td><td>Ratio</td></tr><tr><td>${x}_{1}$</td><td>$\frac{2}{3}$</td><td>4</td><td>${x}_{2} = 4 \div  \frac{2}{3} = 6$</td></tr><tr><td>${s}_{2}$</td><td>$\frac{4}{3}$</td><td>2</td><td>${x}_{2} = 2 \div  \frac{4}{3} = {1.5}$ (minimum)</td></tr><tr><td>${s}_{3}$</td><td>$\frac{5}{3}$</td><td>5</td><td>${x}_{2} = 5 \div  \frac{5}{3} = 3$</td></tr><tr><td>${s}_{4}$</td><td>1</td><td>2</td><td>${x}_{2} = 2 \div  1 = 2$</td></tr></table>
+| Basic | Entering ${x}_{2}$ | Solution | Ratio |
+| --- | --- | --- | --- |
+| ${x}_{1}$ | $\frac{2}{3}$ | 4 | ${x}_{2} = 4 \div \frac{2}{3} = 6$ |
+| ${s}_{2}$ | $\frac{4}{3}$ | 2 | ${x}_{2} = 2 \div \frac{4}{3} = 1.5$ (minimum) |
+| ${s}_{3}$ | $\frac{5}{3}$ | 5 | ${x}_{2} = 5 \div \frac{5}{3} = 3$ |
+| ${s}_{4}$ | 1 | 2 | ${x}_{2} = 2 \div 1 = 2$ |
 
 ---
 
@@ -338,17 +465,36 @@ Replacing ${s}_{2}$ in the Basic column with entering ${x}_{2}$ , the following 
 
 The operations above produce the following tableau (verify!):
 
-<table><tr><td>Basic</td><td>$z$</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>${s}_{3}$</td><td>${s}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>1</td><td>0</td><td>0</td><td>$\frac{3}{4}$</td><td>$\frac{1}{2}$</td><td>0</td><td>0</td><td>21</td></tr><tr><td>${x}_{1}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{4}$</td><td>$- \frac{1}{2}$</td><td>0</td><td>0</td><td>3</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>0</td><td>1</td><td>$- \frac{1}{8}$</td><td>$\frac{3}{4}$</td><td>0</td><td>0</td><td>$\frac{3}{2}$</td></tr><tr><td>${s}_{3}$</td><td>0</td><td>0</td><td>0</td><td>$\frac{3}{8}$</td><td>$- \frac{5}{4}$</td><td>1</td><td>0</td><td>$\frac{5}{2}$</td></tr><tr><td>${s}_{4}$</td><td>0</td><td>0</td><td>0</td><td>$\frac{1}{8}$</td><td>$- \frac{3}{4}$</td><td>0</td><td>1</td><td>$\frac{1}{2}$</td></tr></table>
+| Basic | $z$ | ${x}_{1}$ | ${x}_{2}$ | ${s}_{1}$ | ${s}_{2}$ | ${s}_{3}$ | ${s}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 1 | 0 | 0 | $\frac{3}{4}$ | $\frac{1}{2}$ | 0 | 0 | 21 |
+| ${x}_{1}$ | 0 | 1 | 0 | $\frac{1}{4}$ | $- \frac{1}{2}$ | 0 | 0 | 3 |
+| ${x}_{2}$ | 0 | 0 | 1 | $- \frac{1}{8}$ | $\frac{3}{4}$ | 0 | 0 | $\frac{3}{2}$ |
+| ${s}_{3}$ | 0 | 0 | 0 | $\frac{3}{8}$ | $- \frac{5}{4}$ | 1 | 0 | $\frac{5}{2}$ |
+| ${s}_{4}$ | 0 | 0 | 0 | $\frac{1}{8}$ | $- \frac{3}{4}$ | 0 | 1 | $\frac{1}{2}$ |
 
 Based on the optimality condition, none of the $z$ -row coefficients are negative. Hence, the last tableau is optimal.
 
-The optimum solution can be read from the simplex tableau in the following manner. The optimal values of the variables in the Basic column are given in the right-hand-side Solution column and can be interpreted as
+The optimum solution can be read from the simplex tableau in the following manner. ^readtableau
 
-<table><tr><td>Decision variable</td><td>Optimum value</td><td>Recommendation</td></tr><tr><td>${x}_{1}$</td><td>3</td><td>Produce 3 tons of exterior paint daily</td></tr><tr><td>${x}_{2}$</td><td>$\frac{3}{2}$</td><td>Produce 1.5 tons of interior paint daily</td></tr><tr><td>乙</td><td>21</td><td>Daily profit is \$21,000</td></tr></table>
+The optimal values of the variables in the Basic column are given in the right-hand-side Solution column and can be interpreted as
 
-The solution also gives the status of the resources. A resource is designated as scarce if its associated slack variable is zero-that is, the activities (variables) of the model have used the resource completely. Otherwise, if the slack is positive, then the resource is abundant. The following table classifies the constraints of the model:
+| Decision variable | Optimum value | Recommendation |
+| --- | --- | --- |
+| ${x}_{1}$ | 3 | Produce 3 tons of exterior paint daily |
+| ${x}_{2}$ | $\frac{3}{2}$ | Produce 1.5 tons of interior paint daily |
+| $z$ | 21 | Daily profit is \$21,000 |
 
-<table><tr><td>Resource</td><td>Slack value</td><td>Status</td></tr><tr><td>Raw material, M1</td><td>${s}_{1} = 0$</td><td>Scarce</td></tr><tr><td>Raw material, M2</td><td>${s}_{2} = 0$</td><td>Scarce</td></tr><tr><td>Market limit</td><td>${s}_{3} = \frac{5}{2}$</td><td>Abundant</td></tr><tr><td>Demand limit</td><td>${s}_{4} = \frac{1}{2}$</td><td>Abundant</td></tr></table>
+The solution also gives the status of the resources. A resource is designated as scarce if its associated slack variable is zero-that is, the activities (variables) of the model have used the resource completely. Otherwise, if the slack is positive, then the resource is abundant. ^resourcestatus
+
+The following table classifies the constraints of the model:
+
+| Resource | Slack value | Status |
+| --- | --- | --- |
+| Raw material, M1 | ${s}_{1} = 0$ | Scarce |
+| Raw material, M2 | ${s}_{2} = 0$ | Scarce |
+| Market limit | ${s}_{3} = \frac{5}{2}$ | Abundant |
+| Demand limit | ${s}_{4} = \frac{1}{2}$ | Abundant |
 
 Remarks. The simplex tableau offers a wealth of additional information that include the following:
 
@@ -358,11 +504,11 @@ Remarks. The simplex tableau offers a wealth of additional information that incl
 
 Section 3.6 deals with sensitivity analysis. Post-optimal analysis is covered in Chapter 4.
 
-## TORA Moment
+## TORA Moment ^toramoment
 
 The Gauss-Jordan computations are tedious, voluminous, and, above all, boring. In addition, they are the least important, because in practice these computations are carried out by the computer. What is important is that you understand how the simplex method works. TORA's interactive user-guided option (with instant feedback) can be of help because it allows you to specify the course of the simplex computations (i.e., determination of the entering and leaving variables) without the need to carry out the burdensome Gauss-Jordan calculations. To use TORA with the Reddy Mikks problem, enter the model and then, from the SOLVE/MODIFY menu, select Solve $\Rightarrow$ Algebraic $\Rightarrow$ Iterations $\Rightarrow$ All-Slack. (The All-Slack selection indicates that the starting basic solution consists of slack variables only. The remaining options will be presented in Sections 3.4, 4.3, and 7.4.2.) Next, click Go To Output Screen. You can generate one or all iterations by clicking Next Iteration or All Iterations. If you opt to generate the iterations one at a time, you can interactively specify the entering and leaving variables by clicking the headings of their respective column and row. If your selections are correct, the column turns green and the row turns red. Else, an error message is posted.
 
-#### 3.3.3 Summary of the Simplex Method
+#### 3.3.3 Summary of the Simplex Method ^simplexsummary
 
 So far, we have dealt with the maximization case. In minimization problems, the optimality condition calls for selecting the entering variable as the nonbasic variable with the most positive objective coefficient in the $z$ -row, the exact opposite rule of the maximization case. This follows because max $z$ is equivalent to $\min \left( {-z}\right)$ . As for the feasibility condition for selecting the leaving variable, the rule remains unchanged.
 
@@ -370,7 +516,7 @@ Optimality condition. The entering variable in a maximization (minimization) pro
 
 Feasibility condition. For both the maximization and the minimization problems, the leaving variable is the basic variable associated with the smallest nonnegative ratio with strictly positive denominator. Ties are broken arbitrarily.
 
-## Gauss-Jordan row operations.
+## Gauss-Jordan row operations. ^gaussjordan
 
 1. Pivot row
 
@@ -382,13 +528,13 @@ b. New pivot row $=$ Current pivot row $\div$ Pivot element
 
 New row $=$ (Current row) - (Its pivot column coefficient) $\times$ (New pivot row).
 
-### 3.4 ARTIFICIAL STARTING SOLUTION
+### 3.4 ARTIFICIAL STARTING SOLUTION ^artificialstart
 
 As demonstrated in Example 3.3-1, LPs in which all the constraints are $\left(  \leq  \right)$ with nonnegative right-hand sides offer a convenient all-slack starting basic feasible solution. Models involving $\left(  = \right)$ and/or $\left(  \geq  \right)$ constraints do not.
 
 The procedure for starting "ill-behaved" LPs with $\left(  = \right)$ and $\left(  \geq  \right)$ constraints is to use artificial variables that play the role of slacks at the first iteration. The artificial variables are then disposed of at a later iteration. Two closely related methods are introduced here: the $M$ -method and the two-phase method.
 
-#### 3.4.1 M-Method ${}^{6}$
+#### 3.4.1 M-Method ${}^{6}$ ^mmethod
 
 The $M$ -method starts with the LP in equation form (Section 3.1). If equation $i$ does not have a slack (or a variable that can play the role of a slack), an artificial variable, ${R}_{i}$ , is added to form a starting solution similar to the all-slack basic solution. However, because the artificial variables are not part of the original problem, a modeling "trick" is needed to force them to zero value by the time the optimum iteration is reached (assuming the problem has a feasible solution). The desired goal is achieved by assigning a penalty defined as:
 
@@ -482,7 +628,12 @@ What value of $M$ should we use? The answer depends on the data of the original 
 
 Using $M = {100}$ , the starting simplex tableau is given as follows (for convenience, from now on the $z$ -column will be eliminated from the tableau because it does not change in all the iterations):
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${R}_{1}$</td><td>${R}_{2}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-4</td><td>-1</td><td>0</td><td>-100</td><td>-100</td><td>0</td><td>0</td></tr><tr><td>${R}_{1}$</td><td>3</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>3</td></tr><tr><td>${R}_{2}$</td><td>4</td><td>3</td><td>-1</td><td>0</td><td>1</td><td>0</td><td>6</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>4</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${R}_{1}$ | ${R}_{2}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -4 | -1 | 0 | -100 | -100 | 0 | 0 |
+| ${R}_{1}$ | 3 | 1 | 0 | 1 | 0 | 0 | 3 |
+| ${R}_{2}$ | 4 | 3 | -1 | 0 | 1 | 0 | 6 |
+| ${x}_{4}$ | 1 | 2 | 0 | 0 | 0 | 1 | 4 |
 
 ---
 
@@ -502,7 +653,12 @@ $$
 
 The modified tableau thus becomes (verify!):
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${R}_{1}$</td><td>${R}_{2}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>696</td><td>399</td><td>-100</td><td>0</td><td>0</td><td>0</td><td>900</td></tr><tr><td>${R}_{1}$</td><td>3</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>3</td></tr><tr><td>${R}_{2}$</td><td>4</td><td>3</td><td>-1</td><td>0</td><td>1</td><td>0</td><td>6</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>4</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${R}_{1}$ | ${R}_{2}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 696 | 399 | -100 | 0 | 0 | 0 | 900 |
+| ${R}_{1}$ | 3 | 1 | 0 | 1 | 0 | 0 | 3 |
+| ${R}_{2}$ | 4 | 3 | -1 | 0 | 1 | 0 | 6 |
+| ${x}_{4}$ | 1 | 2 | 0 | 0 | 0 | 1 | 4 |
 
 The result is that ${R}_{1}$ and ${R}_{2}$ are now substituted out (have zero coefficients) in the $z$ -row with $z = {900}$ as desired.
 
@@ -510,7 +666,12 @@ The last tableau is ready for the application of the simplex optimality and the 
 
 Once the entering and the leaving variables have been determined, the new tableau can be computed by using the familiar Gauss-Jordan operations.
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${R}_{1}$</td><td>${R}_{2}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>167</td><td>-100</td><td>-232</td><td>0</td><td>0</td><td>204</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>$\frac{1}{3}$</td><td>0</td><td>$\frac{1}{3}$</td><td>0</td><td>0</td><td>1</td></tr><tr><td>${R}_{2}$</td><td>0</td><td>$\frac{5}{3}$</td><td>-1</td><td>$- \frac{4}{3}$</td><td>1</td><td>0</td><td>2</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>5</td><td>0</td><td>$- \frac{1}{3}$</td><td>0</td><td>1</td><td>3</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${R}_{1}$ | ${R}_{2}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 167 | -100 | -232 | 0 | 0 | 204 |
+| ${x}_{1}$ | 1 | $\frac{1}{3}$ | 0 | $\frac{1}{3}$ | 0 | 0 | 1 |
+| ${R}_{2}$ | 0 | $\frac{5}{3}$ | -1 | $- \frac{4}{3}$ | 1 | 0 | 2 |
+| ${x}_{4}$ | 0 | 5 | 0 | $- \frac{1}{3}$ | 0 | 1 | 3 |
 
 The last tableau shows that ${x}_{2}$ and ${R}_{2}$ are the entering and leaving variables, respectively. Continuing with the simplex computations, two more iterations are needed to reach the optimum: ${x}_{1} = \frac{2}{5},{x}_{2} = \frac{9}{5}, z = \frac{17}{5}$ (verify with TORA!).
 
@@ -518,11 +679,11 @@ Note that the artificial variables ${R}_{1}$ and ${R}_{2}$ leave the basic solut
 
 Remarks. The use of the penalty $M$ will not force an artificial variable to zero in the final simplex iteration if the LP does not have a feasible solution (i.e., the constraints cannot be satisfied simultaneously). In this case, the final simplex iteration will include at least one artificial variable with a positive value. Section 3.5.4 explains this situation.
 
-#### 3.4.2 Two-Phase Method
+#### 3.4.2 Two-Phase Method ^twophase
 
 In the $M$ -method, the use of the penalty, $M$ , can result in computer roundoff error. The two-phase method eliminates the use of the constant $M$ altogether. As the name suggests, the method solves the LP in two phases: Phase I attempts to find a starting basic feasible solution, and, if one is found, Phase II is invoked to solve the original problem.
 
-## Summary of the Two-Phase Method
+## Summary of the Two-Phase Method ^twophasesummary
 
 ---
 
@@ -580,7 +741,12 @@ $$
 
 ---
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${R}_{1}$</td><td>${R}_{2}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$r$</td><td>0</td><td>0</td><td>0</td><td>-1</td><td>-1</td><td>0</td><td>0</td></tr><tr><td>${R}_{1}$</td><td>3</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>3</td></tr><tr><td>${R}_{2}$</td><td>4</td><td>3</td><td>-1</td><td>0</td><td>1</td><td>0</td><td>6</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>4</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${R}_{1}$ | ${R}_{2}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $r$ | 0 | 0 | 0 | -1 | -1 | 0 | 0 |
+| ${R}_{1}$ | 3 | 1 | 0 | 1 | 0 | 0 | 3 |
+| ${R}_{2}$ | 4 | 3 | -1 | 0 | 1 | 0 | 6 |
+| ${x}_{4}$ | 1 | 2 | 0 | 0 | 0 | 1 | 4 |
 
 As in the $M$ -method, ${R}_{1}$ and ${R}_{2}$ are substituted out in the $r$ -row by using the following row operations:
 
@@ -590,7 +756,12 @@ $$
 
 The new $r$ -row is used to solve Phase I of the problem, which yields the following optimum tableau (verify with TORA's Iterations $\Rightarrow$ Two-phase Method ):
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${R}_{1}$</td><td>${R}_{2}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$r$</td><td>0</td><td>0</td><td>0</td><td>-1</td><td>-1</td><td>0</td><td>0</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>1 5</td><td>$\frac{3}{5}$</td><td>$- \frac{1}{5}$</td><td>0</td><td>$\frac{3}{5}$</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>- $\frac{3}{5}$</td><td>-4</td><td>$\frac{3}{5}$</td><td>0</td><td>$\frac{6}{5}$</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>0</td><td>1</td><td>1</td><td>-1</td><td>1</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${R}_{1}$ | ${R}_{2}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $r$ | 0 | 0 | 0 | -1 | -1 | 0 | 0 |
+| ${x}_{1}$ | 1 | 0 | $\frac{1}{5}$ | $\frac{3}{5}$ | $- \frac{1}{5}$ | 0 | $\frac{3}{5}$ |
+| ${x}_{2}$ | 0 | 1 | $- \frac{3}{5}$ | $- \frac{4}{5}$ | $\frac{3}{5}$ | 0 | $\frac{6}{5}$ |
+| ${x}_{4}$ | 0 | 0 | 1 | 1 | -1 | 1 | 1 |
 
 Because minimum $r = 0$ , Phase I produces the basic feasible solution ${x}_{1} = \frac{3}{5},{x}_{2} = \frac{6}{5}$ , and ${x}_{4} = 1$ . At this point, the artificial variables have completed their mission, and we can eliminate their columns altogether from the tableau and move on to Phase II.
 
@@ -622,7 +793,12 @@ $$
 
 Essentially, Phase I has transformed the original constraint equations in a manner that provides a starting basic feasible solution for the problem, if one exists. The tableau associated with Phase II problem is thus given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-4</td><td>-1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>$\frac{1}{5}$</td><td>0</td><td>3 5</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>- $\frac{3}{5}$</td><td>0</td><td>6 5</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| $z$ | -4 | -1 | 0 | 0 | 0 |
+| ${x}_{1}$ | 1 | 0 | $\frac{1}{5}$ | 0 | $\frac{3}{5}$ |
+| ${x}_{2}$ | 0 | 1 | $- \frac{3}{5}$ | 0 | $\frac{6}{5}$ |
+| ${x}_{4}$ | 0 | 0 | 1 | 1 | 1 |
 
 Again, because the basic variables ${x}_{1}$ and ${x}_{2}$ have nonzero coefficients in the $z$ -row, they must be substituted out, using the following operations.
 
@@ -632,7 +808,12 @@ $$
 
 The initial tableau of Phase II is thus given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>1 5</td><td>0</td><td>$\frac{18}{5}$</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>1 5</td><td>0</td><td>3</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>$- \frac{3}{5}$</td><td>0</td><td>6 5</td></tr><tr><td>${x}_{4}$</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | $\frac{1}{5}$ | 0 | $\frac{18}{5}$ |
+| ${x}_{1}$ | 1 | 0 | $\frac{1}{5}$ | 0 | 3 |
+| ${x}_{2}$ | 0 | 1 | $- \frac{3}{5}$ | 0 | $\frac{6}{5}$ |
+| ${x}_{4}$ | 0 | 0 | 1 | 1 | 1 |
 
 Because we are minimizing, ${x}_{3}$ must enter the solution. Application of the simplex method will produce the optimum in one iteration (verify with TORA).
 
@@ -644,7 +825,7 @@ Step 2. Remove the column of the (just-leaving) artificial variable from the tab
 
 The logic behind step 1 is that the feasibility of the remaining basic variables will not be affected when a zero artificial variable is made nonbasic regardless of whether the pivot element is positive or negative. Problems 3-47 and 3-48 illustrate this situation. Problem 3-49 provides an additional detail about Phase I calculations.
 
-### 3.5 SPECIAL CASES IN THE SIMPLEX METHOD
+### 3.5 SPECIAL CASES IN THE SIMPLEX METHOD ^specialcases
 
 This section considers four special cases that arise in the use of the simplex method.
 
@@ -658,7 +839,7 @@ This section considers four special cases that arise in the use of the simplex m
 
 The remainder of this section presents a theoretical explanation of these situations. It also provides an interpretation of what these special results mean in a real-life problem.
 
-#### 3.5.1 Degeneracy
+#### 3.5.1 Degeneracy ^degeneracy
 
 In the application of the feasibility condition of the simplex method, a tie for the minimum ratio may occur and can be broken arbitrarily. When this happens, at least one basic variable will be zero in the next iteration, and the new solution is said to be degenerate. Degeneracy can cause the simplex iterations to cycle indefinitely, thus never terminating the algorithm. The condition also reveals the possibility of at least one redundant constraint.
 
@@ -686,7 +867,17 @@ $$
 
 Using the slack variables ${x}_{3}$ and ${x}_{4}$ , the solution tableaus are
 
-<table><tr><td>Iteration</td><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>0</td><td>乙</td><td>-3</td><td>-9</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{2}$ enters</td><td>${x}_{3}$</td><td>1</td><td>4</td><td>1</td><td>0</td><td>8</td></tr><tr><td>${x}_{3}$ leaves</td><td>${x}_{4}$</td><td>1</td><td>2</td><td>0</td><td>1</td><td>4</td></tr><tr><td>1</td><td>$z$</td><td>$- \frac{3}{4}$</td><td>0</td><td>$\frac{9}{4}$</td><td>0</td><td>18</td></tr><tr><td>${x}_{1}$ enters</td><td>${x}_{2}$</td><td>$\frac{1}{4}$</td><td>1</td><td>$\frac{1}{4}$</td><td>0</td><td>2</td></tr><tr><td>${x}_{4}$ leaves</td><td>${x}_{4}$</td><td>$\frac{1}{2}$</td><td>0</td><td>$- \frac{1}{2}$</td><td>1</td><td>0</td></tr><tr><td rowspan="3">2 <br> (optimum)</td><td>$z$</td><td>0</td><td>0</td><td>$\frac{3}{2}$</td><td>$\frac{3}{2}$</td><td>18</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{2}$</td><td>2</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>-1</td><td>2</td><td>0</td></tr></table>
+| Iteration | Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | $z$ | -3 | -9 | 0 | 0 | 0 |
+| ${x}_{2}$ enters | ${x}_{3}$ | 1 | 4 | 1 | 0 | 8 |
+| ${x}_{3}$ leaves | ${x}_{4}$ | 1 | 2 | 0 | 1 | 4 |
+| 1 | $z$ | $- \frac{3}{4}$ | 0 | $\frac{9}{4}$ | 0 | 18 |
+| ${x}_{1}$ enters | ${x}_{2}$ | $\frac{1}{4}$ | 1 | $\frac{1}{4}$ | 0 | 2 |
+| ${x}_{4}$ leaves | ${x}_{4}$ | $\frac{1}{2}$ | 0 | $- \frac{1}{2}$ | 1 | 0 |
+| 2 (optimum) | $z$ | 0 | 0 | $\frac{3}{2}$ | $\frac{3}{2}$ | 18 |
+| 2 (optimum) | ${x}_{2}$ | 0 | 1 | $\frac{1}{2}$ | $- \frac{1}{2}$ | 2 |
+| 2 (optimum) | ${x}_{1}$ | 1 | 0 | -1 | 2 | 0 |
 
 In iteration $0,{x}_{3}$ and ${x}_{4}$ tie for the leaving variable, leading to degeneracy in iteration 1 because the basic variable ${x}_{4}$ assumes a zero value. The optimum is reached in one additional iteration.
 
@@ -704,7 +895,7 @@ LP degeneracy in Example 3.5-1
 
 3. Although an LP model may not start with redundant constraints (in the direct sense shown in Figure 3.5), computer roundoff error may actually create degeneracy-like conditions during the course of solving a real-life LP. In such cases, the iterations will "stall" at a solution point, thus mimicking cycling. Commercial codes attempt to alleviate the problem by periodically perturbing the values of the basic variables (see Section 3.7 for more details about how commercial codes are developed).
 
-#### 3.5.2 Alternative Optima
+#### 3.5.2 Alternative Optima ^altoptima
 
 An LP problem may have an infinite number of alternative optima when the objective function is parallel to a nonredundant binding constraint (i.e., a constraint that is satisfied as an equation at the optimal solution). The next example demonstrates the practical significance of such solutions.
 
@@ -740,7 +931,17 @@ Figure 3.6 demonstrates how alternative optima can arise in the LP model when th
 
 The iterations of the model are given by the following tableaus.
 
-<table><tr><td>Iteration</td><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>0</td><td>$z$</td><td>-2</td><td>-4</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{2}$ enters</td><td>${x}_{3}$</td><td>1</td><td>2</td><td>1</td><td>0</td><td>5</td></tr><tr><td>${x}_{3}$ leaves</td><td>${x}_{4}$</td><td>1</td><td>1</td><td>0</td><td>1</td><td>4</td></tr><tr><td>1 (optimum)</td><td>$z$</td><td>0</td><td>0</td><td>2</td><td>0</td><td>10</td></tr><tr><td>${x}_{1}$ enters</td><td>${x}_{2}$</td><td>$\frac{1}{2}$</td><td>1</td><td>$\frac{1}{2}$</td><td>0</td><td>5</td></tr><tr><td>${x}_{4}$ leaves</td><td>${x}_{4}$</td><td>$\frac{1}{2}$</td><td>0</td><td>$- \frac{1}{2}$</td><td>1</td><td>$\frac{3}{2}$</td></tr><tr><td>2</td><td>$z$</td><td>0</td><td>0</td><td>2</td><td>0</td><td>10</td></tr><tr><td>(alternative optimum)</td><td>${x}_{2}$</td><td>0</td><td>1</td><td>1</td><td>-1</td><td>1</td></tr><tr><td></td><td>${x}_{1}$</td><td>1</td><td>0</td><td>-1</td><td>2</td><td>3</td></tr></table>
+| Iteration | Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | $z$ | -2 | -4 | 0 | 0 | 0 |
+| ${x}_{2}$ enters | ${x}_{3}$ | 1 | 2 | 1 | 0 | 5 |
+| ${x}_{3}$ leaves | ${x}_{4}$ | 1 | 1 | 0 | 1 | 4 |
+| 1 (optimum) | $z$ | 0 | 0 | 2 | 0 | 10 |
+| ${x}_{1}$ enters | ${x}_{2}$ | $\frac{1}{2}$ | 1 | $\frac{1}{2}$ | 0 | 5 |
+| ${x}_{4}$ leaves | ${x}_{4}$ | $\frac{1}{2}$ | 0 | $- \frac{1}{2}$ | 1 | $\frac{3}{2}$ |
+| 2 | $z$ | 0 | 0 | 2 | 0 | 10 |
+| 2 (alternative optimum) | ${x}_{2}$ | 0 | 1 | 1 | -1 | 1 |
+| 2 (alternative optimum) | ${x}_{1}$ | 1 | 0 | -1 | 2 | 3 |
 
 Iteration 1 gives the optimum solution ${x}_{1} = 0,{x}_{2} = \frac{5}{2}$ , and $z = {10}$ (point $B$ in Figure 3.6). The existence of alternative can be detected in the optimal tableau by examining the $z$ -equation coefficients of the nonbasic variables. The zero coefficient of nonbasic ${x}_{1}$ indicates that ${x}_{1}$ can be made basic, altering the values of the basic variables without changing the value of $z$ . Iteration 2 does just that, using ${x}_{1}$ and ${x}_{4}$ as the entering and leaving variables, respectively. The new solution point occurs at $C\left( {{x}_{1} = 3,{x}_{2} = 1, z = {10}}\right)$ . (TORA’s Iterations option allows determining one alternative optimum.)
 
@@ -758,7 +959,7 @@ $$
 
 Remarks. In practice, alternative optima are useful because we can choose from many solutions without experiencing deterioration in the objective value. For instance, in the present example, the solution at $B$ shows that activity 2 only is at a positive level. At $C$ , both activities are at a positive level. If the example represents a product-mix situation, it may be advantageous to market two products instead of one.
 
-#### 3.5.3 Unbounded Solution
+#### 3.5.3 Unbounded Solution ^unbounded
 
 In some LP models, the solution space is unbounded in at least one variable - meaning that variables may be increased indefinitely without violating any of the constraints. The associated objective value may also be unbounded in this case.
 
@@ -786,7 +987,11 @@ $$
 
 Starting Iteration
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-2</td><td>-1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{3}$</td><td>1</td><td>-1</td><td>1</td><td>0</td><td>10</td></tr><tr><td>${x}_{4}$</td><td>2</td><td>0</td><td>0</td><td>1</td><td>40</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| $z$ | -2 | -1 | 0 | 0 | 0 |
+| ${x}_{3}$ | 1 | -1 | 1 | 0 | 10 |
+| ${x}_{4}$ | 2 | 0 | 0 | 1 | 40 |
 
 ![bo_d56m4777aajc73800n3g_23_403_203_517_724_0.jpg](images/bo_d56m4777aajc73800n3g_23_403_203_517_724_0.jpg)
 
@@ -798,7 +1003,7 @@ In the starting tableau, both ${x}_{1}$ and ${x}_{2}$ have negative $z$ -equatio
 
 Remarks. Had ${x}_{1}$ been selected as the entering variable in the starting iteration (per the optimality condition), a later iteration would eventually have produced an entering variable with the same properties as ${x}_{2}$ . See Problem 3-58.
 
-#### 3.5.4 Infeasible Solution
+#### 3.5.4 Infeasible Solution ^infeasible
 
 LP models with inconsistent constraints have no feasible solution. This situation does not occur if all the constraints are of the type $\leq$ with nonnegative right-hand sides because the slacks provide an obvious feasible solution. For other types of constraints, penalized artificial variables are used to start the solution. If at least one artificial variable is positive in the optimum iteration, then the LP has no feasible solution. From the practical standpoint, an infeasible space points to the possibility that the model is not formulated correctly.
 
@@ -826,11 +1031,18 @@ $$
 
 Using the penalty $M = {100}$ for the artificial variable $R$ , the following tableau provide the simplex iterations of the model.
 
-<table><tr><td>Iteration</td><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{4}$</td><td>${x}_{3}$</td><td>$R$</td><td>Solution</td></tr><tr><td>0</td><td>$z$</td><td>-303</td><td>-402</td><td>100</td><td>0</td><td>0</td><td>-1200</td></tr><tr><td>${x}_{2}$ enters</td><td>${x}_{3}$</td><td>2</td><td>1</td><td>0</td><td>1</td><td>0</td><td>2</td></tr><tr><td>${x}_{3}$ leaves</td><td>$R$</td><td>3</td><td>4</td><td>-1</td><td>0</td><td>1</td><td>12</td></tr><tr><td>1</td><td>$z$</td><td>501</td><td>0</td><td>100</td><td>402</td><td>0</td><td>-396</td></tr><tr><td>(pseudo-optimum)</td><td>${x}_{2}$</td><td>2</td><td>1</td><td>0</td><td>1</td><td>0</td><td>2</td></tr><tr><td></td><td>$R$</td><td>-5</td><td>0</td><td>-1</td><td>-4</td><td>1</td><td>4</td></tr></table>
+| Iteration | Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{4}$ | ${x}_{3}$ | $R$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | $z$ | -303 | -402 | 100 | 0 | 0 | -1200 |
+| ${x}_{2}$ enters | ${x}_{3}$ | 2 | 1 | 0 | 1 | 0 | 2 |
+| ${x}_{3}$ leaves | $R$ | 3 | 4 | -1 | 0 | 1 | 12 |
+| 1 | $z$ | 501 | 0 | 100 | 402 | 0 | -396 |
+| 1 (pseudo-optimum) | ${x}_{2}$ | 2 | 1 | 0 | 1 | 0 | 2 |
+| 1 (pseudo-optimum) | $R$ | -5 | 0 | -1 | -4 | 1 | 4 |
 
 Optimum iteration 1 shows that the artificial variable $R$ is positive $\left( { = 4}\right)$ -meaning that the LP is infeasible. Figure 3.8 depicts the infeasible solution space. By allowing the artificial variable to be positive, the simplex method has in essence reversed the direction of the inequality from $3{x}_{1} + 4{x}_{2} \geq  {12}$ to $3{x}_{1} + 4{x}_{2} \leq  {12}$ (can you explain how?). The result is what we may call a pseudo-optimal solution.
 
-### 3.6 SENSITIVITY ANALYSIS
+### 3.6 SENSITIVITY ANALYSIS ^sensitivity
 
 In LP, the parameters (input data) of the model can change within certain limits without causing changes in the optimum. This is referred to as sensitivity analysis and will be the subject matter of this section. Later, Chapter 4 will study post-optimal analysis, which deals with determining the new optimum solution when targeted input data are changed.
 
@@ -840,7 +1052,7 @@ Infeasible solution of Example 3.5-4
 
 The presentation explains the basic ideas of sensitivity analysis using the more concrete graphical solution. These ideas are then extended to the general LP problem using the simplex tableau results.
 
-#### 3.6.1 Graphical Sensitivity Analysis
+#### 3.6.1 Graphical Sensitivity Analysis ^graphicalsa
 
 This section demonstrates the general idea of sensitivity analysis. Two cases will be considered:
 
@@ -850,7 +1062,7 @@ This section demonstrates the general idea of sensitivity analysis. Two cases wi
 
 We will use individual examples to explain the two cases.
 
-## Example 3.6-1 (Changes in the Right-Hand Side)
+## Example 3.6-1 (Changes in the Right-Hand Side) ^rhschanges
 
 JOBCO manufactures two products on two machines. A unit of product 1 requires 2 hrs on machine 1 and $1\mathrm{{hr}}$ on machine 2. For product 2, one unit requires $1\mathrm{{hr}}$ on machine 1 and $3\mathrm{{hrs}}$ on machine 2. The revenues per unit of products 1 and 2 are \$30 and \$20, respectively. The total daily processing time available for each machine is $8\mathrm{{hrs}}$ .
 
@@ -888,7 +1100,7 @@ FIGURE 3.9
 
 Graphical sensitivity of optimal solution to changes in the availability of resources (right-hand side of the constraints)
 
-The name unit worth of a resource is an apt description of the rate of change of the objective function per unit change of a resource. Nevertheless, early LP developments have coined the abstract name dual (or shadow) price and this name is now standard in all the LP literature and software packages. The presentation in this book conforms to this standard. Nevertheless, think "unit worth of resource" whenever you come across standard names "dual or shadow price."
+The name unit worth of a resource is an apt description of the rate of change of the objective function per unit change of a resource. Nevertheless, early LP developments have coined the abstract name dual (or shadow) price and this name is now standard in all the LP literature and software packages. The presentation in this book conforms to this standard. Nevertheless, think "unit worth of resource" whenever you come across standard names "dual or shadow price." ^dualprice
 
 Looking at Figure 3.9, we can see that the dual price of \$14/hr remains valid for changes (increases or decreases) in machine 1 capacity that move its constraint parallel to itself to any point on the line segment ${BF}$ . We compute machine 1 capacities at points $B$ and $F$ as follows:
 
@@ -946,7 +1158,7 @@ Question 5. How can we determine the new optimum values of the variables associa
 
 The optimum values of the variables will change. However, the procedure for determining these values requires additional computations, as will be shown in Section 3.6.2.
 
-## Example 3.6-2 (Changes in the Objective Coefficients)
+## Example 3.6-2 (Changes in the Objective Coefficients) ^objchanges
 
 Figure 3.10 shows the graphical solution space of the JOBCO problem presented in Example 3.6-1. The optimum occurs at point $C\left( {{x}_{1} = {3.2},{x}_{2} = {1.6}, z = {128}}\right)$ . Changes in revenue units (i.e., objective-function coefficients) will change the slope of $z$ . However, as can be seen from the figure, the optimum solution at point $C$ remains unchanged so long as the objective function lies between lines ${BF}$ and ${DE}$ .
 
@@ -1004,11 +1216,11 @@ As in the case of the right-hand side, all software packages provide the optimal
 
 Remarks. Although the material in this section has dealt only with two variables, the results lay the foundation for the development of sensitivity analysis for the general LP problem in Sections 3.6.2 and 3.6.3.
 
-#### 3.6.2 Algebraic Sensitivity Analysis—Changes in the Right-Hand Side
+#### 3.6.2 Algebraic Sensitivity Analysis—Changes in the Right-Hand Side ^algebraicrhs
 
 In Section 3.6.1, we used the graphical solution to determine the dual price (unit worth of a resource) and its feasibility ranges. This section extends the analysis to the general LP model. A numeric example (the TOYCO model) will be used to facilitate the presentation.
 
-## Example 3.6-3 (TOYCO Model)
+## Example 3.6-3 (TOYCO Model) ^toyco
 
 TOYCO uses three operations to assemble three types of toys - trains, trucks, and cars. The daily available times for the three operations are 430, 460, and 420 mins, respectively, and the revenues per unit of toy train, truck, and car are \$3, \$2, and \$5, respectively. The assembly times per train at the three operations are 1, 3, and 1 mins, respectively. The corresponding times per train and per car are $\left( {2,0,4}\right)$ and $\left( {1,2,0}\right)$ mins (a zero time indicates that the operation is not used).
 
@@ -1038,11 +1250,16 @@ $$
 
 Using ${x}_{4},{x}_{5}$ , and ${x}_{6}$ as the slack variables for the constraints of operations 1,2, and 3, respectively, the optimum tableau is
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1350</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>20</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 1350 |
+| ${x}_{2}$ | $- \frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $- \frac{1}{4}$ | 0 | 100 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 230 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 20 |
 
 The solution recommends manufacturing 100 trucks and 230 cars but no trains. The associated revenue is \$1350.
 
-Determination of dual prices and feasibility ranges. We will use the TOYCO model to show how this information is obtained from the optimal simplex tableau. Recognizing that the dual prices and their feasibility ranges are rooted in making changes in the right-hand side of the constraints, suppose that ${D}_{1},{D}_{2}$ , and ${D}_{3}$ are the (positive or negative) changes made in the allotted daily manufacturing time of operations 1, 2, and 3, respectively. The original TOYCO model can then be changed to
+Determination of dual prices and feasibility ranges. We will use the TOYCO model to show how this information is obtained from the optimal simplex tableau. Recognizing that the dual prices and their feasibility ranges are rooted in making changes in the right-hand side of the constraints, suppose that ${D}_{1},{D}_{2}$ , and ${D}_{3}$ are the (positive or negative) changes made in the allotted daily manufacturing time of operations 1, 2, and 3, respectively. The original TOYCO model can then be changed to ^rhsperturb
 
 $$
 \text{ Maximinze }z = 3{x}_{1} + 2{x}_{2} + 5{x}_{3}
@@ -1068,11 +1285,21 @@ $$
 
 To express the optimum simplex tableau of the modified problem in terms of the changes ${D}_{1},{D}_{2}$ , and ${D}_{3}$ , we first rewrite the starting tableau using the new right-hand sides, ${430} + {D}_{1},{460} + {D}_{2}$ , and ${420} + {D}_{3}$ .
 
-<table><tr><td rowspan="2">Basic</td><td rowspan="2">${x}_{1}$</td><td rowspan="2">${x}_{2}$</td><td rowspan="2">${x}_{3}$</td><td rowspan="2">${x}_{4}$</td><td rowspan="2">${x}_{5}$</td><td rowspan="2">${x}_{6}$</td><td colspan="4">Solution</td></tr><tr><td>RHS</td><td>${D}_{1}$</td><td>${D}_{2}$</td><td>${D}_{3}$</td></tr><tr><td>$z$</td><td>-3</td><td>-2</td><td>-5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>2</td><td>1</td><td>1</td><td>0</td><td>0</td><td>430</td><td>1</td><td>0</td><td>0</td></tr><tr><td>${x}_{5}$</td><td>3</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td>460</td><td>0</td><td>1</td><td>0</td></tr><tr><td>${x}_{6}$</td><td>1</td><td>4</td><td>0</td><td>0</td><td>0</td><td>1</td><td>420</td><td>0</td><td>0</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | RHS | ${D}_{1}$ | ${D}_{2}$ | ${D}_{3}$ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -3 | -2 | -5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| ${x}_{4}$ | 1 | 2 | 1 | 1 | 0 | 0 | 430 | 1 | 0 | 0 |
+| ${x}_{5}$ | 3 | 0 | 2 | 0 | 1 | 0 | 460 | 0 | 1 | 0 |
+| ${x}_{6}$ | 1 | 4 | 0 | 0 | 0 | 1 | 420 | 0 | 0 | 1 |
 
 The two shaded areas are identical. Hence, if we repeat the same simplex iterations (with the same row operations) as in the original model, the columns in the two highlighted area will also be identical in the optimal tableau-that is,
 
-<table><tr><td rowspan="2">Basic</td><td rowspan="2">${x}_{1}$</td><td rowspan="2">${x}_{2}$</td><td rowspan="2">${x}_{3}$</td><td rowspan="2">${x}_{4}$</td><td rowspan="2">${x}_{5}$</td><td rowspan="2">${x}_{6}$</td><td colspan="4">Solution</td></tr><tr><td>RHS</td><td>${D}_{1}$</td><td>${D}_{2}$</td><td>${D}_{3}$</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1350</td><td>1</td><td>2</td><td>0</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>100</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>230</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>20</td><td>-2</td><td>1</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | RHS | ${D}_{1}$ | ${D}_{2}$ | ${D}_{3}$ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 1350 | 1 | 2 | 0 |
+| ${x}_{2}$ | $- \frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $- \frac{1}{4}$ | 0 | 100 | $\frac{1}{2}$ | $- \frac{1}{4}$ | 0 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | 1 | 0 | 230 | 0 | $\frac{1}{2}$ | 0 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 20 | -2 | 1 | 1 |
 
 The new optimum tableau provides the following optimal solution:
 
@@ -1172,7 +1399,11 @@ We can show in a similar manner that the feasibility ranges for operations 2 and
 
 We can now summarize the dual prices and their feasibility ranges for the TOYCO model as follows: ${}^{11}$
 
-<table><tr><td rowspan="2">Resource</td><td rowspan="2">Dual price(\$)</td><td rowspan="2">Feasibility range</td><td colspan="3">Resource amount (minutes)</td></tr><tr><td>Minimum</td><td>Current</td><td>Maximum</td></tr><tr><td>Operation 1</td><td>1</td><td>$- {200} \leq  {D}_{1} \leq  {10}$</td><td>230</td><td>430</td><td>440</td></tr><tr><td>Operation 2</td><td>2</td><td>$- {20} \leq  {D}_{2} \leq  {400}$</td><td>440</td><td>440</td><td>860</td></tr><tr><td>Operation 3</td><td>0</td><td>$- {20} \leq  {D}_{3} < \infty$</td><td>400</td><td>420</td><td>$\infty$</td></tr></table>
+| Resource | Dual price (\$) | Feasibility range | Minimum (min) | Current (min) | Maximum (min) |
+| --- | --- | --- | --- | --- | --- |
+| Operation 1 | 1 | $- {200} \leq {D}_{1} \leq {10}$ | 230 | 430 | 440 |
+| Operation 2 | 2 | $- {20} \leq {D}_{2} \leq {400}$ | 440 | 440 | 860 |
+| Operation 3 | 0 | $- {20} \leq {D}_{3} < \infty$ | 400 | 420 | $\infty$ |
 
 It is important to notice that the dual prices will remain applicable for any simultaneous changes that keep the solution feasible, even if the changes violate the individual ranges. For example, the changes ${D}_{1} = {30},{D}_{2} =  - {12}$ , and ${D}_{3} = {100}$ will keep the solution feasible even though ${D}_{1} = {30}$ violates the feasibility range $- {200} \leq  {D}_{1} \leq  {10}$ , as the following computations show:
 
@@ -1190,11 +1421,11 @@ $$
 
 This means that the dual prices will remain applicable, and we can compute the new optimum objective value from the dual prices as $z = {1350} + 1\left( {30}\right)  + 2\left( {-{12}}\right)  + \; 0\left( {100}\right)  = \$ {1356}.$
 
-#### 3.6.3 Algebraic Sensitivity Analysis—Objective Function
+#### 3.6.3 Algebraic Sensitivity Analysis—Objective Function ^algebraicobj
 
 In Section 3.6.1, we used graphical sensitivity analysis to determine the conditions that will maintain the optimality of the solution of a two-variable LP. In this section, we extend these ideas to the general LP problem.
 
-Definition of reduced cost. To facilitate the explanation of the objective function sensitivity analysis, first we need to define reduced costs. In the TOYCO model (Example 3.6-2), the objective $z$ -equation in the optimal tableau can be written as
+Definition of reduced cost. To facilitate the explanation of the objective function sensitivity analysis, first we need to define reduced costs. In the TOYCO model (Example 3.6-2), the objective $z$ -equation in the optimal tableau can be written as ^reducedcost
 
 $$
 z = {1350} - 4{x}_{1} - {x}_{4} - 2{x}_{5}
@@ -1236,17 +1467,29 @@ We first consider the general situation in which all the objective coefficients 
 
 With the simultaneous changes, the $z$ -row in the starting tableau appears as:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>乙</td><td>$- 3 - {d}_{1}$</td><td>$- 2 - {d}_{2}$</td><td>$- 5 - {d}_{3}$</td><td>0</td><td>0</td><td>0</td><td>0</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | $- 3 - {d}_{1}$ | $- 2 - {d}_{2}$ | $- 5 - {d}_{3}$ | 0 | 0 | 0 | 0 |
 
 When we generate the simplex tableaus with the same sequence of entering and leaving variables used in the original model (before the changes ${d}_{j}$ are made), the optimal iteration will appear as follows (convince yourself that this is indeed the case by carrying out the simplex row operations):
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>$4 - \frac{1}{4}{d}_{2} + \frac{3}{2}{d}_{3} - {d}_{1}$</td><td>0</td><td>0</td><td>$1 + \frac{1}{2}{d}_{2}$</td><td>$2 - \frac{1}{4}{d}_{2} + \frac{1}{2}{d}_{3}$</td><td>0</td><td>${1350} + {100}{d}_{2} + {23}{d}_{3}$</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>20</td></tr></table>
+| Basic     | ${x}_{1}$                                               | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$                | ${x}_{5}$                                     | ${x}_{6}$ | Solution                              |
+| --------- | ------------------------------------------------------- | --------- | --------- | ------------------------ | --------------------------------------------- | --------- | ------------------------------------- |
+| $z$       | $4 - \frac{1}{4}{d}_{2} + \frac{3}{2}{d}_{3} - {d}_{1}$ | 0         | 0         | $1 + \frac{1}{2}{d}_{2}$ | $2 - \frac{1}{4}{d}_{2} + \frac{1}{2}{d}_{3}$ | 0         | ${1350} + {100}{d}_{2} + {23}{d}_{3}$ |
+| ${x}_{2}$ | $- \frac{1}{4}$                                         | 1         | 0         | $\frac{1}{2}$            | $- \frac{1}{4}$                               | 0         | 100                                   |
+| ${x}_{3}$ | $\frac{3}{2}$                                           | 0         | 1         | 0                        | $\frac{1}{2}$                                 | 0         | 230                                   |
+| ${x}_{6}$ | $- \frac{1}{4}$                                         | 0         | 0         | -2                       | 1                                             | 1         | 20                                    |
 
 The new optimal tableau is the same as in the original optimal tableau, except for the reduced costs (z-equation coefficients). This means that changes in the objective-function coefficients can affect the optimality of the problem only. (Compare with Section 3.6.2, where changes in the right-hand side affect feasibility only.)
 
 You really do not need to carry out the simplex row operation to compute the new reduced costs. An examination of the new $z$ -row shows that the coefficients of ${d}_{j}$ are taken directly from the constraint coefficients of the optimum tableau. A convenient way for computing the new reduced cost is to add a new top row and a new leftmost column to the optimum tableau, as shown by the shaded areas in the following illustration.
 
-<table><tr><td rowspan="2"></td><td rowspan="2">Basic</td><td>${d}_{1}$</td><td>${d}_{2}$</td><td>${d}_{3}$</td><td>0</td><td>0</td><td>0</td><td rowspan="2">Solution</td></tr><tr><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td></tr><tr><td>1</td><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1350</td></tr><tr><td>${d}_{2}$</td><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>100</td></tr><tr><td>${d}_{3}$</td><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>0</td><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>20</td></tr></table>
+| Row | Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 1350 |
+| ${d}_{2}$ | ${x}_{2}$ | $- \frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $- \frac{1}{4}$ | 0 | 100 |
+| ${d}_{3}$ | ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 230 |
+| 0 | ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 20 |
 
 The entries in the top row are the change ${d}_{j}$ associated with variable ${x}_{j}$ . For the leftmost column, the top element is 1 in the $z$ -row followed by ${d}_{i}$ basic variable ${x}_{i}$ . Keep in mind that ${d}_{i} = 0$ for slack variable ${x}_{i}$ .
 
@@ -1332,7 +1575,7 @@ $$
 
 Remarks. The feasibility ranges presented in Section 3.6.2 and the optimality ranges developed in Section 3.6.3 work fine so long as the sensitivity analysis situation calls for changing the parameters of the problem one at a time, a rare occurrence in practice. The fact of the matter is that this limited usefulness is dictated by how far mathematics allows us to go before the results become too unwieldy. So, what should one do in practice to carry out meaningful sensitivity analyses that entail making simultaneous changes anywhere in the model? The good news is that advances in computing and in mathematical programming languages (e.g., AMPL) now make it possible to solve huge LPs rather quickly. Thus, a viable option is to solve complete LP scenarios completely, and then compare the answers. Of course, a great deal of thought must be given to constructing viable scenarios that will allow testing model changes in a systematic and logical manner.
 
-#### 3.6.4 Sensitivity Analysis with TORA, Solver, and AMPL
+#### 3.6.4 Sensitivity Analysis with TORA, Solver, and AMPL ^software
 
 We now have all the tools to decipher the output provided by LP software, particularly with regard to sensitivity analysis. We will use the TOYCO example to demonstrate the TORA, Solver, and AMPL output.
 
@@ -1340,7 +1583,19 @@ TORA's LP output report provides the sensitivity analysis data automatically as 
 
 Figure 3.12 provides the Solver TOYCO model (file solverTOYCO.xls) and its sensitivity analysis report. After you click Solve in the Solver Parameters dialogue box, you can request the sensitivity analysis report in the new dialogue box Solver Results.
 
-<table><tr><td colspan="5">***Sensitivity Analysis***</td></tr><tr><td>Variable</td><td>CurrObjCoeff</td><td>MinObjCoeff</td><td>MaxObjCoeff</td><td>Reduced Cost</td></tr><tr><td>x1:</td><td>3.00</td><td>-infinity</td><td>7.00</td><td>4.00</td></tr><tr><td>x2 :</td><td>2.00</td><td>0.00</td><td>10.00</td><td>0.00</td></tr><tr><td>x3 :</td><td>5.00</td><td>2.33</td><td>infinity</td><td>0.00</td></tr><tr><td>Constraint</td><td>Curr RHS</td><td>Min RHS</td><td>Max RHS</td><td>Dual Price</td></tr><tr><td>1 (<) :</td><td>430.00</td><td>230.00</td><td>440.00</td><td>1.00</td></tr><tr><td>2 (<) :</td><td>460.00</td><td>440.00</td><td>860.00</td><td>2.00</td></tr><tr><td>3 (<) :</td><td>420.00</td><td>400.00</td><td>infinity</td><td>0.00</td></tr></table>
+***Sensitivity Analysis***
+
+| Variable | CurrObjCoeff | MinObjCoeff | MaxObjCoeff | Reduced Cost |
+| --- | --- | --- | --- | --- |
+| x1 | 3.00 | -infinity | 7.00 | 4.00 |
+| x2 | 2.00 | 0.00 | 10.00 | 0.00 |
+| x3 | 5.00 | 2.33 | infinity | 0.00 |
+
+| Constraint | Curr RHS | Min RHS | Max RHS | Dual Price |
+| --- | --- | --- | --- | --- |
+| 1 (<) | 430.00 | 230.00 | 440.00 | 1.00 |
+| 2 (<) | 460.00 | 440.00 | 860.00 | 2.00 |
+| 3 (<) | 420.00 | 400.00 | infinity | 0.00 |
 
 FIGURE 3.11
 
@@ -1360,7 +1615,11 @@ You can then click Sensitivity Report 1 to view the results. The report is simil
 
 ---
 
-<table><tr><td>:</td><td>oper.down</td><td>oper.current</td><td>oper.up</td><td>oper.dual</td><td>$\mathrel{\text{ := }}$</td><td>FIGURE 3.13</td></tr><tr><td>1</td><td>230</td><td>430</td><td>440</td><td>1</td><td></td><td>AMPL sensitivity analysis</td></tr><tr><td>2</td><td>440</td><td>460</td><td>860</td><td>2</td><td></td><td></td></tr><tr><td>3</td><td>400</td><td>420</td><td>1e+20p</td><td>0</td><td></td><td>report for the TOYCO model</td></tr></table>
+| Operation | oper.down | oper.current | oper.up | oper.dual | Note |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 230 | 430 | 440 | 1 | AMPL sensitivity analysis |
+| 2 | 440 | 460 | 860 | 2 |  |
+| 3 | 400 | 420 | 1e+20p | 0 | report for the TOYCO model |
 
 																					x.down x.current x.up x.rc
 
@@ -1392,7 +1651,7 @@ display x.down, x.current, x.up, x.rc>a.out;
 
 The CPLEX option statements are needed to obtain the standard sensitivity analysis report. In the TOYCO model, the indexed variables and constraints use the root names x and oper, respectively. Using these names, the suggestive suffixes .down, . current, and . up in the display statements automatically generate the formatted sensitivity analysis report in Figure 3.13. The suffixes . dual and . rc provide the dual price and the reduced cost, respectively.
 
-### 3.7 COMPUTATIONAL ISSUES IN LINEAR PROGRAMMING ${}^{13}$
+### 3.7 COMPUTATIONAL ISSUES IN LINEAR PROGRAMMING ${}^{13}$ ^computational
 
 This chapter has presented the details of the simplex algorithm. Subsequent chapters present other algorithms: the dual simplex (Chapter 4), the revised simplex (Chapter 7), and the interior point (Chapter 22 on the website). Why the variety? The reason is that each algorithm has specific features that can be beneficial in the development of robust computer codes.
 
@@ -1416,7 +1675,11 @@ This section explains the transition from basic textbook presentations to curren
 
 Actually, the optimality criterion presented in Section 3.3.2 is but one of several used in the development of LP codes. The following table summarizes the three prominent criteria:
 
-<table><tr><td>Entering variable rule</td><td>Description</td></tr><tr><td>Classical (Section 3.3.2)</td><td>The entering variable is the one having the most favorable reduced cost among all nonbasic variables.</td></tr><tr><td>Most improvement</td><td>The entering variable is the one yielding the largest total improvement in the objective value among all nonbasic variables.</td></tr><tr><td>Steepest edge ${}^{14}$</td><td>The entering variable is the one that yields the most favorable normalized reduced cost among all nonbasic variables. The algorithm moves along the steepest edge leading from the current to a neighboring extreme point.</td></tr></table>
+| Entering variable rule | Description |
+| --- | --- |
+| Classical (Section 3.3.2) | The entering variable is the one having the most favorable reduced cost among all nonbasic variables. |
+| Most improvement | The entering variable is the one yielding the largest total improvement in the objective value among all nonbasic variables. |
+| Steepest edge ${}^{14}$ | The entering variable is the one that yields the most favorable normalized reduced cost among all nonbasic variables. The algorithm moves along the steepest edge leading from the current to a neighboring extreme point. |
 
 For the classical rule, the objective row of the simplex tableau readily provides the reduced costs of all the nonbasic variables with no additional computations. On the other hand, the most improvement rule requires considerable additional computing that first determines the value at which a nonbasic variable enters the solution and then the resulting total improvement in the objective value. The idea of the steepest edge rule, though in the "spirit" of the most improvement rule (in the sense that it indirectly takes into account the value of the entering variable), requires much less computational overhead.
 
@@ -1484,7 +1747,7 @@ Figure 3.14 summarizes the stages of solving an LP problem. The input model can 
 
 7. Advances in computers. It is not surprising that in the last quarter of a century, computer speed has increased by more than one-thousand fold. Today, a desktop computer has more power and speed than the supercomputers of yesteryears. These hardware advances (together with the algorithmic advances cited earlier) have made it possible to solve huge LPs in a matter of seconds as opposed to days (yes, days!) in the past.
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^bibliography
 
 Bazaraa, M., J. Jarvis, and H. Sherali, Linear Programming and Network Flows, 4th ed., Wiley, New York, 2009.
 
@@ -1498,13 +1761,13 @@ Nering, E., and A. Tucker, Linear Programming and Related Problems, Academic Pre
 
 Taha, H., "Linear Programming," Chapter II-1 in Handbook of Operations Research, J. Moder and S. Elmaghraby (eds.), Van Nostrand Reinhold, New York, 1987.
 
-## Case Study: Optimization of Heart Valves Production ${}^{18}$
+## Case Study: Optimization of Heart Valves Production ${}^{18}$ ^casestudy
 
 Tool: LP
 
 Area of application: Bioprostheses (production planning)
 
-## Description of the situation:
+## Description of the situation: ^situation
 
 Biological heart valves are bioprostheses manufactured from porcine hearts for human implantation. Replacement valves needed by the human population come in different sizes. On the supply side, porcine hearts cannot be "produced" to specific sizes. Moreover, the exact size of a manufactured valve cannot be determined until the biological component of the pig heart has been processed. As a result, some needed sizes may be overstocked and others may be understocked.
 
@@ -1516,7 +1779,7 @@ ${}^{18}$ Source: S. S. Hilal and W. Erikson,"Matching Supplies to Save Lives: L
 
 Raw hearts are provided by several suppliers in six to eight sizes, usually in different proportions depending on how the animals are raised. The distribution of sizes in each shipment is expressed in the form of a histogram. Porcine specialists work with suppliers to ensure distribution stability as much as possible. In this manner, the manufacturer can have a reasonably reliable estimate of the number of units of each size in each shipment. The selection of the mix of suppliers and the size of their shipments is thus crucial in reducing mismatches between supply and demand.
 
-## LP model:
+## LP model: ^lpmodel
 
 Let
 
@@ -1560,11 +1823,11 @@ $$
 
 To be completely correct, the variables ${x}_{j}$ must be restricted to integer values. However, the parameters ${p}_{ij}$ and ${D}_{i}$ are mere estimates and, hence, rounding the continuous solution to the closest integer may not be a bad approximation in this case.
 
-## AMPL Implementation:
+## AMPL Implementation: ^amplimpl
 
 Although the LP is quite simple as an AMPL application, the nature of the input data is somewhat cumbersome. A convenient way to supply the data to this model is through a spreadsheet. File excelCase2.xls gives all the tables for the model and AMPL file amplCase2.txt shows how the data involving 8 valve sizes and 12 suppliers are read from Excel tables. ${}^{19}$
 
-## Analysis of the results:
+## Analysis of the results: ^analysisresults
 
 The output of the AMPL model for the data in excelCase2.xls is given in Figure 3.15. In the strict sense, the solution results cannot be used for scheduling purposes because the demand ${D}_{i}$ for heart valve $i$ is based on expected value calculations. Thus, the solution ${x}_{j}, j = 1,2,\ldots , n$ , will result in some months showing surplus and others exhibiting shortage.
 
@@ -1586,9 +1849,31 @@ Output of the valve production model
 
 	solution:
 
-<table><tr><td>j</td><td>L[j]</td><td>x[j]</td><td>H[j]</td><td>reduced cost</td><td>Av. unit price</td></tr><tr><td>1</td><td>0</td><td>0.0</td><td>500</td><td>2.39</td><td>14.22</td></tr><tr><td>2</td><td>0</td><td>0.0</td><td>500</td><td>0.12</td><td>15.88</td></tr><tr><td>3</td><td>0</td><td>0.0</td><td>400</td><td>5.22</td><td>15.12</td></tr><tr><td>4</td><td>0</td><td>116.4</td><td>500</td><td>0.00</td><td>14.70</td></tr><tr><td>5</td><td>0</td><td>300.0</td><td>300</td><td>-0.49</td><td>16.68</td></tr><tr><td>6</td><td>0</td><td>500.0</td><td>500</td><td>-2.13</td><td>14.89</td></tr><tr><td>7</td><td>0</td><td>250.5</td><td>600</td><td>0.00</td><td>18.12</td></tr><tr><td>8</td><td>0</td><td>400.0</td><td>400</td><td>-6.22</td><td>16.61</td></tr><tr><td>9</td><td>0</td><td>300.0</td><td>300</td><td>-4.20</td><td>17.19</td></tr><tr><td>10</td><td>0</td><td>357.4</td><td>500</td><td>-0.00</td><td>14.47</td></tr><tr><td>11</td><td>0</td><td>112.9</td><td>400</td><td>0.00</td><td>15.62</td></tr><tr><td>12</td><td>0</td><td>293.1</td><td>500</td><td>0.00</td><td>16.31</td></tr></table>
+| j | L[j] | x[j] | H[j] | reduced cost | Av. unit price |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 0 | 0.0 | 500 | 2.39 | 14.22 |
+| 2 | 0 | 0.0 | 500 | 0.12 | 15.88 |
+| 3 | 0 | 0.0 | 400 | 5.22 | 15.12 |
+| 4 | 0 | 116.4 | 500 | 0.00 | 14.70 |
+| 5 | 0 | 300.0 | 300 | -0.49 | 16.68 |
+| 6 | 0 | 500.0 | 500 | -2.13 | 14.89 |
+| 7 | 0 | 250.5 | 600 | 0.00 | 18.12 |
+| 8 | 0 | 400.0 | 400 | -6.22 | 16.61 |
+| 9 | 0 | 300.0 | 300 | -4.20 | 17.19 |
+| 10 | 0 | 357.4 | 500 | -0.00 | 14.47 |
+| 11 | 0 | 112.9 | 400 | 0.00 | 15.62 |
+| 12 | 0 | 293.1 | 500 | 0.00 | 16.31 |
 
-<table><tr><td>i</td><td>D[i]</td><td>Surplus [i]</td><td>Dual value</td></tr><tr><td>1</td><td>275</td><td>0.0</td><td>29.28</td></tr><tr><td>2</td><td>310</td><td>28.9</td><td>0.00</td></tr><tr><td>3</td><td>400</td><td>0.0</td><td>19.18</td></tr><tr><td>4</td><td>320</td><td>88.1</td><td>0.00</td></tr><tr><td>5</td><td>400</td><td>0.0</td><td>24.33</td></tr><tr><td>6</td><td>350</td><td>0.0</td><td>8.55</td></tr><tr><td>7</td><td>300</td><td>0.0</td><td>62.41</td></tr><tr><td>8</td><td>130</td><td>28.2</td><td>0.00</td></tr></table>
+| i | D[i] | Surplus [i] | Dual value |
+| --- | --- | --- | --- |
+| 1 | 275 | 0.0 | 29.28 |
+| 2 | 310 | 28.9 | 0.00 |
+| 3 | 400 | 0.0 | 19.18 |
+| 4 | 320 | 88.1 | 0.00 |
+| 5 | 400 | 0.0 | 24.33 |
+| 6 | 350 | 0.0 | 8.55 |
+| 7 | 300 | 0.0 | 62.41 |
+| 8 | 130 | 28.2 | 0.00 |
 
 ---
 
@@ -1602,13 +1887,21 @@ The given recommendations are further supported by the values of the reduced cos
 
 Valve size 7 appears to be the most critical among all sizes because it has the highest dual price (= \$62.41), which is more than twice the dual prices of other sizes. This means that size 7 stock should be monitored closely to keep its surplus inventory at the lowest level possible. On the other hand, sizes 2, 4, and 8 exhibit surplus, and efforts must be made to reduce their inventory.
 
-## Comments on the implementation of the model:
+## Comments on the implementation of the model: ^implementationcomments
 
 The proposed LP model is "rudimentary," in the sense that its results produce general planning guidelines rather than definitive production schedules. Yet, the monetary savings from the proposed plan, as reported in the original article, are impressive. The elimination of a number of vendors from the pool of suppliers and the identification of "star" vendors have resulted in reduction in inventory with significant cost savings. The same plan is responsible for reducing chances of shortage that were prevalent before the model results were used. Also, by identifying the most favored vendors, it was possible for porcine specialists in the production facility to train the workers in the slaughterhouses of these vendors to provide well-isolated and well-trimmed hearts. This, in turn, has led to streamlining production at the production facility.
 
-## PROBLEMS
+## PROBLEMS ^problems
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>3.1</td><td>3-1 to 3-10</td><td>3.5.2</td><td>3-55 to 3-57</td></tr><tr><td>3.2</td><td>3-11 to 3-15</td><td>3.5.3</td><td>3-58 to 3-60</td></tr><tr><td>3.3.1</td><td>3-16 to 3-20</td><td>3.5.4</td><td>3-61 to 3-62</td></tr><tr><td>3.3.2</td><td>3-21 to 3-33</td><td>3.6.1</td><td>3-63 to 3-67</td></tr><tr><td>3.4.1</td><td>3-34 to 3-42</td><td>3.6.2</td><td>3-68 to 3-80</td></tr><tr><td>3.4.2</td><td>3-43 to 3-50</td><td>3.6.3</td><td>3-81 to 3-88</td></tr><tr><td>3.5.1</td><td>3-51 to 3-54</td><td>3.6.4</td><td>3-89 to 3-98</td></tr></table>
+| Section | Assigned Problems | Section | Assigned Problems |
+| --- | --- | --- | --- |
+| 3.1 | 3-1 to 3-10 | 3.5.2 | 3-55 to 3-57 |
+| 3.2 | 3-11 to 3-15 | 3.5.3 | 3-58 to 3-60 |
+| 3.3.1 | 3-16 to 3-20 | 3.5.4 | 3-61 to 3-62 |
+| 3.3.2 | 3-21 to 3-33 | 3.6.1 | 3-63 to 3-67 |
+| 3.4.1 | 3-34 to 3-42 | 3.6.2 | 3-68 to 3-80 |
+| 3.4.2 | 3-43 to 3-50 | 3.6.3 | 3-81 to 3-88 |
+| 3.5.1 | 3-51 to 3-54 | 3.6.4 | 3-89 to 3-98 |
 
 *3-1. In the Reddy Mikks model (Example 2.2-1), consider the feasible solution ${x}_{1} = 2$ tons and ${x}_{2} = 2$ tons. Determine the value of the associated slacks for raw materials ${M1}$ and ${M2}$ .
 
@@ -1960,7 +2253,12 @@ $$
 
 3-26. The following tableau represents a specific simplex iteration. All variables are nonnegative. The tableau is not optimal for either maximization or minimization. Thus, when a nonbasic variable enters the solution, it can either increase or decrease $z$ or leave it unchanged, depending on the parameters of the entering nonbasic variable.
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>${x}_{7}$</td><td>${x}_{8}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>-5</td><td>0</td><td>4</td><td>-1</td><td>-10</td><td>0</td><td>0</td><td>620</td></tr><tr><td>${x}_{8}$</td><td>0</td><td>3</td><td>0</td><td>-2</td><td>-3</td><td>-1</td><td>5</td><td>1</td><td>12</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>1</td><td>1</td><td>3</td><td>1</td><td>0</td><td>3</td><td>0</td><td>6</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>-1</td><td>0</td><td>0</td><td>6</td><td>-4</td><td>0</td><td>0</td><td>0</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | ${x}_{7}$ | ${x}_{8}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | -5 | 0 | 4 | -1 | -10 | 0 | 0 | 620 |
+| ${x}_{8}$ | 0 | 3 | 0 | -2 | -3 | -1 | 5 | 1 | 12 |
+| ${x}_{3}$ | 0 | 1 | 1 | 3 | 1 | 0 | 3 | 0 | 6 |
+| ${x}_{1}$ | 1 | -1 | 0 | 0 | 6 | -4 | 0 | 0 | 0 |
 
 (a) Categorize the variables as basic and nonbasic, and provide the current values of all the variables.
 
@@ -2036,7 +2334,12 @@ $$
 
 3-31. The Gutchi Company manufactures purses, shaving bags, and backpacks. The construction includes leather and synthetics, leather being the scarce raw material. The production process requires two types of skilled labor: sewing and finishing. The following table gives the availability of the resources, their usage by the three products, and the profits per unit.
 
-<table><tr><td rowspan="2">Resource</td><td colspan="3">Resource requirements per unit</td><td rowspan="2">Daily availability</td></tr><tr><td>Purse</td><td>Bag</td><td>Backpack</td></tr><tr><td>Leather $\left( {\mathrm{{ft}}}^{2}\right)$</td><td>2</td><td>1</td><td>3</td><td>${42}{\mathrm{{ft}}}^{2}$</td></tr><tr><td>Sewing (hr)</td><td>2</td><td>1</td><td>2</td><td>40 hr</td></tr><tr><td>Finishing (hr)</td><td>1</td><td>.5</td><td>1</td><td>45 hr</td></tr><tr><td>Selling price (\$)</td><td>24</td><td>22</td><td>45</td><td></td></tr></table>
+| Resource | Purse | Bag | Backpack | Daily availability |
+| --- | --- | --- | --- | --- |
+| Leather $\left( {\mathrm{{ft}}}^{2}\right)$ | 2 | 1 | 3 | ${42}{\mathrm{{ft}}}^{2}$ |
+| Sewing (hr) | 2 | 1 | 2 | 40 hr |
+| Finishing (hr) | 1 | .5 | 1 | 45 hr |
+| Selling price (\$) | 24 | 22 | 45 |  |
 
 (a) Formulate the problem as a linear program, and find the optimum solution (using TORA, Excel Solver, or AMPL).
 
@@ -2338,7 +2641,11 @@ $$
 
 The optimal simplex tableau at the end of Phase I is
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>$R$</td><td>Solution</td></tr><tr><td>$r$</td><td>-5</td><td>0</td><td>-2</td><td>-1</td><td>-4</td><td>0</td><td>0</td></tr><tr><td>${x}_{2}$</td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>2</td></tr><tr><td>$R$</td><td>-5</td><td>0</td><td>-2</td><td>-1</td><td>-4</td><td>1</td><td>0</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | $R$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $r$ | -5 | 0 | -2 | -1 | -4 | 0 | 0 |
+| ${x}_{2}$ | 2 | 1 | 1 | 0 | 1 | 0 | 2 |
+| $R$ | -5 | 0 | -2 | -1 | -4 | 1 | 0 |
 
 Explain why the nonbasic variables ${x}_{1},{x}_{3},{x}_{4}$ , and ${x}_{5}$ can never assume positive values at the end of Phase II. Hence, conclude that their columns can be dropped before we start Phase II. In essence, the removal of these variables reduces the constraint equations of the problem to ${x}_{2} = 2$ -meaning that it is not necessary to carry out Phase II in this problem.
 
@@ -2550,7 +2857,10 @@ subject to
 
 *3-61. Toolco produces three types of tools, ${T1},{T2}$ , and ${T3}$ . The tools use two raw materials, ${M1}$ and ${M2}$ , according to the data in the following table:
 
-<table><tr><td rowspan="2">Raw material</td><td colspan="3">Number of units of raw materials per tool</td></tr><tr><td>T1</td><td>${T2}$</td><td>T3</td></tr><tr><td>${M1}$</td><td>3</td><td>5</td><td>6</td></tr><tr><td>${M2}$</td><td>5</td><td>3</td><td>4</td></tr></table>
+| Raw material | T1 | ${T2}$ | T3 |
+| --- | --- | --- | --- |
+| ${M1}$ | 3 | 5 | 6 |
+| ${M2}$ | 5 | 3 | 4 |
 
 The available daily quantities of raw materials ${M1}$ and ${M2}$ are 2000 units and 2400 units, respectively. Marketing research shows that the daily demand for all three tools must be at least 1000 units. Can the manufacturing department satisfy the demand? If not, what is the most Toolco can produce?
 
@@ -2654,7 +2964,11 @@ ${}^{20}$ In Problems 3-68 to 3-80, you may find it convenient to generate the o
 
 3-71. A company that operates 10 hrs a day manufactures three products on three processes. The following table summarizes the data of the problem:
 
-<table><tr><td rowspan="2">Product</td><td colspan="3">Minutes per unit</td><td rowspan="2">Unit price</td></tr><tr><td>Process 1</td><td>Process 2</td><td>Process 3</td></tr><tr><td>1</td><td>10</td><td>6</td><td>8</td><td>\$4.50</td></tr><tr><td>2</td><td>5</td><td>8</td><td>10</td><td>\$5.00</td></tr><tr><td>3</td><td>6</td><td>9</td><td>12</td><td>\$4.00</td></tr></table>
+| Product | Process 1 | Process 2 | Process 3 | Unit price |
+| --- | --- | --- | --- | --- |
+| 1 | 10 | 6 | 8 | \$4.50 |
+| 2 | 5 | 8 | 10 | \$5.00 |
+| 3 | 6 | 9 | 12 | \$4.00 |
 
 (a) Determine the optimal product mix.
 
@@ -2682,7 +2996,10 @@ ${}^{20}$ In Problems 3-68 to 3-80, you may find it convenient to generate the o
 
 3-74. The Burroughs Garment Company manufactures men's shirts and women's blouses for Walmark Discount Stores. Walmark will accept all the production supplied by Burroughs. The production process includes cutting, sewing, and packaging. Burroughs employs 25 workers in the cutting department, 35 in the sewing department, and 5 in the packaging department. The factory works one 8-hr shift, 5 days a week. The following table gives the time requirements and prices per unit for the two garments:
 
-<table><tr><td rowspan="2">Garment</td><td colspan="3">Minutes per unit</td><td rowspan="2">Unit price (\$)</td></tr><tr><td>Cutting</td><td>Sewing</td><td>Packaging</td></tr><tr><td>Shirts</td><td>20</td><td>70</td><td>12</td><td>8.00</td></tr><tr><td>Blouses</td><td>60</td><td>60</td><td>4</td><td>12.00</td></tr></table>
+| Garment | Cutting | Sewing | Packaging | Unit price (\$) |
+| --- | --- | --- | --- | --- |
+| Shirts | 20 | 70 | 12 | 8.00 |
+| Blouses | 60 | 60 | 4 | 12.00 |
 
 (a) Determine the optimal weekly production schedule for Burroughs.
 
@@ -2704,7 +3021,11 @@ The prices per unit of solutions $A$ and $B$ are $\$ 8$ and $\$ {10}$ , respecti
 
 3-76. An assembly line consisting of three consecutive workstations produces two radio models: DiGi-1 and DiGi-2. The following table provides the assembly times for the three workstations.
 
-<table><tr><td rowspan="2">Workstation</td><td colspan="2">Minutes per unit</td></tr><tr><td>DiGi-1</td><td>DiGi-2</td></tr><tr><td>1</td><td>6</td><td>4</td></tr><tr><td>2</td><td>5</td><td>4</td></tr><tr><td>3</td><td>4</td><td>6</td></tr></table>
+| Workstation | DiGi-1 | DiGi-2 |
+| --- | --- | --- |
+| 1 | 6 | 4 |
+| 2 | 5 | 4 |
+| 3 | 4 | 6 |
 
 The daily maintenance for workstations 1, 2, and 3 consumes 10%, 14%, and 12%, respectively, of the maximum 480 minutes available for each workstation each day.
 
@@ -2716,7 +3037,12 @@ The daily maintenance for workstations 1, 2, and 3 consumes 10%, 14%, and 12%, r
 
 3-77. The Gutchi Company manufactures purses, shaving bags, and backpacks. The construction of the three products requires leather and synthetics, with leather being the limiting raw material. The production process uses two types of skilled labor: sewing and finishing. The following table gives the availability of the resources, their usage by the three products, and the prices per unit.
 
-<table><tr><td rowspan="2">Resource</td><td colspan="3">Resource requirements per unit</td><td rowspan="2">Daily availability</td></tr><tr><td>Purse</td><td>Bag</td><td>Backpack</td></tr><tr><td>Leather $\left( {\mathrm{{ft}}}^{2}\right)$</td><td>2</td><td>1</td><td>3</td><td>42</td></tr><tr><td>Sewing (hr)</td><td>2</td><td>1</td><td>2</td><td>40</td></tr><tr><td>Finishing (hr)</td><td>1</td><td>.5</td><td>1</td><td>45</td></tr><tr><td>Price (\$)</td><td>24</td><td>22</td><td>45</td><td></td></tr></table>
+| Resource | Purse | Bag | Backpack | Daily availability |
+| --- | --- | --- | --- | --- |
+| Leather $\left( {\mathrm{{ft}}}^{2}\right)$ | 2 | 1 | 3 | 42 |
+| Sewing (hr) | 2 | 1 | 2 | 40 |
+| Finishing (hr) | 1 | .5 | 1 | 45 |
+| Price (\$) | 24 | 22 | 45 |  |
 
 Formulate the problem as a linear program, and find the optimum solution. Next, indicate whether the following changes in the resources will keep the current solution feasible.
 
@@ -2738,7 +3064,12 @@ For the cases where feasibility is maintained, determine the new optimum solutio
 
 3-78. HiDec produces two models of electronic gadgets that use resistors, capacitors, and chips. The following table summarizes the data of the situation:
 
-<table><tr><td rowspan="2">Resource</td><td colspan="2">Unit resource requirements</td><td rowspan="2">Maximum availability (units)</td></tr><tr><td>Model 1 (units)</td><td>Model 2 (units)</td></tr><tr><td>Resistor</td><td>2</td><td>3</td><td>1200</td></tr><tr><td>Capacitor</td><td>2</td><td>1</td><td>1000</td></tr><tr><td>Chips</td><td>0</td><td>4</td><td>800</td></tr><tr><td>Unit price (\$)</td><td>3</td><td>4</td><td></td></tr></table>
+| Resource | Model 1 (units) | Model 2 (units) | Maximum availability (units) |
+| --- | --- | --- | --- |
+| Resistor | 2 | 3 | 1200 |
+| Capacitor | 2 | 1 | 1000 |
+| Chips | 0 | 4 | 800 |
+| Unit price (\$) | 3 | 4 |  |
 
 Let ${x}_{1}$ and ${x}_{2}$ be the amounts produced of Models 1 and 2, respectively. Following are the LP model and its associated optimal simplex tableau.
 
@@ -2764,7 +3095,12 @@ $$
 {x}_{1},{x}_{2} \geq  0
 $$
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${s}_{1}$</td><td>${s}_{2}$</td><td>${s}_{3}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>5</td><td>$\frac{1}{4}$</td><td>0</td><td>1750</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>$- \frac{1}{4}$</td><td>$\frac{3}{4}$</td><td>0</td><td>450</td></tr><tr><td>${s}_{3}$</td><td>0</td><td>0</td><td>-2</td><td>2</td><td>1</td><td>400</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{2}$</td><td>0</td><td>100</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${s}_{1}$ | ${s}_{2}$ | ${s}_{3}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 5 | $\frac{1}{4}$ | 0 | 1750 |
+| ${x}_{1}$ | 1 | 0 | $- \frac{1}{4}$ | $\frac{3}{4}$ | 0 | 450 |
+| ${s}_{3}$ | 0 | 0 | -2 | 2 | 1 | 400 |
+| ${x}_{2}$ | 0 | 1 | $\frac{1}{2}$ | $- \frac{1}{2}$ | 0 | 100 |
 
 *(a) Determine the status of each resource.
 

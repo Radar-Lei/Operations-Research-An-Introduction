@@ -1,12 +1,63 @@
-## CHAPTER 6 Network Model
+## CHAPTER 6 Network Model ^chapter
 
-## Real-Life Application-Saving Federal Travel Dollars
 
-U.S. federal government offices are located in most cities in the United States, and federal employees are required to attend development conferences and training courses offered around the country. The location of the city hosting conferences/training events can impact travel costs. The goal of the study is to determine the optimal location of host city for a scheduled conference/training event. For fiscal year 1997, the developed model was estimated to have saved at least \$400,000. Details of the study are presented at the end of the chapter.
+```markmap
+---
+markmap:
+  height: 643
+---
+# [[#^chapter|CHAPTER 6: Network Model]]
+## [[#^reallife|Real-Life Application: Saving Federal Travel Dollars]]
+### [[#^travelgoal|Goal: choose host city minimizing total travel + per-diem cost]]
+### [[#^travelmethod|Method: shortest-route (Floyd) on airfare network]]
+## [[#^scope|6.1 Scope & Definition of Network Models]]
+### [[#^situations|Typical network OR situations (design, routing, flow, scheduling, min-cost flow)]]
+### [[#^netterms|Network notation and core terms (N/A, flow, directed arc, path/cycle, tree)]]
+### [[#^covered|Algorithms covered (MST, shortest route, maximal flow, CPM)]]
+## [[#^konigsberg|Example 6.1-1: Bridges of Königsberg]]
+## [[#^aha|Aha Moment: Why network pictures matter]]
+## [[#^mst|6.2 Minimal Spanning Tree Algorithm]]
+### [[#^mstgoal|Goal: connect all nodes with minimum total length]]
+### [[#^mstidea|Idea: grow a connected set by repeatedly adding the shortest link]]
+### [[#^mstexample|Example 6.2-1: Midwest TV Cable (iteration-based construction)]]
+### [[#^mstremark|Remark: LP formulation exists but is impractical (cycle constraints)]]
+## [[#^shortest|6.3 Shortest-Route Problem]]
+### [[#^srmodel|Model: shortest route between a source and destination]]
+### [[#^srapplications|Applications beyond distance (replacement, reliability, puzzles)]]
+#### [[#^equip|Equipment replacement as a shortest-route model]]
+#### [[#^reliable|Most reliable route via logarithmic transformation]]
+#### [[#^jug|Three-jug puzzle as a state-space shortest route]]
+### [[#^sralgos|Algorithms: Dijkstra and Floyd]]
+#### [[#^dijkstra|Dijkstra labeling (temporary/permanent) and backtracking]]
+#### [[#^floyd|Floyd triple-operation matrix updates]]
+### [[#^srlp|LP formulation: unit flow + flow conservation]]
+### [[#^srsolver|Solver spreadsheet perspective]]
+### [[#^srampl|AMPL modeling note]]
+## [[#^maxflow|6.4 Maximal Flow Model]]
+### [[#^cuts|Cuts and bottlenecks (min-cut idea)]]
+### [[#^mfalgos|Breakthrough paths, residual capacities, and backtracking]]
+### [[#^mflp|LP formulation for maximal flow]]
+### [[#^mfsolver|Solver note]]
+### [[#^mfampl|AMPL note]]
+## [[#^cpmpert|6.5 CPM and PERT]]
+### [[#^netrep|Network representation rules and dummy activities]]
+### [[#^cpm|CPM computations: forward/backward pass and critical path]]
+### [[#^floats|Scheduling: floats (TF/FF) and red-flagging]]
+### [[#^cpmlp|LP formulation of CPM (longest path)]]
+### [[#^pert|PERT: a/m/b estimates, mean/variance, normal approximation]]
+## [[#^casestudy|Case Study: Saving Federal Travel Dollars]]
+### [[#^travelassumptions|Assumptions: car vs air travel, per-diems, arrivals/departures]]
+### [[#^numerical|Numerical example: 12-city illustration and tables]]
+### [[#^besthost|Conclusion: pick city with minimum total event cost]]
+```
 
-### 6.1 SCOPE AND DEFINITION OF NETWORK MODELS
+## Real-Life Application-Saving Federal Travel Dollars ^reallife
 
-Many operations research situations can be modeled and solved as networks (nodes connected by branches):
+U.S. federal government offices are located in most cities in the United States, and federal employees are required to attend development conferences and training courses offered around the country. The location of the city hosting conferences/training events can impact travel costs. The goal of the study is to determine the optimal location of host city for a scheduled conference/training event. For fiscal year 1997, the developed model was estimated to have saved at least \$400,000. Details of the study are presented at the end of the chapter. ^travelgoal
+
+### 6.1 SCOPE AND DEFINITION OF NETWORK MODELS ^scope
+
+Many operations research situations can be modeled and solved as networks (nodes connected by branches): ^situations
 
 1. Design of an offshore natural-gas pipeline network connecting wellheads in the Gulf of Mexico to an inshore delivery point with the objective of minimizing the cost of constructing the pipeline.
 
@@ -18,7 +69,7 @@ Many operations research situations can be modeled and solved as networks (nodes
 
 5. Determination of the minimum-cost flow schedule from oil fields to refineries through a pipeline network.
 
-The solution of these situations is accomplished through a variety of network optimization algorithms. This chapter presents four of these algorithms.
+The solution of these situations is accomplished through a variety of network optimization algorithms. This chapter presents four of these algorithms. ^covered
 
 1. Minimal spanning tree (situation 1)
 
@@ -30,7 +81,9 @@ The solution of these situations is accomplished through a variety of network op
 
 For the fifth situation, the minimum-cost capacitated network algorithm is presented in Section 22.1 on the website.
 
-Network definitions. A network consists of a set of nodes linked by arcs (or branches). The notation for describing a network is $\left( {N, A}\right)$ , where $N$ is the set of nodes, and $A$ is the set of arcs. As an illustration, the network in Figure 6.1 is described as
+Network definitions. A network consists of a set of nodes linked by arcs (or branches). ^netterms
+
+The notation for describing a network is $\left( {N, A}\right)$ , where $N$ is the set of nodes, and $A$ is the set of arcs. As an illustration, the network in Figure 6.1 is described as ^notation
 
 $$
 N = \{ 1,2,3,4,5\}
@@ -40,13 +93,19 @@ $$
 A = \{ \left( {1,2}\right) ,\left( {1,3}\right) ,\left( {2,3}\right) ,\left( {2,5}\right) ,\left( {3,4}\right) ,\left( {3,5}\right) ,\left( {4,2}\right) ,\left( {4,5}\right) \}
 $$
 
-Associated with each network is a flow (e.g., oil products flow in a pipeline and automobile traffic flow in highways). The maximum flow in a network can be finite or infinite, depending on the capacity of its arcs.
+Associated with each network is a flow (e.g., oil products flow in a pipeline and automobile traffic flow in highways). The maximum flow in a network can be finite or infinite, depending on the capacity of its arcs. ^flow
 
-An arc is said to be directed or oriented if it allows positive flow in one direction only. A directed network has all directed arcs.
+An arc is said to be directed or oriented if it allows positive flow in one direction only. A directed network has all directed arcs. ^directed
 
-A path is a set of arcs joining two distinct nodes, passing through other nodes in the network. For example, in Figure 6.1, arcs $\left( {1,2}\right) ,\left( {2,3}\right) ,\left( {3,4}\right)$ , and $\left( {4,5}\right)$ form a path between nodes 1 and 5. A path forms a cycle or a loop if it connects a node back to itself through other nodes. In Figure 6.1, arcs $\left( {2,3}\right) ,\left( {3,4}\right)$ , and $\left( {4,2}\right)$ form a cycle.
+A path is a set of arcs joining two distinct nodes, passing through other nodes in the network. For example, in Figure 6.1, arcs $\left( {1,2}\right) ,\left( {2,3}\right) ,\left( {3,4}\right)$ , and $\left( {4,5}\right)$ form a path between nodes 1 and 5. ^path
 
-A network is said to be connected if every two distinct nodes are linked by at least one path. The network in Figure 6.1 demonstrates this type of network. A tree is a cycle-free connected network comprised of a subset of all the nodes, and a spanning tree links all the nodes of the network. Figure 6.2 provides examples of a tree and a spanning tree from the network in Figure 6.1.
+A path forms a cycle or a loop if it connects a node back to itself through other nodes. In Figure 6.1, arcs $\left( {2,3}\right) ,\left( {3,4}\right)$ , and $\left( {4,2}\right)$ form a cycle. ^cycle
+
+A network is said to be connected if every two distinct nodes are linked by at least one path. The network in Figure 6.1 demonstrates this type of network. ^connected
+
+A tree is a cycle-free connected network comprised of a subset of all the nodes. ^tree
+
+A spanning tree links all the nodes of the network. Figure 6.2 provides examples of a tree and a spanning tree from the network in Figure 6.1. ^spanning
 
 ![bo_d56m3tv7aajc73800n00_1_504_1561_474_219_0.jpg](bo_d56m3tv7aajc73800n00_1_504_1561_474_219_0.jpg)
 
@@ -60,11 +119,11 @@ Examples of a tree and a spanning tree
 
 ![bo_d56m3tv7aajc73800n00_1_526_1903_820_275_0.jpg](bo_d56m3tv7aajc73800n00_1_526_1903_820_275_0.jpg)
 
-## Example 6.1-1 (Bridges of Königsberg)
+## Example 6.1-1 (Bridges of Königsberg) ^konigsberg
 
 The Prussian city of Königsberg (now Kalingrad in Russia) was founded in 1254 on the banks of river Pergel with seven bridges connecting its four sections (labeled $A, B, C$ , and $D$ ) as shown in Figure 6.3. A question was raised as to whether a round-trip could be constructed to visit all four sections of the city, crossing each bridge exactly once. A section could be visited multiple times, if necessary.
 
-In the mid-eighteenth century, the famed mathematician Leonhard Euler developed a special "path construction" argument to prove that it was impossible to construct such a trip. Later, in the early nineteenth century, the same problem was solved by representing the situation as a network with nodes representing the sections and (distinct) arcs representing the bridges, as shown in Figure 6.4.
+In the mid-eighteenth century, the famed mathematician Leonhard Euler developed a special "path construction" argument to prove that it was impossible to construct such a trip. Later, in the early nineteenth century, the same problem was solved by representing the situation as a network with nodes representing the sections and (distinct) arcs representing the bridges, as shown in Figure 6.4. ^euler
 
 FIGURE 6.3
 
@@ -78,31 +137,31 @@ Network representation of Königsberg problem
 
 ![bo_d56m3tv7aajc73800n00_2_541_1558_878_567_0.jpg](bo_d56m3tv7aajc73800n00_2_541_1558_878_567_0.jpg)
 
-## Aha! Moment: It is Said that a Picture is Worth a Thousand Words!
+## Aha! Moment: It is Said that a Picture is Worth a Thousand Words! ^aha
 
 In OR, this cannot be more true than in a network model. Network representation provides, at a glance, all the information about a problem, an outstanding feature indeed. And this all happens because of the simplicity and versatility of the ensemble of nodes and arcs in modeling many real-life situations. To be sure, the Bridges of Königsberg problem was solved by Leonard Euler in the eighteenth century using lengthy logical arguments. In the process, Euler laid the foundation for the network representation of the situation (Figure 6.4) that made the answer almost intuitive. Euler's work was the seed for what is currently known as graph theory, with its present immense contribution to solving intricate real-life problems.
 
 The network representation greatly facilitates the development of almost intuitive algorithmic rules. This point of view is supported by G. Dantzig, R. Fulkerson, and S. Johnson in their 1954 seminal paper (see bibliography of Chapter 11) for solving a 49-city traveling salesman problem by hand using a network representation imposed on a map of the United States. They state, "...This [network representation] speeds up the entire iterative process, makes it easy to follow, and sometimes makes it easy to develop new restraints that are not likely to be obtained by less visual methods."
 
-### 6.2 MINIMAL SPANNING TREE ALGORITHM
+### 6.2 MINIMAL SPANNING TREE ALGORITHM ^mst
 
-The minimal spanning tree links the nodes of a network using the smallest total length of connecting branches. A typical application occurs in the pavement of roads linking towns, either directly or passing through other towns. The minimal spanning tree solution provides the most economical design of the road system.
+The minimal spanning tree links the nodes of a network using the smallest total length of connecting branches. A typical application occurs in the pavement of roads linking towns, either directly or passing through other towns. The minimal spanning tree solution provides the most economical design of the road system. ^mstgoal
 
-Let $N = \{ 1,2,\ldots , n\}$ be the set of nodes of the network and define
+Let $N = \{ 1,2,\ldots , n\}$ be the set of nodes of the network and define ^mstidea
 
-${C}_{k} =$ Set of nodes that have been permanently connected at iteration $k$
+${C}_{k} =$ Set of nodes that have been permanently connected at iteration $k$ ^mstsets
 
 ${\bar{C}}_{k} =$ Set of nodes as yet to be connected permanently after iteration $k$
 
-The following steps describe the minimal spanning tree algorithm:
+The following steps describe the minimal spanning tree algorithm: ^mststeps
 
-Step 0. Set ${C}_{0} = \varnothing$ and ${\bar{C}}_{0} = N$ .
+Step 0. Set ${C}_{0} = \varnothing$ and ${\bar{C}}_{0} = N$ . ^mststepzero
 
-Step 1. Start with any node $i$ in the unconnected set ${\bar{C}}_{0}$ and set ${C}_{1} = \{ i\}$ , rendering ${\bar{C}}_{1} = N - \{ i\}$ . Set $k = 2$ .
+Step 1. Start with any node $i$ in the unconnected set ${\bar{C}}_{0}$ and set ${C}_{1} = \{ i\}$ , rendering ${\bar{C}}_{1} = N - \{ i\}$ . Set $k = 2$ . ^mststepone
 
-General step $k$ . Select a node, ${j}^{ * }$ , in the unconnected set ${\bar{C}}_{k - 1}$ that yields the shortest arc to a node in the connected set ${C}_{k - 1}$ . Link ${j}^{ * }$ permanently to ${C}_{k - 1}$ and remove it from ${\bar{C}}_{k - 1}$ to obtain ${C}_{k}$ and ${\bar{C}}_{k}$ , respectively. Stop if ${\bar{C}}_{k}$ is empty; else, set $k = k + 1$ and repeat the step.
+General step $k$ . Select a node, ${j}^{ * }$ , in the unconnected set ${\bar{C}}_{k - 1}$ that yields the shortest arc to a node in the connected set ${C}_{k - 1}$ . Link ${j}^{ * }$ permanently to ${C}_{k - 1}$ and remove it from ${\bar{C}}_{k - 1}$ to obtain ${C}_{k}$ and ${\bar{C}}_{k}$ , respectively. Stop if ${\bar{C}}_{k}$ is empty; else, set $k = k + 1$ and repeat the step. ^mststepk
 
-Example 6.2-1
+Example 6.2-1 ^mstexample
 
 Midwest TV Cable Company is providing cable service to five new housing developments. Figure 6.5 depicts possible TV connections to the five areas, with cable miles affixed on each arc. The goal is to determine the most economical cable network.
 
@@ -116,15 +175,15 @@ The algorithm starts at node 1 (actually, any other node can be a starting point
 
 The solution is given by the minimal spanning tree shown in iteration 6 of Figure 6.6. The resulting minimum cable miles needed to provide the desired cable service are $1 + 3 + \; 4 + 3 + 5 = {16}$ miles.
 
-Remarks. In theory, a minimal spanning tree can be formulated and solved as a linear program. However, LP is not a practical option because numerous constraints must be added to exclude all cycles, resulting in a huge LP, even for small networks.
+Remarks. In theory, a minimal spanning tree can be formulated and solved as a linear program. However, LP is not a practical option because numerous constraints must be added to exclude all cycles, resulting in a huge LP, even for small networks. ^mstremark
 
-## TORA Moment
+## TORA Moment ^msttora
 
 You can use TORA to generate the iterations of the minimal spanning tree. From Main menu, select Network models $\Rightarrow$ Minimal spanning tree. Next, from SOLVE/MODIFY menu, select Solve problem $\Rightarrow$ Go to output screen. In the output screen, select a Starting node, then use Next iteration or All iterations to generate the successive iterations. You can restart the iterations by selecting a new Starting Node. File toraEx6.2-1.txt gives TORA's data for Example 6.2-1.
 
-### 6.3 SHORTEST-ROUTE PROBLEM
+### 6.3 SHORTEST-ROUTE PROBLEM ^shortest
 
-The shortest-route problem determines the shortest route between a source and destination in a transportation network. Other situations can be represented by the same model, as illustrated by the following examples.
+The shortest-route problem determines the shortest route between a source and destination in a transportation network. Other situations can be represented by the same model, as illustrated by the following examples. ^srmodel
 
 ![bo_d56m3tv7aajc73800n00_5_341_193_1184_1466_0.jpg](bo_d56m3tv7aajc73800n00_5_341_193_1184_1466_0.jpg)
 
@@ -132,9 +191,9 @@ FIGURE 6.6
 
 Solution iterations for Midwest TV Company
 
-#### 6.3.1 Examples of the Shortest-Route Applications
+#### 6.3.1 Examples of the Shortest-Route Applications ^srapplications
 
-## Example 6.3-1 (Equipment Replacement)
+## Example 6.3-1 (Equipment Replacement) ^equip
 
 RentCar is developing a replacement policy for its car fleet over a 4-year planning horizon. At the start of each year, a car is either replaced or kept in operation for an extra year. A car must be in service from 1 to 3 years. The following table provides the replacement cost as a function of the year a car is acquired and the number of years in operation.
 
@@ -144,13 +203,18 @@ FIGURE 6.7
 
 Equipment replacement problem as a shortest-route model
 
-<table><tr><td rowspan="2">Equipment acquired at start of year</td><td colspan="3">Replacement cost (\$) for given years in operation</td></tr><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>1</td><td>4000</td><td>5400</td><td>9800</td></tr><tr><td>2</td><td>4300</td><td>6200</td><td>8700</td></tr><tr><td>3</td><td>4800</td><td>7100</td><td>-</td></tr><tr><td>4</td><td>4900</td><td>-</td><td>-</td></tr></table>
+| Equipment acquired at start of year | 1 year | 2 years | 3 years |
+| --- | --- | --- | --- |
+| 1 | 4000 | 5400 | 9800 |
+| 2 | 4300 | 6200 | 8700 |
+| 3 | 4800 | 7100 | - |
+| 4 | 4900 | - | - |
 
 The problem can be formulated as a network in which nodes 1 to 5 represent the start of years 1 to 5. Arcs from node 1 (year 1) can reach nodes 2, 3, and 4 because a car must be in operation from 1 to 3 years. The arcs from the other nodes can be interpreted similarly. The length of each arc equals the replacement cost. The solution of the problem is equivalent to finding the shortest route between nodes 1 and 5.
 
 Figure 6.7 shows the resulting network. Using TORA, ${}^{1}$ the shortest route is $1 \rightarrow  3 \rightarrow  5$ . The solution says that a car acquired at the start of year 1 (node 1) must be replaced after 2 years at the start of year 3 (node 3). The replacement car will then be kept in service until the end of year 4. The total cost of this replacement policy is $\$ {12},{500}\left( { = \$ 5,{400} + \$ 7,{100}}\right)$ .
 
-## Example 6.3-2 (Most Reliable Route)
+## Example 6.3-2 (Most Reliable Route) ^reliable
 
 I. Q. Smart drives daily to work. Having just completed a course in network analysis, Smart is able to determine the shortest route to work. Unfortunately, the selected route is heavily patrolled by police, and with all the fines paid for speeding, the shortest route may not be the best choice. Smart has thus decided to choose a route that maximizes the probability of not being stopped by police.
 
@@ -174,13 +238,13 @@ FIGURE 6.9
 
 Most-reliable-route representation as a shortest-route model
 
-The problem can be formulated as a shortest-route model by using logarithmic transformation to convert the product probability into the sum of the logarithms of probabilities - that is, ${p}_{1k} = {p}_{1} \times  {p}_{2} \times  \ldots  \times  {p}_{k}$ is transformed to $\log {p}_{1k} = \log {p}_{1} + \log {p}_{2} + \ldots  + \log {p}_{k}$ .
+The problem can be formulated as a shortest-route model by using logarithmic transformation to convert the product probability into the sum of the logarithms of probabilities - that is, ${p}_{1k} = {p}_{1} \times  {p}_{2} \times  \ldots  \times  {p}_{k}$ is transformed to $\log {p}_{1k} = \log {p}_{1} + \log {p}_{2} + \ldots  + \log {p}_{k}$ . ^logtransform
 
 The two functions ${p}_{1k}$ and $\log {p}_{1k}$ are both monotone decreasing in $k$ ; thus maximizing ${p}_{1k}$ is equivalent to maximizing $\log {p}_{1k}$ , which in turn is equivalent to minimizing $- \log {p}_{1k}$ . Thus, replacing ${p}_{j}$ with $- \log {p}_{j}$ for all $j$ in the network, the problem is converted to the shortest-route network in Figure 6.9.
 
 Using TORA, the shortest route in Figure 6.9 passes through nodes 1, 3, 5, and 7 with a corresponding "length" of 1.1707, or $\log {p}_{17} =  - {1.1707}$ . Thus, the maximum probability of not being stopped is ${p}_{17} = {10}^{-{1.1707}} = {.0675}$ , not a very encouraging news for Smart!
 
-## Example 6.3-3 (Three-Jug Puzzle)
+## Example 6.3-3 (Three-Jug Puzzle) ^jug
 
 An 8-gallon jug is filled with fluid. Given two empty 5- and 3-gallon jugs, divide the 8 gallons of fluid into two equal parts using only the three jugs. What is the smallest number of transfers (decantations) needed to achieve this result?
 
@@ -198,7 +262,7 @@ Three-jug puzzle representation as a shortest-route model
 
 The optimal solution, given by the bottom path in Figure 6.10, requires 7 decantations.
 
-#### 6.3.2 Shortest-Route Algorithms
+#### 6.3.2 Shortest-Route Algorithms ^sralgos
 
 This section presents two algorithms for solving both cyclic (i.e., containing loops) and acyclic networks:
 
@@ -208,7 +272,7 @@ This section presents two algorithms for solving both cyclic (i.e., containing l
 
 Essentially, Floyd's algorithm subsumes Dijkstra's.
 
-Dijkstra’s algorithm. Let ${u}_{i}$ be the shortest distance from source node 1 to node $i$ , and define ${d}_{ij}\left( { \geq  0}\right)$ as the length of arc $\left( {i, j}\right)$ . The algorithm defines the label for an immediately succeeding node $j$ as
+Dijkstra’s algorithm. Let ${u}_{i}$ be the shortest distance from source node 1 to node $i$ , and define ${d}_{ij}\left( { \geq  0}\right)$ as the length of arc $\left( {i, j}\right)$ . The algorithm defines the label for an immediately succeeding node $j$ as ^dijkstra
 
 $$
 \left\lbrack  {{u}_{j}, i}\right\rbrack   = \left\lbrack  {{u}_{i} + {d}_{ij}, i}\right\rbrack  ,{d}_{ij} \geq  0
@@ -232,13 +296,23 @@ Iteration 0. Assign the permanent label $\left\lbrack  {0, - }\right\rbrack$ to 
 
 Iteration 1. Nodes 2 and 3 can be reached from (the last permanently labeled) node 1. Thus, the list of labeled nodes (temporary and permanent) becomes
 
-<table><tr><td>Node</td><td>Label</td><td>Status</td></tr><tr><td>1</td><td>[0,-]</td><td>Permanent</td></tr><tr><td>2</td><td>$\left\lbrack  {0 + {100},1}\right\rbrack   = \left\lbrack  {{100},1}\right\rbrack$</td><td>Temporary</td></tr><tr><td>3</td><td>$\left\lbrack  {0 + {30},1}\right\rbrack   = \left\lbrack  {{30},1}\right\rbrack$</td><td>Temporary</td></tr></table>
+| Node | Label | Status |
+| --- | --- | --- |
+| 1 | [0,-] | Permanent |
+| 2 | $\left\lbrack  {0 + {100},1}\right\rbrack   = \left\lbrack  {{100},1}\right\rbrack$ | Temporary |
+| 3 | $\left\lbrack  {0 + {30},1}\right\rbrack   = \left\lbrack  {{30},1}\right\rbrack$ | Temporary |
 
 For the two temporary labels $\left\lbrack  {{100},1}\right\rbrack$ and $\left\lbrack  {{30},1}\right\rbrack$ , node 3 yields the smaller distance $\left( {{u}_{3} = {30}}\right)$ . Thus, the status of node 3 is changed to permanent.
 
 eration 2. Nodes 4 and 5 can be reached from node 3, and the list of labeled nodes becomes
 
-<table><tr><td>Node</td><td>Label</td><td>Status</td></tr><tr><td>1</td><td>$\left\lbrack  {0, - }\right\rbrack$</td><td>Permanent</td></tr><tr><td>2</td><td>[100, 1]</td><td>Temporary</td></tr><tr><td>3</td><td>[30, 1]</td><td>Permanent</td></tr><tr><td>4</td><td>$\left\lbrack  {{30} + {10},3}\right\rbrack   = \left\lbrack  {{40},3}\right\rbrack$</td><td>Temporary</td></tr><tr><td>5</td><td>$\left\lbrack  {{30} + {60},3}\right\rbrack   = \left\lbrack  {{90},3}\right\rbrack$</td><td>Temporary</td></tr></table>
+| Node | Label                                                                                | Status    |
+| ---- | ------------------------------------------------------------------------------------ | --------- |
+| 1    | $\left\lbrack  {0, - }\right\rbrack$                                                 | Permanent |
+| 2    | [100, 1]                                                                             | Temporary |
+| 3    | [30, 1]                                                                              | Permanent |
+| 4    | $\left\lbrack  {{30} + {10},3}\right\rbrack   = \left\lbrack  {{40},3}\right\rbrack$ | Temporary |
+| 5    | $\left\lbrack  {{30} + {60},3}\right\rbrack   = \left\lbrack  {{90},3}\right\rbrack$ | Temporary |
 
 Temporary label $\left\lbrack  {{40},3}\right\rbrack$ at node 4 is now permanent $\left( {{u}_{4} = {40}}\right)$ .
 
@@ -250,7 +324,13 @@ Network Example for Dijkstra's shortest-route algorithm
 
 Iteration 3. Nodes 2 and 5 can be reached from node 4. Thus, the list of labeled nodes is updated as
 
-<table><tr><td>Node</td><td>Label</td><td>Status</td></tr><tr><td>1</td><td>$\left\lbrack  {0, - }\right\rbrack$</td><td>Permanent</td></tr><tr><td>2</td><td>$\left\lbrack  {{40} + {15},4}\right\rbrack   = \left\lbrack  {{55},4}\right\rbrack$</td><td>Temporary</td></tr><tr><td>3</td><td>$\left\lbrack  {{30},1}\right\rbrack$</td><td>Permanent</td></tr><tr><td>4</td><td>[40, 3]</td><td>Permanent</td></tr><tr><td>5</td><td>[90, 3] or</td><td></td></tr><tr><td></td><td>$\left\lbrack  {{40} + {50},4}\right\rbrack   = \left\lbrack  {{90},4}\right\rbrack$</td><td>Temporary</td></tr></table>
+| Node | Label | Status |
+| --- | --- | --- |
+| 1 | $\left\lbrack  {0, - }\right\rbrack$ | Permanent |
+| 2 | $\left\lbrack  {{40} + {15},4}\right\rbrack   = \left\lbrack  {{55},4}\right\rbrack$ | Temporary |
+| 3 | $\left\lbrack  {{30},1}\right\rbrack$ | Permanent |
+| 4 | [40, 3] | Permanent |
+| 5 | [90, 3] or<br>$\left\lbrack  {{40} + {50},4}\right\rbrack   = \left\lbrack  {{90},4}\right\rbrack$ | Temporary |
 
 At node 2, the new label $\left\lbrack  {{55},4}\right\rbrack$ replaces the temporary label $\left\lbrack  {{100},1}\right\rbrack$ from iteration 1 because it provides a shorter route. Also, in iteration 3, node 5 has two alternative labels with the same distance $\left( {{u}_{5} = {90}}\right)$ . Temporary label $\left\lbrack  {{55},4}\right\rbrack$ at node 2 is now permanent $\left( {{u}_{2} = {55}}\right)$ .
 
@@ -284,7 +364,7 @@ TORA Moment
 
 TORA can be used to generate Dijkstra's iterations. From SOLVE/MODIFY menu, select Solve problem $\Rightarrow$ Iterations $\Rightarrow$ Dijkstra’s algorithm. File toraEx6.3-4.txt provides TORA’s data for Example 6.3-4.
 
-Floyd's algorithm. Floyd's algorithm is more general than Dijkstra's because it determines the shortest route between any two nodes in the network. The algorithm represents an $n$ -node network as a square matrix with $n$ rows and $n$ columns. Entry $\left( {i, j}\right)$ of the matrix gives the distance ${d}_{ij}$ from node $i$ to node $j$ , which is finite if $i$ is linked directly to $j$ , and infinite otherwise.
+Floyd's algorithm. Floyd's algorithm is more general than Dijkstra's because it determines the shortest route between any two nodes in the network. The algorithm represents an $n$ -node network as a square matrix with $n$ rows and $n$ columns. Entry $\left( {i, j}\right)$ of the matrix gives the distance ${d}_{ij}$ from node $i$ to node $j$ , which is finite if $i$ is linked directly to $j$ , and infinite otherwise. ^floyd
 
 The idea of Floyd’s algorithm is straightforward. Given three nodes $i, j$ , and $k$ in Figure 6.13 with the connecting distances shown on the three arcs, it is shorter to reach $j$ from $i$ passing through $k$ if
 
@@ -296,7 +376,14 @@ In this case, it is optimal to replace the direct route from $i \rightarrow  j$ 
 
 Step 0. Define the starting distance matrix ${D}_{0}$ and node sequence matrix ${S}_{0}$ (all diagonal elements are blocked). Set $k = 1$ .
 
-<table><tr><td></td><td>1</td><td>2</td><td>...</td><td>$j$</td><td>...</td><td>$n$</td></tr><tr><td>1</td><td>-</td><td>${d}_{12}$</td><td>...</td><td>${d}_{ij}$</td><td>...</td><td>${d}_{1n}$</td></tr><tr><td>2</td><td>${d}_{21}$</td><td>-</td><td>...</td><td>${d}_{2j}$</td><td>...</td><td>${d}_{2n}$</td></tr><tr><td>$\vdots$</td><td>:</td><td>:</td><td>:</td><td>$\vdots$</td><td>$\vdots$</td><td>:</td></tr><tr><td>${D}_{0} = I$</td><td>${d}_{i1}$</td><td>${d}_{i2}$</td><td>...</td><td>${d}_{ij}$</td><td>...</td><td>${d}_{in}$</td></tr><tr><td>:</td><td>$\vdots$</td><td>$\vdots$</td><td>:</td><td>:</td><td>$\vdots$</td><td>:</td></tr><tr><td>$N$</td><td>${D}_{n1}$</td><td>${d}_{n2}$</td><td>...</td><td>${d}_{nj}$</td><td>...</td><td>-</td></tr></table>
+|  | 1 | 2 | ... | $j$ | ... | $n$ |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | - | ${d}_{12}$ | ... | ${d}_{ij}$ | ... | ${d}_{1n}$ |
+| 2 | ${d}_{21}$ | - | ... | ${d}_{2j}$ | ... | ${d}_{2n}$ |
+| $\vdots$ | : | : | : | $\vdots$ | $\vdots$ | : |
+| ${D}_{0} = I$ | ${d}_{i1}$ | ${d}_{i2}$ | ... | ${d}_{ij}$ | ... | ${d}_{in}$ |
+| : | $\vdots$ | $\vdots$ | : | : | $\vdots$ | : |
+| $N$ | ${D}_{n1}$ | ${d}_{n2}$ | ... | ${d}_{nj}$ | ... | - |
 
 1 2 ... $j$ ... $n$
 
@@ -352,7 +439,13 @@ Iteration 0. The matrices ${D}_{0}$ and ${S}_{0}$ give the initial representatio
 
 ${D}_{0} \; {S}_{0}$
 
-<table><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>-</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>-</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>2</td><td>-</td><td>4</td><td>5</td></tr><tr><td>1</td><td>2</td><td>3</td><td>-</td><td>5</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>-</td></tr></table>
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 2 | 3 | 4 | 5 |
+| 2 | 1 | - | 3 | 4 | 5 |
+| 3 | 1 | 2 | - | 4 | 5 |
+| 4 | 1 | 2 | 3 | - | 5 |
+| 5 | 1 | 2 | 3 | 4 | - |
 
 1 2 3 4 5
 
@@ -374,9 +467,25 @@ Set $k = 1$ . The pivot row and column are shown by the lightly shaded first row
 
 These changes are shown in bold in matrices ${D}_{1}$ and ${S}_{1}$ .
 
-<table><tr><td colspan="5">S1</td></tr><tr><td>1</td><td>2</td><td></td><td>4</td><td>5</td></tr><tr><td>-</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>-</td><td>1</td><td>4</td><td>5</td></tr><tr><td>1</td><td>1</td><td>-</td><td>4</td><td>5</td></tr><tr><td>1</td><td>2</td><td>3</td><td>-</td><td>5</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>-</td></tr></table>
+${S}_{1}$
 
-<table><tr><td colspan="6">${D}_{1}$</td></tr><tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>-</td><td>3</td><td>10</td><td>00</td><td>00</td></tr><tr><td>2</td><td>3</td><td>-</td><td>13</td><td>5</td><td>10</td></tr><tr><td>3</td><td>10</td><td>13</td><td>-</td><td>6</td><td>15</td></tr><tr><td>4</td><td>$\infty$</td><td>5</td><td>6</td><td>-</td><td>4</td></tr><tr><td>5</td><td>$\infty$</td><td>$\infty$</td><td>$\infty$</td><td>4</td><td>-</td></tr></table>
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 2 | 3 | 4 | 5 |
+| 2 | 1 | - | 1 | 4 | 5 |
+| 3 | 1 | 1 | - | 4 | 5 |
+| 4 | 1 | 2 | 3 | - | 5 |
+| 5 | 1 | 2 | 3 | 4 | - |
+
+${D}_{1}$
+
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 3 | 10 | 00 | 00 |
+| 2 | 3 | - | 13 | 5 | 10 |
+| 3 | 10 | 13 | - | 6 | 15 |
+| 4 | $\infty$ | 5 | 6 | - | 4 |
+| 5 | $\infty$ | $\infty$ | $\infty$ | 4 | - |
 
 1
 
@@ -390,9 +499,25 @@ These changes are shown in bold in matrices ${D}_{1}$ and ${S}_{1}$ .
 
 Iteration 2. Set $k = 2$ , as shown by the lightly shaded row and column in ${D}_{1}$ . The triple operation is applied to the darker cells in ${D}_{1}$ and ${S}_{1}$ . The resulting changes are shown in bold in ${D}_{2}$ and ${S}_{2}$ .
 
-<table><tr><td colspan="6">${D}_{2}$</td></tr><tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>-</td><td>3</td><td>10</td><td>8</td><td>00</td></tr><tr><td>2</td><td>3</td><td>-</td><td>13</td><td>5</td><td>00</td></tr><tr><td>3</td><td>10</td><td>13</td><td>-</td><td>6</td><td>15</td></tr><tr><td>4</td><td>8</td><td>5</td><td>6</td><td>-</td><td>4</td></tr><tr><td>5</td><td>00</td><td>$\infty$</td><td>00</td><td>4</td><td>-</td></tr></table>
+${D}_{2}$
 
-<table><tr><td colspan="6">${S}_{2}$</td></tr><tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td></td><td>-</td><td>2</td><td>3</td><td>2</td><td>5</td></tr><tr><td></td><td>1</td><td>-</td><td>1</td><td>4</td><td>5</td></tr><tr><td></td><td>1</td><td>1</td><td>-</td><td>4</td><td>5</td></tr><tr><td></td><td>2</td><td>2</td><td>3</td><td>-</td><td>5</td></tr><tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>-</td></tr></table>
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 3 | 10 | 8 | 00 |
+| 2 | 3 | - | 13 | 5 | 00 |
+| 3 | 10 | 13 | - | 6 | 15 |
+| 4 | 8 | 5 | 6 | - | 4 |
+| 5 | 00 | $\infty$ | 00 | 4 | - |
+
+${S}_{2}$
+
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 2 | 3 | 2 | 5 |
+| 2 | 1 | - | 1 | 4 | 5 |
+| 3 | 1 | 1 | - | 4 | 5 |
+| 4 | 2 | 2 | 3 | - | 5 |
+| 5 | 1 | 2 | 3 | 4 | - |
 
 Iteration 3. Set $k = 3$ , as shown by the shaded row and column in ${D}_{2}$ . The new matrices are given by ${D}_{3}$ and ${S}_{3}$ .
 
@@ -400,7 +525,25 @@ Iteration 3. Set $k = 3$ , as shown by the shaded row and column in ${D}_{2}$ . 
 
 tion 4. Set $k = 4$ , as shown by the shaded row and column in ${D}_{3}$ . The new matrices are given by ${D}_{4}$ and ${S}_{4}$ .
 
-<table><tr><td colspan="6">${D}_{4}$</td><td colspan="6">${S}_{4}$</td></tr><tr><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><td>1</td><td>-</td><td>3</td><td>10</td><td>8</td><td>12</td><td>1</td><td>-</td><td>2</td><td>3</td><td>2</td><td>4</td></tr><tr><td>2</td><td>3</td><td>-</td><td>11</td><td>5</td><td>9</td><td>2</td><td>1</td><td>-</td><td>4</td><td>4</td><td>4</td></tr><tr><td>3</td><td>10</td><td>11</td><td>-</td><td>6</td><td>10</td><td>3</td><td>1</td><td>4</td><td>-</td><td>4</td><td>4</td></tr><tr><td>4</td><td>8</td><td>5</td><td>6</td><td>-</td><td>4</td><td>4</td><td>2</td><td>2</td><td>3</td><td>-</td><td>5</td></tr><tr><td>5</td><td>12</td><td>9</td><td>10</td><td>4</td><td>-</td><td>5</td><td>4</td><td>4</td><td>4</td><td>4</td><td>-</td></tr></table>
+${D}_{4}$
+
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 3 | 10 | 8 | 12 |
+| 2 | 3 | - | 11 | 5 | 9 |
+| 3 | 10 | 11 | - | 6 | 10 |
+| 4 | 8 | 5 | 6 | - | 4 |
+| 5 | 12 | 9 | 10 | 4 | - |
+
+${S}_{4}$
+
+|  | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | - | 2 | 3 | 2 | 4 |
+| 2 | 1 | - | 4 | 4 | 4 |
+| 3 | 1 | 4 | - | 4 | 4 |
+| 4 | 2 | 2 | 3 | - | 5 |
+| 5 | 4 | 4 | 4 | 4 | - |
 
 Iteration 5. Set $k = 5$ , as shown by the shaded row and column in ${D}_{4}$ . No further improvements are possible in this iteration.
 
@@ -410,7 +553,7 @@ The final matrices ${D}_{4}$ and ${S}_{4}$ contain all the information needed to
 
 As in Dijkstra's algorithm, TORA can be used to generate Floyd's iterations. From SOLVE/ MODIFY menu, select Solve problem $\Rightarrow$ Iterations $\Rightarrow$ Floyd’s algorithm. File toraEx6.3-5.txt provides TORA's data for Example 6.3-5.
 
-#### 6.3.3 Linear Programming Formulation of the Shortest-Route Problem
+#### 6.3.3 Linear Programming Formulation of the Shortest-Route Problem ^srlp
 
 This section provides an LP model for the shortest-route problem. The model is general in the sense that it can be used to find the shortest route between any two nodes in the network. In this regard, it is equivalent to Floyd's algorithm.
 
@@ -478,7 +621,14 @@ Insertion of unit flow to determine shortest route between node $s = 1$ and node
 
 The complete LP can be expressed as
 
-<table><tr><td></td><td>${x}_{12}$</td><td>${x}_{13}$</td><td>${x}_{23}$</td><td>${x}_{34}$</td><td>${x}_{35}$</td><td>${x}_{42}$</td><td>${x}_{45}$</td><td></td></tr><tr><td>Minimize $z =$</td><td>100</td><td>30</td><td>20</td><td>10</td><td>60</td><td>15</td><td>50</td><td></td></tr><tr><td>Node 1</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td><td></td><td>$=$ 1</td></tr><tr><td>Node 2</td><td>-1</td><td></td><td>1</td><td></td><td></td><td>-1</td><td></td><td>$=$ -1</td></tr><tr><td>Node 3</td><td></td><td>-1</td><td>-1</td><td>1</td><td>1</td><td></td><td></td><td>$=$ 0</td></tr><tr><td>Node 4</td><td></td><td></td><td></td><td>-1</td><td></td><td>1</td><td>1</td><td>$=$ 0</td></tr><tr><td>Node 5</td><td></td><td></td><td></td><td></td><td>-1</td><td></td><td>-1</td><td>$=$ 0</td></tr></table>
+|  | ${x}_{12}$ | ${x}_{13}$ | ${x}_{23}$ | ${x}_{34}$ | ${x}_{35}$ | ${x}_{42}$ | ${x}_{45}$ | RHS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Minimize $z =$ | 100 | 30 | 20 | 10 | 60 | 15 | 50 |  |
+| Node 1 | 1 | 1 |  |  |  |  |  | $= 1$ |
+| Node 2 | -1 |  | 1 |  |  | -1 |  | $= -1$ |
+| Node 3 |  | -1 | -1 | 1 | 1 |  |  | $= 0$ |
+| Node 4 |  |  |  | -1 |  | 1 | 1 | $= 0$ |
+| Node 5 |  |  |  |  | -1 |  | -1 | $= 0$ |
 
 Notice that column ${x}_{ij}$ has exactly one " 1 " in row $i$ and one " -1 " in row $j$ , a typical property of a network LP. Notice also that by examining the network, node 5 and its incoming arcs can be deleted altogether; meaning that node 5 constraint and the variables ${x}_{35}$ and ${x}_{45}$ can be removed from the LP. Of course, the given LP is sufficiently "smart" to yield ${x}_{35} = {x}_{45} = 0$ in the optimum solution.
 
@@ -492,7 +642,7 @@ This solution gives the shortest route from node 1 to node 2 as $1 \rightarrow  
 
 Remarks. The linear programming formulation is versatile in that the model can be modified to locate the shortest route between any two nodes, simply changing the location of "1" and "-1" in the right-hand side to correspond to the start and end nodes, respectively. Of course, the network in Figure 6.16 is directed, allowing one-directional flow only, and hence may result in infeasibility for certain start-end node selections (e.g., start at node 5 and end at node 1). The situation can be rectified by adding new variables to represent the new routes.
 
-## Solver Moment
+## Solver Moment ^srsolver
 
 Figure 6.17 provides the Excel Solver spreadsheet for finding the shortest route between start node N1 and end node N2 of Example 6.3-6 (file solverEx6.3-6.xls). The input data of the model is the distance matrix in cells B3:E6. Node N1 has no column because it has no incoming arcs, and node N5 has no row because it has no outgoing arcs. An empty cell represents a nonexisting route segment (i.e., infinite length arc). (We will see shortly how the blank cell provision is recognized in the spreadsheet formulas.) Nodes N1 and N2 are designated as the start and end nodes by entering 1 in F3 and B7, respectively. These designations can be changed as desired. For example, to find the shortest route from node N2 to node N4, enter 1 in each of F4 and D7.
 
@@ -558,13 +708,13 @@ The spreadsheet is now ready for the application of Solver as shown in Figure 6.
 
 Remarks. In most textbooks, the network is defined by its explicit arcs as (node $i$ , node $j$ , distance), a cumbersome modeling representation particularly when the number of arcs is large. Our model is driven by the compact distance matrix (B3:E6) and its external flows (E3:E6 and B7:E7). It may be argued, however, that our model could deal with a much larger number of variables. For instance, Example 6.3-6 has 7 arcs and hence 7 variables, as opposed to $4 \times  4 = {16}$ variables in our formulation. Keep in mind that, by using SUMIF, the flow constraints are exactly the same as in other presentations. This means that the additional 9 variables appear only in the objective function and with zero coefficients (blank entries in B3:E6). Pre-solvers in commercial software will spot this "oddity" and automatically exclude the additional variables from the objective function prior to solving the problem, thus rendering the same model as in other presentations.
 
-## AMPL Moment
+## AMPL Moment ^srampl
 
 File amplEx6.3-6a.txt provides the AMPL model for solving Example 6.3-6. The model is general in the sense that it can be used to find the shortest route between any two nodes in a problem of any size. Explanation of the model is given in Section C. 9 on the website.
 
-### 6.4 MAXIMAL FLOW MODEL
+### 6.4 MAXIMAL FLOW MODEL ^maxflow
 
-Consider a network of pipelines that transports crude oil from oil wells to refineries. Intermediate booster and pumping stations are installed at appropriate design distances to move the crude in the network. Each pipe segment has a finite discharge rate (or capacity) of crude flow. A pipe segment may be uni- or bidirectional, depending on its design. Figure 6.18 demonstrates a typical pipeline network. The goal is to determine the maximum flow capacity of the network.
+Consider a network of pipelines that transports crude oil from oil wells to refineries. Intermediate booster and pumping stations are installed at appropriate design distances to move the crude in the network. Each pipe segment has a finite discharge rate (or capacity) of crude flow. A pipe segment may be uni- or bidirectional, depending on its design. Figure 6.18 demonstrates a typical pipeline network. The goal is to determine the maximum flow capacity of the network. ^mfmotivation
 
 ---
 
@@ -588,7 +738,7 @@ The solution of the proposed problem requires adding a single source and a singl
 
 For arc $\left( {i, j}\right)$ , the notation $\left( {{C}_{ij},{C}_{ji}}\right)$ gives the flow capacities in the two directions $i \rightarrow  j$ and $j \rightarrow  i$ . To eliminate ambiguity, we place ${C}_{ij}$ next to node $i$ and ${C}_{ji}$ next to node $j$ , as shown in Figure 6.19.
 
-#### 6.4.1 Enumeration of Cuts
+#### 6.4.1 Enumeration of Cuts ^cuts
 
 A cut defines a set of arcs whose removal from the network disrupts flow between the source and sink nodes. The cut capacity equals the sum of the capacities of its set of arcs. Among all possible cuts in the network, the cut with the smallest capacity is the bottleneck that determines the maximum flow in the network.
 
@@ -598,7 +748,11 @@ Consider the network in Figure 6.20. The bidirectional capacities are shown on t
 
 Figure 6.20 illustrates three cuts with the following capacities:
 
-<table><tr><td>Cut</td><td>Associated arcs</td><td>Capacity</td></tr><tr><td>1</td><td>$\left( {1,2}\right) ,\left( {1,3}\right) ,\left( {1,4}\right)$</td><td>${20} + {30} + {10} = {60}$</td></tr><tr><td>2</td><td>$\left( {1,3}\right) ,\left( {1,4}\right) ,\left( {2,3}\right) ,\left( {2,5}\right)$</td><td>${30} + {10} + {40} + {30} = {110}$</td></tr><tr><td>3</td><td>$\left( {2,5}\right) ,\left( {3,5}\right) ,\left( {4,5}\right)$</td><td>${30} + {20} + {20} = {70}$</td></tr></table>
+| Cut | Associated arcs | Capacity |
+| --- | --- | --- |
+| 1 | $\left( {1,2}\right) ,\left( {1,3}\right) ,\left( {1,4}\right)$ | ${20} + {30} + {10} = {60}$ |
+| 2 | $\left( {1,3}\right) ,\left( {1,4}\right) ,\left( {2,3}\right) ,\left( {2,5}\right)$ | ${30} + {10} + {40} + {30} = {110}$ |
+| 3 | $\left( {2,5}\right) ,\left( {3,5}\right) ,\left( {4,5}\right)$ | ${30} + {20} + {20} = {70}$ |
 
 The only information from the three cuts is that the maximum flow in the network cannot exceed 60 units. To determine the maximum flow, it is necessary to enumerate all the cuts, a difficult task for the general network. Thus, the need for an efficient algorithm is imperative.
 
@@ -608,7 +762,7 @@ FIGURE 6.20
 
 Examples of cuts in flow networks
 
-#### 6.4.2 Maximal Flow Algorithm
+#### 6.4.2 Maximal Flow Algorithm ^mfalgos
 
 The maximal flow algorithm is based on finding breakthrough paths with positive flow between the source and sink nodes. Each path commits part or all of the capacities of its arcs to the total flow in the network.
 
@@ -776,13 +930,23 @@ All the arcs out of node 1 have zero residuals. Hence, no further breakthroughs 
 
 Step 6. Maximal flow in the network is $F = {f}_{1} + {f}_{2} + \ldots  + {f}_{5} = {20} + {10} + {10} + {10} + \; {10} = {60}$ units. The flow in the individual arcs is computed by subtracting the last residuals $\left( {{c}_{ij},{c}_{ji}}\right)$ in iteration 6 from the design capacities $\left( {{C}_{ij},{C}_{ji}}\right)$ , as the following table shows:
 
-<table><tr><td>Arc</td><td>$\left( {{C}_{ij},{C}_{ji}}\right)  - {\left( {c}_{ij},{c}_{ji}\right) }_{6}$</td><td>Flow amount</td><td>Direction</td></tr><tr><td>(1,2)</td><td>$\left( {{20},0}\right)  - \left( {0,{20}}\right)  = \left( {{20}, - {20}}\right)$</td><td>20</td><td>$1 \rightarrow  2$</td></tr><tr><td>(1,3)</td><td>$\left( {{30},0}\right)  - \left( {0,{30}}\right)  = \left( {{30}, - {30}}\right)$</td><td>30</td><td>$1 \rightarrow  3$</td></tr><tr><td>(1,4)</td><td>$\left( {{10},0}\right)  - \left( {0,{10}}\right)  = \left( {{10}, - {10}}\right)$</td><td>10</td><td>$1 \rightarrow  4$</td></tr><tr><td>(2,3)</td><td>$\left( {{40},0}\right)  - \left( {{40},0}\right)  = \left( {0,0}\right)$</td><td>0</td><td>-</td></tr><tr><td>(2,5)</td><td>$\left( {{30},0}\right)  - \left( {{10},{20}}\right)  = \left( {{20}, - {20}}\right)$</td><td>20</td><td>$2 \rightarrow  5$</td></tr><tr><td>(3, 4)</td><td>$\left( {{10},5}\right)  - \left( {0,{15}}\right)  = \left( {{10}, - {10}}\right)$</td><td>10</td><td>$3 \rightarrow  4$</td></tr><tr><td>(3, 5)</td><td>$\left( {{20},0}\right)  - \left( {0,{20}}\right)  = \left( {{20}, - {20}}\right)$</td><td>20</td><td>$3 \rightarrow  5$</td></tr><tr><td>(4,3)</td><td>$\left( {5,{10}}\right)  - \left( {{15},0}\right)  = \left( {-{10},{10}}\right)$</td><td>0</td><td>-</td></tr><tr><td>(4,5)</td><td>$\left( {{20},0}\right)  - \left( {0,{20}}\right)  = \left( {{20}, - {20}}\right)$</td><td>20</td><td>$4 \rightarrow  5$</td></tr></table>
+| Arc | $\left( {{C}_{ij},{C}_{ji}}\right)  - {\left( {c}_{ij},{c}_{ji}\right) }_{6}$ | Flow amount | Direction |
+| --- | --- | --- | --- |
+| (1,2) | $\left( {{20},0}\right)  - \left( {0,{20}}\right)  = \left( {{20}, - {20}}\right)$ | 20 | $1 \rightarrow  2$ |
+| (1,3) | $\left( {{30},0}\right)  - \left( {0,{30}}\right)  = \left( {{30}, - {30}}\right)$ | 30 | $1 \rightarrow  3$ |
+| (1,4) | $\left( {{10},0}\right)  - \left( {0,{10}}\right)  = \left( {{10}, - {10}}\right)$ | 10 | $1 \rightarrow  4$ |
+| (2,3) | $\left( {{40},0}\right)  - \left( {{40},0}\right)  = \left( {0,0}\right)$ | 0 | - |
+| (2,5) | $\left( {{30},0}\right)  - \left( {{10},{20}}\right)  = \left( {{20}, - {20}}\right)$ | 20 | $2 \rightarrow  5$ |
+| (3, 4) | $\left( {{10},5}\right)  - \left( {0,{15}}\right)  = \left( {{10}, - {10}}\right)$ | 10 | $3 \rightarrow  4$ |
+| (3, 5) | $\left( {{20},0}\right)  - \left( {0,{20}}\right)  = \left( {{20}, - {20}}\right)$ | 20 | $3 \rightarrow  5$ |
+| (4,3) | $\left( {5,{10}}\right)  - \left( {{15},0}\right)  = \left( {-{10},{10}}\right)$ | 0 | - |
+| (4,5) | $\left( {{20},0}\right)  - \left( {0,{20}}\right)  = \left( {{20}, - {20}}\right)$ | 20 | $4 \rightarrow  5$ |
 
 ## TORA Moment
 
 You can use TORA to solve the maximal flow model in an automated mode or one iteration at a time. From the SOLVE/MODIFY menu, select Solve Problem. After specifying the output format, go to the output screen and select either Maximum Flows or Iterations. File toraEx6.4-2. txt provides TORA's data for Example 6.4-2.
 
-#### 6.4.3 Linear Programming Formulation of Maximal Flow Mode
+#### 6.4.3 Linear Programming Formulation of Maximal Flow Mode ^mflp
 
 Define ${x}_{ij}$ as the amount of flow in arc $\left( {i, j}\right)$ with capacity ${C}_{ij}$ . The objective is to determine ${x}_{ij}$ for all $i$ and $j$ that maximizes the flow between start node $s$ and terminal node $t$ subject to flow restrictions (input flow = output flow) at all but nodes $s$ and $t$ .
 
@@ -790,7 +954,13 @@ Define ${x}_{ij}$ as the amount of flow in arc $\left( {i, j}\right)$ with capac
 
 In the maximal flow model of Figure 6.22 (Example 6.4-2), $s = 1$ and $t = 5$ . The following table summarizes the associated LP with two different, but equivalent, objective functions depending on whether we maximize the output from start node $1\left( { = {z}_{1}}\right)$ or the input to terminal node $5\left( { = {z}_{2}}\right)$ .
 
-<table><tr><td></td><td>${x}_{12}$</td><td>${x}_{13}$</td><td>${x}_{14}$</td><td>${x}_{23}$</td><td>${x}_{25}$</td><td>${x}_{34}$</td><td>${x}_{35}$</td><td>${x}_{43}$</td><td>${x}_{45}$</td><td></td></tr><tr><td>Maximize ${z}_{1} =$ <br> Maximize ${z}_{2} =$</td><td>1</td><td>1</td><td>1</td><td></td><td>1</td><td></td><td>1</td><td></td><td>1</td><td></td></tr><tr><td>Node 2</td><td>1</td><td></td><td></td><td>-1</td><td>-1</td><td></td><td></td><td></td><td></td><td>$= 0$</td></tr><tr><td>Node 3</td><td></td><td>1</td><td></td><td>1</td><td></td><td>-1</td><td>-1</td><td>1</td><td></td><td>$= 0$</td></tr><tr><td>Node 4</td><td></td><td></td><td>1</td><td></td><td></td><td>1</td><td></td><td>-1</td><td>-1</td><td>$= 0$</td></tr><tr><td>Capacity</td><td>20</td><td>30</td><td>10</td><td>40</td><td>30</td><td>10</td><td>20</td><td>5</td><td>20</td><td></td></tr></table>
+|  | ${x}_{12}$ | ${x}_{13}$ | ${x}_{14}$ | ${x}_{23}$ | ${x}_{25}$ | ${x}_{34}$ | ${x}_{35}$ | ${x}_{43}$ | ${x}_{45}$ | RHS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Maximize ${z}_{1} =$<br>Maximize ${z}_{2} =$ | 1 | 1 | 1 |  | 1 |  | 1 |  | 1 |  |
+| Node 2 | 1 |  |  | -1 | -1 |  |  |  |  | $= 0$ |
+| Node 3 |  | 1 |  | 1 |  | -1 | -1 | 1 |  | $= 0$ |
+| Node 4 |  |  | 1 |  |  | 1 |  | -1 | -1 | $= 0$ |
+| Capacity | 20 | 30 | 10 | 40 | 30 | 10 | 20 | 5 | 20 |  |
 
 The optimal solution using either objective function is
 
@@ -800,7 +970,7 @@ $$
 
 The associated maximum flow is ${z}_{1} = {z}_{2} = {60}$ .
 
-## Solver Moment
+## Solver Moment ^mfsolver
 
 Figure 6.23 gives the Excel Solver model for the maximum flow model of Example 6.4-2 (file solverEx6.4-2.xls). The general idea is similar to that of the shortest-route model, detailed following Example 6.3-6. The main differences include: (1) there are no flow equations for the start node 1 and end node 5, and (2) the objective is to maximize the total outflow at start node 1 (F9) or, equivalently, the total inflow at terminal node 5 (G13). File solverEx6.4-2.xls uses G13 as the target cell. Try executing the model with G13 replacing F9.
 
@@ -810,11 +980,11 @@ FIGURE 6.23
 
 Excel Solver solution of the maximal flow model of 6.4-2 (file solverEx6.4-2.xls)
 
-## AMPL Moment
+## AMPL Moment ^mfampl
 
 File amplEx6.4-2.txt provides the AMPL model for the maximal flow problem between any two nodes in the network of Example 6.4-2. The model is applicable to any number of nodes. Explanation of the model is detailed in Section C.9 on the website.
 
-### 6.5 CPM AND PERT
+### 6.5 CPM AND PERT ^cpmpert
 
 CPM (Critical Path Method) and PERT (Program Evaluation and Review Technique) are network-based methods designed to assist in the planning, scheduling, and control of projects. A project is defined as a collection of interrelated activities with each activity consuming time and resources. The objective of CPM and PERT is to devise analytic tools for scheduling the activities. Figure 6.24 summarizes the steps of the techniques. First, we define the activities of the project, their precedence relationships, and their time requirements. Next, the precedence relationships among the activities are modeled as a network. The third step involves specific computations for developing the time schedule. During the actual execution phase, execution of the activities may not proceed as planned, in the sense that some of the activities may be expedited or delayed. When this happens, the schedule is updated to reflect the realities on the ground. This is the reason for including a feedback loop in Figure 6.24.
 
@@ -824,9 +994,9 @@ FIGURE 6.24
 
 Phases for project planning with CPM-PERT
 
-The two techniques, CPM and PERT, were developed independently. They differ in that CPM assumes deterministic activity durations and PERT assumes probabilistic durations.
+The two techniques, CPM and PERT, were developed independently. They differ in that CPM assumes deterministic activity durations and PERT assumes probabilistic durations. ^cpmdiff
 
-#### 6.5.1 Network Representation
+#### 6.5.1 Network Representation ^netrep
 
 Each activity is represented by an arc pointing in the direction of progress in the project. The nodes of the network establish the precedence relationships among the different activities. Three rules are available for constructing the network.
 
@@ -868,7 +1038,18 @@ Part (a) of Figure 6.26 shows the incorrect representation of the precedence rel
 
 A publisher has a contract with an author to publish a textbook. The author submits a hard copy and a computer file of the manuscript. The (simplified) activities associated with the production of the textbook are summarized in the following table:
 
-<table><tr><td>Activity</td><td>Predecessor(s)</td><td>Duration (weeks)</td></tr><tr><td>$A$ : Manuscript proofreading by editor</td><td>-</td><td>3</td></tr><tr><td>B: Sample pages preparation</td><td>-</td><td>2</td></tr><tr><td>C: Book cover design</td><td>-</td><td>4</td></tr><tr><td>D: Artwork preparation</td><td>-</td><td>3</td></tr><tr><td>E: Author's approval of edited</td><td>$A, B$</td><td>2</td></tr><tr><td>manuscript and sample pages</td><td></td><td></td></tr><tr><td>$F$ : Book formatting</td><td>$E$</td><td>4</td></tr><tr><td>$G$ : Author’s review of formatted pages</td><td>$F$</td><td>2</td></tr><tr><td>$H$ : Author’s review of artwork</td><td>$D$</td><td>1</td></tr><tr><td>I: Production of printing plates</td><td>$G, H$</td><td>2</td></tr><tr><td>J: Book production and binding</td><td>$C, I$</td><td>4</td></tr></table>
+| Activity | Predecessor(s) | Duration (weeks) |
+| --- | --- | --- |
+| $A$: Manuscript proofreading by editor | - | 3 |
+| $B$: Sample pages preparation | - | 2 |
+| $C$: Book cover design | - | 4 |
+| $D$: Artwork preparation | - | 3 |
+| $E$: Author's approval of edited manuscript and sample pages | $A, B$ | 2 |
+| $F$: Book formatting | $E$ | 4 |
+| $G$: Author’s review of formatted pages | $F$ | 2 |
+| $H$: Author’s review of artwork | $D$ | 1 |
+| $I$: Production of printing plates | $G, H$ | 2 |
+| $J$: Book production and binding | $C, I$ | 4 |
 
 Figure 6.27 provides the project network. Dummy activity $\left( {2,3}\right)$ produces unique end nodes for concurrent activities $A$ and $B$ . It is convenient to number the nodes in ascending order pointing toward the direction of progress in the project.
 
@@ -878,7 +1059,7 @@ FIGURE 6.27
 
 Project network for Example 6.5-1
 
-#### 6.5.2 Critical Path Method (CPM) Computations
+#### 6.5.2 Critical Path Method (CPM) Computations ^cpm
 
 The end result in CPM is a time schedule for the project (see Figure 6.24). To achieve this goal, special computations are carried out to produce the following information:
 
@@ -996,7 +1177,7 @@ Correct computations will always end with ${\Delta }_{1} = 0$ . The computations
 
 As expected, the critical path $1 \rightarrow  2 \rightarrow  4 \rightarrow  5 \rightarrow  6$ spans the network from start (node 1) to finish (node 6). The sum of the durations of the critical activities $\lbrack \left( {1,2}\right) ,\left( {2,4}\right) ,\left( {4,5}\right)$ , and $\left( {5,6}\right) \rbrack$ equals the duration of the project $\left( { = {25}\text{ days }}\right)$ . Observe that activity $\left( {4,6}\right)$ satisfies the first two conditions for a critical activity $\left( {{\Delta }_{4} = {\square }_{4} = {13}}\right.$ and $\left. {{\Delta }_{6} = {\square }_{6} = {25}}\right)$ but not the third $\left( {{\Delta }_{6} - {\square }_{4} \neq  {D}_{46}}\right)$ . Hence, the activity is noncritical.
 
-#### 6.5.3 Construction of the Time Schedule
+#### 6.5.3 Construction of the Time Schedule ^floats
 
 This section shows how the information obtained from the calculations in Section 6.5.2 can be used to develop the time schedule. We recognize that for an activity $\left( {i, j}\right) ,{\square }_{i}$ represents the earliest start time, and ${\Delta }_{j}$ represents the latest completion time. Thus, the interval $\left( {{\square }_{i},{\Delta }_{j}}\right)$ delineates the (maximum) time span during which activity $\left( {i, j}\right)$ can be scheduled without causing a delay in the entire project.
 
@@ -1052,7 +1233,13 @@ Compute the floats for the noncritical activities of the network in Example 6.5-
 
 The following table summarizes the computations of the total and free floats. For manual computations, it is more convenient to do the calculations directly on the network using the procedure in Figure 6.30.
 
-<table><tr><td>Noncritical activity</td><td>Duration</td><td>Total float (TF)</td><td>Free float $\left( {FF}\right)$</td></tr><tr><td>$B\left( {1,3}\right)$</td><td>6</td><td>${11} - 0 - 6 = 5$</td><td>$8 - 0 - 6 = 2$</td></tr><tr><td>$C\left( {2,3}\right)$</td><td>3</td><td>${11} - 5 - 3 = 3$</td><td>$8 - 5 - 3 = 0$</td></tr><tr><td>$E\left( {3,5}\right)$</td><td>2</td><td>${13} - 8 - 2 = 3$</td><td>${13} - 8 - 2 = 3$</td></tr><tr><td>$F\left( {3,6}\right)$</td><td>11</td><td>${25} - 8 - {11} = 6$</td><td>${25} - 8 - {11} = 6$</td></tr><tr><td>$G\left( {4,6}\right)$</td><td>1</td><td>${25} - {13} - 1 = {11}$</td><td>${25} - {13} - 1 = {11}$</td></tr></table>
+| Noncritical activity | Duration | Total float (TF) | Free float $\left( {FF}\right)$ |
+| --- | --- | --- | --- |
+| $B\left( {1,3}\right)$ | 6 | ${11} - 0 - 6 = 5$ | $8 - 0 - 6 = 2$ |
+| $C\left( {2,3}\right)$ | 3 | ${11} - 5 - 3 = 3$ | $8 - 5 - 3 = 0$ |
+| $E\left( {3,5}\right)$ | 2 | ${13} - 8 - 2 = 3$ | ${13} - 8 - 2 = 3$ |
+| $F\left( {3,6}\right)$ | 11 | ${25} - 8 - {11} = 6$ | ${25} - 8 - {11} = 6$ |
+| $G\left( {4,6}\right)$ | 1 | ${25} - {13} - 1 = {11}$ | ${25} - {13} - 1 = {11}$ |
 
 The computations red-flag activities $B$ and $C$ because their ${FF} < {TF}$ . The remaining activities $\left( {E, F\text{ , and }G}\right)$ have ${FF} = {TF}$ and hence can be scheduled anywhere between their earliest start and latest completion times.
 
@@ -1078,7 +1265,7 @@ TORA bar chart output for Example 6.5-2 (file toraEx6.5-2.txt)
 
 File amplEx6.52.txt provides the AMPL model for the CPM. The model is driven by the data of Example 6.5-2. This AMPL model is a unique application because it is not an optimization problem. The details of the model are given in Appendix C.9 on the website.
 
-#### 6.5.4 Linear Programming Formulation of CPM
+#### 6.5.4 Linear Programming Formulation of CPM ^cpmlp
 
 The CPM model seeks the longest path between the start and finish nodes of the project network. Its formulation as an LP is thus similar to the LP of the shortest-route model (Section 6.3.3). The only difference is that the objective function is maximized instead of minimized.
 
@@ -1104,11 +1291,19 @@ All the variables, ${x}_{ij}$ , are nonnegative.
 
 The LP formulation of the project of Example 6.5-2 (Figure 6.28) is given hereafter. Note that nodes 1 and 6 are the start and finish nodes, respectively.
 
-<table><tr><td></td><td>$A$</td><td>$B$</td><td>$C$</td><td>$D$</td><td>$E$</td><td>$F$</td><td>Dummy</td><td>$G$</td><td>$H$</td><td></td></tr><tr><td></td><td>${x}_{12}$</td><td>${x}_{13}$</td><td>${x}_{23}$</td><td>${x}_{24}$</td><td>${x}_{35}$</td><td>${x}_{36}$</td><td>${x}_{45}$</td><td>${x}_{46}$</td><td>${x}_{56}$</td><td></td></tr><tr><td>Maximize $z =$</td><td>6</td><td>6</td><td>3</td><td>8</td><td>2</td><td>11</td><td>0</td><td>1</td><td>12</td><td></td></tr><tr><td>Node 1</td><td>-1</td><td>-1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>$=$ -1</td></tr><tr><td>Node 2</td><td>1</td><td></td><td>-1</td><td>-1</td><td></td><td></td><td></td><td></td><td></td><td>$=$ 0</td></tr><tr><td>Node 3</td><td></td><td>1</td><td>1</td><td></td><td>-1</td><td>-1</td><td></td><td></td><td></td><td>$=$ 0</td></tr><tr><td>Node 4</td><td></td><td></td><td></td><td>1</td><td></td><td></td><td>-1</td><td>-1</td><td></td><td>$=$ 0</td></tr><tr><td>Node 5</td><td></td><td></td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td>-1</td><td>$=$ 0</td></tr><tr><td>Node 6</td><td></td><td></td><td></td><td></td><td></td><td>1</td><td></td><td>1</td><td>1</td><td>$=$ 1</td></tr></table>
+|  | $A$<br>${x}_{12}$ | $B$<br>${x}_{13}$ | $C$<br>${x}_{23}$ | $D$<br>${x}_{24}$ | $E$<br>${x}_{35}$ | $F$<br>${x}_{36}$ | Dummy<br>${x}_{45}$ | $G$<br>${x}_{46}$ | $H$<br>${x}_{56}$ | RHS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Maximize $z =$ | 6 | 6 | 3 | 8 | 2 | 11 | 0 | 1 | 12 |  |
+| Node 1 | -1 | -1 |  |  |  |  |  |  |  | $= -1$ |
+| Node 2 | 1 |  | -1 | -1 |  |  |  |  |  | $= 0$ |
+| Node 3 |  | 1 | 1 |  | -1 | -1 |  |  |  | $= 0$ |
+| Node 4 |  |  |  | 1 |  |  | -1 | -1 |  | $= 0$ |
+| Node 5 |  |  |  |  | 1 |  | 1 |  | -1 | $= 0$ |
+| Node 6 |  |  |  |  |  | 1 |  | 1 | 1 | $= 1$ |
 
 The optimum solution is $z = {25},{x}_{12}\left( A\right)  = 1,{x}_{24}\left( D\right)  = 1,{x}_{45}\left( \text{ Dummy }\right)  = 1,{x}_{56}\left( H\right)  = 1$ , and all others $= 0$ . The solution defines the critical path as $A \rightarrow  D \rightarrow$ Dummy $\rightarrow  H$ , and the project duration is 25 days, but it does not provide the data needed to construct the CPM chart.
 
-#### 6.5.5 PERT Networks
+#### 6.5.5 PERT Networks ^pert
 
 PERT differs from CPM in that it assumes probabilistic duration times based on three estimates:
 
@@ -1146,19 +1341,41 @@ Justification for the use of the normal distribution is that ${e}_{j}$ is the su
 
 Consider the project of Example 6.5-2. To avoid repeating the critical path calculations, the values of $a, m$ , and $b$ in the following table are selected to yield $\overline{{D}_{ij}} = {D}_{ij}$ for all $i$ and $j$ in Example 6.5-2:
 
-<table><tr><td>Activity</td><td>$i - j$</td><td>$\left( {a, m, b}\right)$</td><td>Activity</td><td>$i - j$</td><td>$\left( {a, m, b}\right)$</td></tr><tr><td>$A$</td><td>1-2</td><td>(3,5,7)</td><td>$E$</td><td>3-5</td><td>$\left( {1,2,3}\right)$</td></tr><tr><td>$B$</td><td>1-3</td><td>(4,6,8)</td><td>$F$</td><td>3-6</td><td>(9,11,13)</td></tr><tr><td>$C$</td><td>2-3</td><td>(1,3,5)</td><td>$G$</td><td>4-6</td><td>(1,1,1)</td></tr><tr><td>$D$</td><td>2-4</td><td>(5,8,11)</td><td>$H$</td><td>5-6</td><td>(10,12,14)</td></tr></table>
+| Activity | $i - j$ | $\left( {a, m, b}\right)$ | Activity | $i - j$ | $\left( {a, m, b}\right)$ |
+| --- | --- | --- | --- | --- | --- |
+| $A$ | 1-2 | (3,5,7) | $E$ | 3-5 | $\left( {1,2,3}\right)$ |
+| $B$ | 1-3 | (4,6,8) | $F$ | 3-6 | (9,11,13) |
+| $C$ | 2-3 | (1,3,5) | $G$ | 4-6 | (1,1,1) |
+| $D$ | 2-4 | (5,8,11) | $H$ | 5-6 | (10,12,14) |
 
 The mean $\overline{{D}_{ij}}$ and variance ${v}_{ij}$ for the different activities are given in the following table. Note that a dummy activity with $\left( {a, m, b}\right)  = \left( {0,0,0}\right)$ has zero mean and variance.
 
-<table><tr><td>Activity</td><td>$i - j$</td><td>$\overline{{D}_{ij}}$</td><td>${v}_{ij}$</td><td>Activity</td><td>$i - j$</td><td>$\overline{{D}_{ij}}$</td><td>${v}_{ij}$</td></tr><tr><td>$A$</td><td>1-2</td><td>5</td><td>.444</td><td>$E$</td><td>3-5</td><td>2</td><td>.111</td></tr><tr><td>$B$</td><td>1-3</td><td>6</td><td>.444</td><td>$F$</td><td>3-6</td><td>11</td><td>.444</td></tr><tr><td>$C$</td><td>2-3</td><td>3</td><td>.444</td><td>$G$</td><td>4-6</td><td>1</td><td>.000</td></tr><tr><td>$D$</td><td>2-4</td><td>8</td><td>1.000</td><td>$H$</td><td>5-6</td><td>12</td><td>.444</td></tr></table>
+| Activity | $i - j$ | $\overline{{D}_{ij}}$ | ${v}_{ij}$ | Activity | $i - j$ | $\overline{{D}_{ij}}$ | ${v}_{ij}$ |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $A$ | 1-2 | 5 | .444 | $E$ | 3-5 | 2 | .111 |
+| $B$ | 1-3 | 6 | .444 | $F$ | 3-6 | 11 | .444 |
+| $C$ | 2-3 | 3 | .444 | $G$ | 4-6 | 1 | .000 |
+| $D$ | 2-4 | 8 | 1.000 | $H$ | 5-6 | 12 | .444 |
 
 The next table gives the longest path from node 1 to the different nodes, together with their associated mean and standard deviation.
 
-<table><tr><td>Node</td><td>Longest path based on mean durations</td><td>Path mean</td><td>Path standard deviation</td></tr><tr><td>2</td><td>1-2</td><td>5.00</td><td>0.67</td></tr><tr><td>3</td><td>1-2-3</td><td>8.00</td><td>0.94</td></tr><tr><td>4</td><td>1-2-4</td><td>13.00</td><td>1.20</td></tr><tr><td>5</td><td>1-2-4-5</td><td>13.00</td><td>1.20</td></tr><tr><td>6</td><td>1-2-4-5-6</td><td>25.00</td><td>1.37</td></tr></table>
+| Node | Longest path based on mean durations | Path mean | Path standard deviation |
+| --- | --- | --- | --- |
+| 2 | 1-2 | 5.00 | 0.67 |
+| 3 | 1-2-3 | 8.00 | 0.94 |
+| 4 | 1-2-4 | 13.00 | 1.20 |
+| 5 | 1-2-4-5 | 13.00 | 1.20 |
+| 6 | 1-2-4-5-6 | 25.00 | 1.37 |
 
 The following table computes the probability that each node is realized by time ${S}_{j}$ (specified by the analyst):
 
-<table><tr><td>Node $j$</td><td>Longest path</td><td>Path mean</td><td>Path standard deviation</td><td>${S}_{j}$</td><td>${K}_{j}$</td><td>$P\left\{  {z \leq  {K}_{j}}\right\}$</td></tr><tr><td>2</td><td>1-2</td><td>5.00</td><td>0.67</td><td>5.00</td><td>0</td><td>.5000</td></tr><tr><td>3</td><td>1-2-3</td><td>8.00</td><td>0.94</td><td>11.00</td><td>3.19</td><td>.9993</td></tr><tr><td>4</td><td>1-2-4</td><td>13.00</td><td>1.20</td><td>12.00</td><td>-.83</td><td>.2033</td></tr><tr><td>5</td><td>1-2-4-5</td><td>13.00</td><td>1.20</td><td>14.00</td><td>.83</td><td>.7967</td></tr><tr><td>6</td><td>1-2-4-5-6</td><td>25.00</td><td>1.37</td><td>26.00</td><td>.73</td><td>.7673</td></tr></table>
+| Node $j$ | Longest path | Path mean | Path standard deviation | ${S}_{j}$ | ${K}_{j}$ | $P\left\{  {z \leq  {K}_{j}}\right\}$ |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2 | 1-2 | 5.00 | 0.67 | 5.00 | 0 | .5000 |
+| 3 | 1-2-3 | 8.00 | 0.94 | 11.00 | 3.19 | .9993 |
+| 4 | 1-2-4 | 13.00 | 1.20 | 12.00 | -.83 | .2033 |
+| 5 | 1-2-4-5 | 13.00 | 1.20 | 14.00 | .83 | .7967 |
+| 6 | 1-2-4-5-6 | 25.00 | 1.37 | 26.00 | .73 | .7673 |
 
 ## TORA Moment
 
@@ -1180,7 +1397,7 @@ Glover, F., D. Klingman, and N. Phillips, Network Models and Their Applications 
 
 Robinson, E., L. Gao, and S. Muggenborg, "Designing an Integrated Distribution System at Dow-Brands, Inc," Interfaces, Vol. 23, No. 3, pp. 107-117, 1993.
 
-## Case Study: Saving Federal Travel Dollars4
+## Case Study: Saving Federal Travel Dollars4 ^casestudy
 
 Tools: Shortest-route algorithm
 
@@ -1198,11 +1415,11 @@ The problem is concerned with the optimal location of host city for an event, gi
 
 The idea of the solution is simple: The host city must yield the lowest travel cost that includes transportation and per-diem allowance for the host city. The determination of the transportation cost requires identifying the locations from which participants depart. It is reasonable to assume that for locations within 100 miles from the host city, participants use personal vehicles as the selected mode of transportation. Others travel by air. The cost basis for air travelers consists of the sum of contracted airfares along the legs of the cheapest route to the host city. To determine such routes, it is necessary to identify the locations around the United States from which participants depart. Each such location is a possible host city candidate provided it offers adequate airport and conference facilities. In the present case, 261 such locations with 4640 contracted airport links are identified.
 
-The determination of the cheapest airfare routes among the selected 261 locations with 4640 air links is no simple task because a trip may involve multiple legs. Floyd's algorithm (Section 6.3.2) is ideal for determining such routes. The "distance" between two locations is represented by the contracted airfare provided by the government. Per the contract, round trip cost is double the cost of the one-way trip.
+The determination of the cheapest airfare routes among the selected 261 locations with 4640 air links is no simple task because a trip may involve multiple legs. Floyd's algorithm (Section 6.3.2) is ideal for determining such routes. The "distance" between two locations is represented by the contracted airfare provided by the government. Per the contract, round trip cost is double the cost of the one-way trip. ^travelmethod
 
 To simplify the analysis, the study does not allow the use of car rentals at destinations. The plausible assumption here is that the host hotel is in the vicinity of the airport, usually with free shuttle service.
 
-Per-diems cover lodging, meals, and incidental expenses. Participants arrive the day before the event starts. However, those arriving from locations within 100 miles arrive the morning of the first day of the event. All participants will check out of the hotel on the last day. For the days of arrival and departure, government regulations for meals and incidental expenses allow only a 75% reimbursement of the full per-diem rate.
+Per-diems cover lodging, meals, and incidental expenses. Participants arrive the day before the event starts. However, those arriving from locations within 100 miles arrive the morning of the first day of the event. All participants will check out of the hotel on the last day. For the days of arrival and departure, government regulations for meals and incidental expenses allow only a 75% reimbursement of the full per-diem rate. ^travelassumptions
 
 ---
 
@@ -1210,7 +1427,7 @@ ${}^{4}$ J. L. Huisingh, H. M. Yamauchi, and R. Zimmerman,"Saving Federal Travel
 
 ---
 
-## Numerical Example
+## Numerical Example ^numerical
 
 For the sake of this illustration, we will assume a 12-host-city situation. Table 6.1 provides the (late 1990s) contracted one-way airfares for admissible links among the cities. A blank entry indicates that the associated city pair does not have a direct air link.
 
@@ -1218,17 +1435,55 @@ Maximum lodging and per-diem allowances for the 12 cities together with their as
 
 TABLE 6.1 One-Way Airfare for the 12-City Example
 
-<table><tr><td></td><td>SF</td><td>ORD</td><td>STL</td><td>LAX</td><td>TUL</td><td>DEN</td><td>DC</td><td>ATL</td><td>DAL</td><td>NY</td><td>MIA</td><td>SPI</td></tr><tr><td>SF</td><td></td><td></td><td></td><td>\$70</td><td></td><td>\$120</td><td></td><td></td><td>\$220</td><td></td><td></td><td></td></tr><tr><td>ORD</td><td></td><td></td><td>\$99</td><td></td><td></td><td>\$140</td><td>\$150</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>STL</td><td></td><td>\$99</td><td></td><td></td><td>\$95</td><td>\$110</td><td></td><td></td><td></td><td></td><td></td><td>\$78(a)</td></tr><tr><td>LAX</td><td>\$70</td><td></td><td></td><td></td><td></td><td>\$130</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>TUL</td><td></td><td></td><td>\$95</td><td></td><td></td><td>\$105</td><td></td><td></td><td>\$100</td><td></td><td></td><td></td></tr><tr><td>DEN</td><td>\$120</td><td>\$140</td><td>\$110</td><td>\$130</td><td>\$105</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>DC</td><td></td><td>\$150</td><td></td><td></td><td></td><td></td><td></td><td>\$100</td><td>\$195</td><td>\$85</td><td></td><td></td></tr><tr><td>ATL</td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$100</td><td></td><td></td><td></td><td>\$125</td><td></td></tr><tr><td>DAL</td><td>\$220</td><td></td><td></td><td></td><td>\$100</td><td></td><td>\$195</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>NY</td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$85</td><td></td><td></td><td></td><td>\$130</td><td></td></tr><tr><td>MIA</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$125</td><td></td><td>\$130</td><td></td><td></td></tr><tr><td>SPI</td><td></td><td></td><td>\$78(a)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>
+|  | SF | ORD | STL | LAX | TUL | DEN | DC | ATL | DAL | NY | MIA | SPI |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SF |  |  |  | \$70 |  | \$120 |  |  | \$220 |  |  |  |
+| ORD |  |  | \$99 |  |  | \$140 | \$150 |  |  |  |  |  |
+| STL |  | \$99 |  |  | \$95 | \$110 |  |  |  |  |  | \$78(a) |
+| LAX | \$70 |  |  |  |  | \$130 |  |  |  |  |  |  |
+| TUL |  |  | \$95 |  |  | \$105 |  |  | \$100 |  |  |  |
+| DEN | \$120 | \$140 | \$110 | \$130 | \$105 |  |  |  |  |  |  |  |
+| DC |  | \$150 |  |  |  |  |  | \$100 | \$195 | \$85 |  |  |
+| ATL |  |  |  |  |  |  | \$100 |  |  |  | \$125 |  |
+| DAL | \$220 |  |  |  | \$100 |  | \$195 |  |  |  |  |  |
+| NY |  |  |  |  |  |  | \$85 |  |  |  | \$130 |  |
+| MIA |  |  |  |  |  |  |  | \$125 |  | \$130 |  |  |
+| SPI |  |  | \$78(a) |  |  |  |  |  |  |  |  |  |
 
 (a) Air travel cost $= \$ {78}$ . Distance $< {100}$ miles $\left( { = {86}\text{ miles }}\right)$ . Personal car used for travel between STL and SPI.
 
 TABLE 6.2 Lodging Cost, Per Diem, and Number of Participants in the 12-City Example
 
-<table><tr><td>City</td><td>Lodging per night (\$)</td><td>Per-diem (\$)</td><td>Number of participants</td></tr><tr><td>SF</td><td>115.00</td><td>50.00</td><td>15</td></tr><tr><td>ORD</td><td>115.00</td><td>50.00</td><td>10</td></tr><tr><td>STL</td><td>85.00</td><td>48.00</td><td>8</td></tr><tr><td>LAX</td><td>120.00</td><td>55.00</td><td>18</td></tr><tr><td>TUL</td><td>70.00</td><td>35.00</td><td>5</td></tr><tr><td>DEN</td><td>90.00</td><td>40.00</td><td>9</td></tr><tr><td>DC</td><td>150.00</td><td>60.00</td><td>10</td></tr><tr><td>ATL</td><td>90.00</td><td>50.00</td><td>12</td></tr><tr><td>DAL</td><td>90.00</td><td>50.00</td><td>11</td></tr><tr><td>NY</td><td>190.00</td><td>60.00</td><td>12</td></tr><tr><td>MIA</td><td>120.00</td><td>50.00</td><td>8</td></tr><tr><td>SPI</td><td>60.00</td><td>35.00</td><td>2</td></tr></table>
+| City | Lodging per night (\$) | Per-diem (\$) | Number of participants |
+| --- | --- | --- | --- |
+| SF | 115.00 | 50.00 | 15 |
+| ORD | 115.00 | 50.00 | 10 |
+| STL | 85.00 | 48.00 | 8 |
+| LAX | 120.00 | 55.00 | 18 |
+| TUL | 70.00 | 35.00 | 5 |
+| DEN | 90.00 | 40.00 | 9 |
+| DC | 150.00 | 60.00 | 10 |
+| ATL | 90.00 | 50.00 | 12 |
+| DAL | 90.00 | 50.00 | 11 |
+| NY | 190.00 | 60.00 | 12 |
+| MIA | 120.00 | 50.00 | 8 |
+| SPI | 60.00 | 35.00 | 2 |
 
 TABLE 6.3 Cheapest Airfare in the 12-City Example
 
-<table><tr><td></td><td>ORD</td><td>STL</td><td>LAX</td><td>TUL</td><td>DEN</td><td>DC</td><td>ATL</td><td>DAL</td><td>NY</td><td>MIA</td><td>SPI</td></tr><tr><td>SF</td><td>\$260</td><td>\$230</td><td>\$70</td><td>\$225</td><td>\$120</td><td>\$410</td><td>\$510</td><td>\$220</td><td>\$495</td><td>\$625</td><td>\$308</td></tr><tr><td>ORD</td><td></td><td>\$99</td><td>\$270</td><td>\$194</td><td>\$140</td><td>\$150</td><td>\$250</td><td>\$294</td><td>\$235</td><td>\$365</td><td>\$177</td></tr><tr><td>STL</td><td></td><td></td><td>\$240</td><td>\$95</td><td>\$110</td><td>\$249</td><td>\$349</td><td>\$195</td><td>\$334</td><td>\$464</td><td>\$28*</td></tr><tr><td>LAX</td><td></td><td></td><td></td><td>\$235</td><td>\$130</td><td>\$420</td><td>\$520</td><td>\$290</td><td>\$505</td><td>\$635</td><td>\$318</td></tr><tr><td>TUL</td><td></td><td></td><td></td><td></td><td>\$105</td><td>\$295</td><td>\$395</td><td>\$100</td><td>\$380</td><td>\$510</td><td>\$173</td></tr><tr><td>DEN</td><td></td><td></td><td></td><td></td><td></td><td>\$290</td><td>\$390</td><td>\$205</td><td>\$375</td><td>\$505</td><td>\$188</td></tr><tr><td>DC</td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$100</td><td>\$195</td><td>\$85</td><td>\$215</td><td>\$327</td></tr><tr><td>ATL</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$295</td><td>\$185</td><td>\$125</td><td>\$427</td></tr><tr><td>DAL</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$280</td><td>\$410</td><td>\$273</td></tr><tr><td>NY</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$130</td><td>\$412</td></tr><tr><td>MIA</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>\$542</td></tr></table>
+|  | ORD | STL | LAX | TUL | DEN | DC | ATL | DAL | NY | MIA | SPI |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SF | \$260 | \$230 | \$70 | \$225 | \$120 | \$410 | \$510 | \$220 | \$495 | \$625 | \$308 |
+| ORD |  | \$99 | \$270 | \$194 | \$140 | \$150 | \$250 | \$294 | \$235 | \$365 | \$177 |
+| STL |  |  | \$240 | \$95 | \$110 | \$249 | \$349 | \$195 | \$334 | \$464 | \$28* |
+| LAX |  |  |  | \$235 | \$130 | \$420 | \$520 | \$290 | \$505 | \$635 | \$318 |
+| TUL |  |  |  |  | \$105 | \$295 | \$395 | \$100 | \$380 | \$510 | \$173 |
+| DEN |  |  |  |  |  | \$290 | \$390 | \$205 | \$375 | \$505 | \$188 |
+| DC |  |  |  |  |  |  | \$100 | \$195 | \$85 | \$215 | \$327 |
+| ATL |  |  |  |  |  |  |  | \$295 | \$185 | \$125 | \$427 |
+| DAL |  |  |  |  |  |  |  |  | \$280 | \$410 | \$273 |
+| NY |  |  |  |  |  |  |  |  |  | \$130 | \$412 |
+| MIA |  |  |  |  |  |  |  |  |  |  | \$542 |
 
 *Personal vehicle cost based on 86 miles (32.5 cents per mile)
 
@@ -1270,9 +1525,17 @@ $$
 
 Note that because SPI is located 86 miles ( $< {100}$ miles) from STL, its participants drive personal vehicles and arrive at STL the morning of the first day of the event. Thus, their per-diem is based on ${3}^{1}/2$ days and their lodging is based on 3 nights only. Participants from STL receive per diem for ${3}^{1}/2$ days and no lodging. All other participants arrive at STL a day earlier, and their per-diem is based on ${4}^{1}/2$ days and 4 nights of lodging.
 
-The computations for all host cities can be done conveniently with a spreadsheet (file excelCase4.xls-all the formulas are appended as cell comments). The results show that TUL offers the lowest total cost (\$108,365), followed by DEN (\$111,332) and then STL (\$115,750).
+The computations for all host cities can be done conveniently with a spreadsheet (file excelCase4.xls-all the formulas are appended as cell comments). The results show that TUL offers the lowest total cost (\$108,365), followed by DEN (\$111,332) and then STL (\$115,750). ^besthost
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>6.1</td><td>6-1 to 6-6</td><td>6.4.3</td><td>6-39 to 6-41</td></tr><tr><td>6.2</td><td>6-7 to 6-12</td><td>6.5.1</td><td>6-42 to 6-51</td></tr><tr><td>6.3.1</td><td>6-13 to 6-17</td><td>6.5.2</td><td>6-52 to 6-57</td></tr><tr><td>6.3.2</td><td>6-18 to 6-24</td><td>6.5.3</td><td>6-58 to 6-64</td></tr><tr><td>6.3.3</td><td>6-25 to 6-27</td><td>6.5.4</td><td>6-65 to 6-66</td></tr><tr><td>6.4.1</td><td>6-28 to 6-28</td><td>6.5.5</td><td>6-67 to 6-67</td></tr><tr><td>6.4.2</td><td>6-29 to 6-38</td><td></td><td></td></tr></table>
+| Section | Assigned Problems | Section | Assigned Problems |
+| --- | --- | --- | --- |
+| 6.1 | 6-1 to 6-6 | 6.4.3 | 6-39 to 6-41 |
+| 6.2 | 6-7 to 6-12 | 6.5.1 | 6-42 to 6-51 |
+| 6.3.1 | 6-13 to 6-17 | 6.5.2 | 6-52 to 6-57 |
+| 6.3.2 | 6-18 to 6-24 | 6.5.3 | 6-58 to 6-64 |
+| 6.3.3 | 6-25 to 6-27 | 6.5.4 | 6-65 to 6-66 |
+| 6.4.1 | 6-28 to 6-28 | 6.5.5 | 6-67 to 6-67 |
+| 6.4.2 | 6-29 to 6-38 |  |  |
 
 *6-1. For each network in Figure 6.32, determine (a) a path, (b) a cycle, (c) a tree, and (d) a spanning tree.
 
@@ -1348,7 +1611,18 @@ where ${n}_{ij}$ is the number of parts shared between machines $i$ and $j$ , an
 
 The following table assigns the parts to machines:
 
-<table><tr><td>Machine</td><td>Assigned parts</td></tr><tr><td>1</td><td>1,6</td></tr><tr><td>2</td><td>2,3,7,8,9,12,13,15</td></tr><tr><td>3</td><td>3, 5, 10, 14</td></tr><tr><td>4</td><td>2,7,8,11,12,13</td></tr><tr><td>5</td><td>3, 5, 10, 11, 14</td></tr><tr><td>6</td><td>1, 4, 5, 9, 10</td></tr><tr><td>7</td><td>2,5,7,8,9,10</td></tr><tr><td>8</td><td>3, 4, 15</td></tr><tr><td>9</td><td>4,10</td></tr><tr><td>10</td><td>3,8,10,14,15</td></tr></table>
+| Machine | Assigned parts |
+| --- | --- |
+| 1 | 1,6 |
+| 2 | 2,3,7,8,9,12,13,15 |
+| 3 | 3, 5, 10, 14 |
+| 4 | 2,7,8,11,12,13 |
+| 5 | 3, 5, 10, 11, 14 |
+| 6 | 1, 4, 5, 9, 10 |
+| 7 | 2,5,7,8,9,10 |
+| 8 | 3, 4, 15 |
+| 9 | 4,10 |
+| 10 | 3,8,10,14,15 |
 
 (a) Express the problem as a network model.
 
@@ -1358,7 +1632,13 @@ The following table assigns the parts to machines:
 
 *6-13. Reconstruct the equipment replacement model of Example 6.3-1, assuming that a car must be kept in service for at least 2 years, with a maximum service life of 4 years. The planning horizon is from the start of year 1 to the end of year 5 . The following table provides the necessary data.
 
-<table><tr><td rowspan="2">Year acquired</td><td colspan="3">Replacement cost (\$) for given years in operation</td></tr><tr><td>2</td><td>3</td><td>4</td></tr><tr><td>1</td><td>3800</td><td>4100</td><td>6900</td></tr><tr><td>2</td><td>4100</td><td>4890</td><td>7200</td></tr><tr><td>3</td><td>4200</td><td>5300</td><td>7300</td></tr><tr><td>4</td><td>4800</td><td>5800</td><td>-</td></tr><tr><td>5</td><td>5400</td><td>-</td><td>-</td></tr></table>
+| Year acquired | 2 years | 3 years | 4 years |
+| --- | --- | --- | --- |
+| 1 | 3800 | 4100 | 6900 |
+| 2 | 4100 | 4890 | 7200 |
+| 3 | 4200 | 5300 | 7300 |
+| 4 | 4800 | 5800 | - |
+| 5 | 5400 | - | - |
 
 6-14. Figure 6.35 provides the communication network between two stations, 1 and 7. The probability that a link in the network will operate without failure is shown on each arc. Messages are sent from station 1 to station 7, and the objective is to determine the route that maximizes the probability of a successful transmission. Formulate the situation as a shortest-route model, and determine the optimum solution.
 
@@ -1374,7 +1654,12 @@ Network for Problem 6-14
 
 6-17. An old-fashioned electric toaster has two spring-loaded base-hinged doors. The two doors open outward in opposite directions away from the heating element. A slice of bread is toasted one side at a time by pushing open one of the doors with one hand and placing the slice with the other hand. After one side is toasted, the slice is turned over to get the other side toasted. The goal is to determine the sequence of operations (placing, toasting, turning, and removing) needed to toast three slices of bread in the shortest possible time. Formulate the problem as a shortest-route model, using the following elemental times for the different operations:
 
-<table><tr><td>Operation</td><td>Time (seconds)</td></tr><tr><td>Place one slice in either side</td><td>3</td></tr><tr><td>Toast one side</td><td>30</td></tr><tr><td>Turn slice already in toaster</td><td>1</td></tr><tr><td>Remove slice from either side</td><td>3</td></tr></table>
+| Operation | Time (seconds) |
+| --- | --- |
+| Place one slice in either side | 3 |
+| Toast one side | 30 |
+| Turn slice already in toaster | 1 |
+| Remove slice from either side | 3 |
 
 6-18. The network in Figure 6.36 gives the distances in miles between pairs of cities 1, 2, ..., and 8. Use Dijkstra's algorithm to find the shortest route between the following cities:
 
@@ -1478,7 +1763,12 @@ Network for Problem 6-30
 
 6-33. Chicken feed is transported by trucks from three silos to four farms. Some of the silos cannot ship directly to some of the farms. The capacities of the other routes are limited by the number of trucks available and the number of trips made daily. The following table shows the daily amounts of supply at the silos and demand at the farms (in thousands of pounds). The cell entries of the table specify the daily capacities of the associated routes.
 
-<table><tr><td colspan="6">Farm</td><td rowspan="2"></td></tr><tr><td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td></td><td>1</td><td>30</td><td>5</td><td>0</td><td>40</td><td>20</td></tr><tr><td>Silo</td><td>2</td><td>0</td><td>0</td><td>5</td><td>90</td><td>20</td></tr><tr><td></td><td>3</td><td>100</td><td>40</td><td>30</td><td>40</td><td>200</td></tr><tr><td></td><td></td><td>200</td><td>10</td><td>60</td><td>20</td><td></td></tr></table>
+|  | Farm 1 | Farm 2 | Farm 3 | Farm 4 | Supply |
+| --- | --- | --- | --- | --- | --- |
+| Silo 1 | 30 | 5 | 0 | 40 | 20 |
+| Silo 2 | 0 | 0 | 5 | 90 | 20 |
+| Silo 3 | 100 | 40 | 30 | 40 | 200 |
+| Demand | 200 | 10 | 60 | 20 |  |
 
 (a) Determine the schedule that satisfies the most demand.
 
@@ -1494,23 +1784,43 @@ Network for Problems 6-31 and 6-32
 
 *6-35. A parent has five (teenage) children and five household chores to assign to them. Past experience has shown that forcing chores on a child is counterproductive. With this in mind, the children are asked to list their preferences among the five chores, as the following table shows:
 
-<table><tr><td>Child</td><td>Preferred chore</td></tr><tr><td>Rif</td><td>1, 3, 4, or 5</td></tr><tr><td>Mai</td><td>1</td></tr><tr><td>Ben</td><td>1 or 2</td></tr><tr><td>Kim</td><td>1, 2, or 5</td></tr><tr><td>Ken</td><td>2,5</td></tr></table>
+| Child | Preferred chore |
+| --- | --- |
+| Rif | 1, 3, 4, or 5 |
+| Mai | 1 |
+| Ben | 1 or 2 |
+| Kim | 1, 2, or 5 |
+| Ken | 2,5 |
 
 The parent's modest goal now is to finish as many chores as possible while abiding by the children's preferences. Determine the maximum number of chores that can be completed and the assignment of chores to children.
 
 6-36. Four factories are engaged in the production of four types of toys. The following table lists the toys that can be produced by each factory.
 
-<table><tr><td>Factory</td><td>Toys productions mix</td></tr><tr><td>1</td><td>1,2,3</td></tr><tr><td>2</td><td>2,3</td></tr><tr><td>3</td><td>1,3,4</td></tr><tr><td>4</td><td>1,3,4</td></tr></table>
+| Factory | Toys productions mix |
+| --- | --- |
+| 1 | 1,2,3 |
+| 2 | 2,3 |
+| 3 | 1,3,4 |
+| 4 | 1,3,4 |
 
 All toys require approximately the same per-unit labor and material. The daily capacities of the four factories are250,180,300, and 200 toys, respectively. The daily demands for the four toys are 200, 150, 350, and 100 units, respectively. Determine the factories' production schedules that will most satisfy the demands for the four toys.
 
 6-37. The academic council at the $\mathrm{U}$ of $\mathrm{A}$ is seeking representation from among six students who are affiliated with four honor societies. The academic council representation includes three areas: mathematics, art, and engineering. At most two students in each area can be on the council. The following table shows the membership of the six students in the four honor societies:
 
-<table><tr><td>Society</td><td>Affiliated students</td></tr><tr><td>1</td><td>1, 2, 3, 4</td></tr><tr><td>2</td><td>1, 3, 6</td></tr><tr><td>3</td><td>2, 3, 4, 5</td></tr><tr><td>4</td><td>1, 2, 4, 6</td></tr></table>
+| Society | Affiliated students |
+| --- | --- |
+| 1 | 1, 2, 3, 4 |
+| 2 | 1, 3, 6 |
+| 3 | 2, 3, 4, 5 |
+| 4 | 1, 2, 4, 6 |
 
 The students who are skilled in the areas of mathematics, art, and engineering are shown in the following table:
 
-<table><tr><td>Area</td><td>Skilled students</td></tr><tr><td>Mathematics</td><td>1, 2, 3, 4</td></tr><tr><td>Art</td><td>1,3,4,5</td></tr><tr><td>Engineering</td><td>1,4,5,6</td></tr></table>
+| Area | Skilled students |
+| --- | --- |
+| Mathematics | 1, 2, 3, 4 |
+| Art | 1,3,4,5 |
+| Engineering | 1,4,5,6 |
 
 A student who is skilled in more than one area must be assigned exclusively to one area only. Can all four honor societies be represented on the council?
 
@@ -1524,7 +1834,13 @@ Step 2. Using the feasible solution in step 1, find the maximal or minimal flow 
 
 (b) Show that finding a feasible solution for the original network is equivalent to finding the maximal flow ${x}_{ij}^{\prime }$ in the network after (1) modifying the bounds on ${x}_{ij}$ to $0 \leq  {x}_{ij}^{\prime } \leq  {u}_{ij} - {l}_{ij}$ ,(2) "lumping" all the resulting sources into one supersource with outgoing arc capacities ${l}_{ij}$ ,(3) "lumping" all the resulting sinks into one supersink with incoming arc capacities ${l}_{ij}$ , and (4) connecting the terminal node $t$ to the source node $s$ in the original network by a return infinite-capacity arc. A feasible solution exists if the maximal flow in the new network equals the sum of the lower bounds in the original network. Apply the procedure to the following network and find a feasible flow solution:
 
-<table><tr><td>Arc $\left( {i, j}\right)$</td><td>$\left( {{l}_{ij},{u}_{ij}}\right)$</td></tr><tr><td>(1,2)</td><td>(5,20)</td></tr><tr><td>(1,3)</td><td>(0,15)</td></tr><tr><td>(2,3)</td><td>(4,10)</td></tr><tr><td>(2,4)</td><td>(3,15)</td></tr><tr><td>(3,4)</td><td>(0,20)</td></tr></table>
+| Arc $\left( {i, j}\right)$ | $\left( {{l}_{ij},{u}_{ij}}\right)$ |
+| --- | --- |
+| (1,2) | (5,20) |
+| (1,3) | (0,15) |
+| (2,3) | (4,10) |
+| (2,4) | (3,15) |
+| (3,4) | (0,20) |
 
 (c) Use the feasible solution for the network in (b) together with the maximal flow algorithm to determine the minimal flow in the original network. (Hint: First, compute the residue network given the initial feasible solution. Next, determine the maximum flow from the end node to the start node. This is equivalent to finding the maximum flow that should be canceled from the start node to the end node. Now, combining the feasible and maximal flow solutions yields the minimal flow in the original network.)
 
@@ -1602,21 +1918,106 @@ Network for Problem 6-41
 
 6-47. The activities in the following table describe the construction of a new house. Construct the associated project network.
 
-<table id="cross-table-1"><tr><td></td><td>Activity</td><td>Predecessor(s)</td><td>Duration (days)</td></tr><tr><td>A:</td><td>Clear site</td><td>-</td><td>1</td></tr><tr><td>B:</td><td>Bring utilities to site</td><td>-</td><td>2</td></tr><tr><td>C:</td><td>Excavate</td><td>$A$</td><td>1</td></tr><tr><td>D:</td><td>Pour foundation</td><td>$C$</td><td>2</td></tr><tr><td>E:</td><td>Outside plumbing</td><td>$B, C$</td><td>6</td></tr><tr><td>$F$ :</td><td>Frame house</td><td>$D$</td><td>10</td></tr><tr></tr><tr><td>$G$ :</td><td>Do electric wiring</td><td>$F$</td><td>3</td></tr><tr><td>$H$ :</td><td>Lay floor</td><td>$G$</td><td>1</td></tr><tr><td>$I$ :</td><td>Lay roof</td><td>$F$</td><td>1</td></tr><tr><td>$J$ :</td><td>Inside plumbing</td><td>$E, H$</td><td>5</td></tr><tr><td>$K$ :</td><td>Shingling</td><td>$I$</td><td>2</td></tr><tr><td>$L$ :</td><td>Outside sheathing insulation</td><td>$F, J$</td><td>1</td></tr><tr><td>$M$ :</td><td>Install windows and outside doors</td><td>$F$</td><td>2</td></tr><tr><td>$N$ :</td><td>Do brick work</td><td>$L, M$</td><td>4</td></tr><tr><td>$O$ :</td><td>Insulate walls and ceiling</td><td>$G, J$</td><td>2</td></tr><tr><td>$P$ :</td><td>Cover walls and ceiling</td><td>$O$</td><td>2</td></tr><tr><td>$Q$ :</td><td>Insulate roof</td><td>$I, P$</td><td>1</td></tr><tr><td>$R$ :</td><td>Finish interior</td><td>$P$</td><td>7</td></tr><tr><td>$S$ :</td><td>Finish exterior</td><td>$I, N$</td><td>7</td></tr><tr><td>$T$ :</td><td>Landscape</td><td>$S$</td><td>3</td></tr></table>
+| Activity | Description | Predecessor(s) | Duration (days) |
+| --- | --- | --- | --- |
+| A | Clear site | - | 1 |
+| B | Bring utilities to site | - | 2 |
+| C | Excavate | $A$ | 1 |
+| D | Pour foundation | $C$ | 2 |
+| E | Outside plumbing | $B, C$ | 6 |
+| $F$ | Frame house | $D$ | 10 |
+| $G$ | Do electric wiring | $F$ | 3 |
+| $H$ | Lay floor | $G$ | 1 |
+| $I$ | Lay roof | $F$ | 1 |
+| $J$ | Inside plumbing | $E, H$ | 5 |
+| $K$ | Shingling | $I$ | 2 |
+| $L$ | Outside sheathing insulation | $F, J$ | 1 |
+| $M$ | Install windows and outside doors | $F$ | 2 |
+| $N$ | Do brick work | $L, M$ | 4 |
+| $O$ | Insulate walls and ceiling | $G, J$ | 2 |
+| $P$ | Cover walls and ceiling | $O$ | 2 |
+| $Q$ | Insulate roof | $I, P$ | 1 |
+| $R$ | Finish interior | $P$ | 7 |
+| $S$ | Finish exterior | $I, N$ | 7 |
+| $T$ | Landscape | $S$ | 3 |
 
 6-48. A company is in the process of preparing a budget for launching a new product. The following table provides the associated activities and their durations. Construct the project network.
 
-<table><tr><td></td><td>Activity</td><td>Predecessor(s)</td><td>Duration (days)</td></tr><tr><td>A:</td><td>Forecast sales volume</td><td>-</td><td>10</td></tr><tr><td>B:</td><td>Study competitive market</td><td>-</td><td>7</td></tr><tr><td>C:</td><td>Design item and facilities</td><td>$A$</td><td>5</td></tr><tr><td>D:</td><td>Prepare production schedule</td><td>$C$</td><td>3</td></tr><tr><td>E:</td><td>Estimate cost of production</td><td>$D$</td><td>2</td></tr><tr><td>$F$ :</td><td>Set sales price</td><td>$B, E$</td><td>1</td></tr><tr><td>$G$ :</td><td>Prepare budget</td><td>$E, F$</td><td>14</td></tr></table>
+| Activity | Description | Predecessor(s) | Duration (days) |
+| --- | --- | --- | --- |
+| A | Forecast sales volume | - | 10 |
+| B | Study competitive market | - | 7 |
+| C | Design item and facilities | $A$ | 5 |
+| D | Prepare production schedule | $C$ | 3 |
+| E | Estimate cost of production | $D$ | 2 |
+| $F$ | Set sales price | $B, E$ | 1 |
+| $G$ | Prepare budget | $E, F$ | 14 |
 
 6-49. The activities involved in a candlelight choir service are listed in the following table. Construct the project network.
 
-<table id="cross-table-2"><tr><td></td><td>Activity</td><td>Predecessor(s)</td><td>Duration (days)</td></tr><tr><td>A:</td><td>Select music</td><td>-</td><td>2</td></tr><tr><td>B:</td><td>Learn music</td><td>$A$</td><td>14</td></tr><tr><td>C:</td><td>Make copies and buy books</td><td>$A$</td><td>14</td></tr><tr><td>D:</td><td>Tryouts</td><td>$B, C$</td><td>3</td></tr><tr><td>E:</td><td>Rehearsals</td><td>$D$</td><td>70</td></tr><tr><td>$F$ :</td><td>Rent candelabra</td><td>$D$</td><td>14</td></tr><tr><td>$G$ :</td><td>Decorate candelabra</td><td>$F$</td><td>1</td></tr><tr><td>$H$ :</td><td>Set up decorations</td><td>$D$</td><td>1</td></tr><tr><td>$I$ :</td><td>Order choir robe stoles</td><td>$D$</td><td>7</td></tr><tr><td>$J$ :</td><td>Check out public address system</td><td>$D$</td><td>7</td></tr><tr><td>$K$ :</td><td>Select music tracks</td><td>$J$</td><td>14</td></tr><tr><td>$L$ :</td><td>Set up public address system</td><td>$K$</td><td>1</td></tr><tr><td>$M$ :</td><td>Final rehearsal</td><td>$E, G, L$</td><td>1</td></tr><tr><td>$N$ :</td><td>Choir party</td><td>$H, L, M$</td><td>1</td></tr><tr><td>$O$ :</td><td>Final program</td><td>$I, N$</td><td>1</td></tr><tr></tr><tr><td>A:</td><td>Job review</td><td>-</td><td>1</td></tr><tr><td>B:</td><td>Advise customers of temporary outage</td><td>$A$</td><td>$\frac{1}{2}$</td></tr><tr><td>C:</td><td>Requisition stores</td><td>$A$</td><td>1</td></tr><tr><td>D:</td><td>Scout job</td><td>$A$</td><td>$\frac{1}{2}$</td></tr><tr><td>E:</td><td>Secure poles and material</td><td>$C, D$</td><td>3</td></tr><tr><td>F:</td><td>Distribute poles</td><td>$E$</td><td>$3\frac{1}{2}$</td></tr><tr><td>$G$ :</td><td>Pole location coordination</td><td>$D$</td><td>$\frac{1}{2}$</td></tr><tr><td>$H$ :</td><td>Re-stake</td><td>$G$</td><td>$\frac{1}{2}$</td></tr><tr><td>$I$ :</td><td>Dig holes</td><td>$H$</td><td>3</td></tr><tr><td>$J$ :</td><td>Frame and set poles</td><td>$F, I$</td><td>4</td></tr><tr><td>$K$ :</td><td>Cover old conductors</td><td>$F, I$</td><td>1</td></tr><tr><td>$L$ :</td><td>Pull new conductors</td><td>$J, K$</td><td>2</td></tr><tr><td>$M$ :</td><td>Install remaining material</td><td>$L$</td><td>2</td></tr><tr><td>$N$ :</td><td>Sag conductor</td><td>$L$</td><td>2</td></tr><tr><td>$O$ :</td><td>Trim trees</td><td>$D$</td><td>2</td></tr><tr><td>$P$ :</td><td>De-energize and switch lines</td><td>$B, M, N, O$</td><td>$\frac{1}{10}$</td></tr><tr><td>$Q$ :</td><td>Energize and switch new line</td><td>$P$</td><td>$\frac{1}{2}$</td></tr><tr><td>$R$ :</td><td>Clean up</td><td>$Q$</td><td>1</td></tr><tr><td>S:</td><td>Remove old conductor</td><td>$Q$</td><td>1</td></tr><tr><td>T:</td><td>Remove old poles</td><td>$S$</td><td>2</td></tr><tr><td>$U$ :</td><td>Return material to stores</td><td>$R, T$</td><td>2</td></tr></table>
+| Activity | Description | Predecessor(s) | Duration (days) |
+| --- | --- | --- | --- |
+| A | Select music | - | 2 |
+| B | Learn music | $A$ | 14 |
+| C | Make copies and buy books | $A$ | 14 |
+| D | Tryouts | $B, C$ | 3 |
+| E | Rehearsals | $D$ | 70 |
+| $F$ | Rent candelabra | $D$ | 14 |
+| $G$ | Decorate candelabra | $F$ | 1 |
+| $H$ | Set up decorations | $D$ | 1 |
+| $I$ | Order choir robe stoles | $D$ | 7 |
+| $J$ | Check out public address system | $D$ | 7 |
+| $K$ | Select music tracks | $J$ | 14 |
+| $L$ | Set up public address system | $K$ | 1 |
+| $M$ | Final rehearsal | $E, G, L$ | 1 |
+| $N$ | Choir party | $H, L, M$ | 1 |
+| $O$ | Final program | $I, N$ | 1 |
+
+| Activity | Description | Predecessor(s) | Duration (days) |
+| --- | --- | --- | --- |
+| A | Job review | - | 1 |
+| B | Advise customers of temporary outage | $A$ | $\frac{1}{2}$ |
+| C | Requisition stores | $A$ | 1 |
+| D | Scout job | $A$ | $\frac{1}{2}$ |
+| E | Secure poles and material | $C, D$ | 3 |
+| F | Distribute poles | $E$ | $3\frac{1}{2}$ |
+| $G$ | Pole location coordination | $D$ | $\frac{1}{2}$ |
+| $H$ | Re-stake | $G$ | $\frac{1}{2}$ |
+| $I$ | Dig holes | $H$ | 3 |
+| $J$ | Frame and set poles | $F, I$ | 4 |
+| $K$ | Cover old conductors | $F, I$ | 1 |
+| $L$ | Pull new conductors | $J, K$ | 2 |
+| $M$ | Install remaining material | $L$ | 2 |
+| $N$ | Sag conductor | $L$ | 2 |
+| $O$ | Trim trees | $D$ | 2 |
+| $P$ | De-energize and switch lines | $B, M, N, O$ | $\frac{1}{10}$ |
+| $Q$ | Energize and switch new line | $P$ | $\frac{1}{2}$ |
+| $R$ | Clean up | $Q$ | 1 |
+| S | Remove old conductor | $Q$ | 1 |
+| T | Remove old poles | $S$ | 2 |
+| $U$ | Return material to stores | $R, T$ | 2 |
 
 6-50. The widening of a road section requires relocating ("reconductoring") 1700 ft of 13.8-kV overhead primary line. The following table summarizes the activities of the project. Construct the associated project network.
 
 6-51. The following table gives the activities for buying a new car. Construct the project network:
 
-<table><tr><td></td><td>Activity</td><td>Predecessor(s)</td><td>Duration (days)</td></tr><tr><td>$A$ :</td><td>Conduct feasibility study</td><td>-</td><td>3</td></tr><tr><td>$B$ :</td><td>Find potential buyer for present car</td><td>$A$</td><td>14</td></tr><tr><td>$C$ :</td><td>List possible models</td><td>$A$</td><td>1</td></tr><tr><td>$D$ :</td><td>Research all possible models</td><td>$C$</td><td>3</td></tr><tr><td>$E$ :</td><td>Conduct interview with mechanic</td><td>$C$</td><td>1</td></tr><tr><td>$F$ :</td><td>Collect dealer propaganda</td><td>$C$</td><td>2</td></tr><tr><td>$G$ :</td><td>Compile pertinent data</td><td>$D, E, F$</td><td>1</td></tr><tr><td>$H$ :</td><td>Choose top three models</td><td>$G$</td><td>1</td></tr><tr><td>$I$ :</td><td>Test-drive all three choices</td><td>$H$</td><td>3</td></tr><tr><td>$J$ :</td><td>Gather warranty and financing data</td><td>$H$</td><td>2</td></tr><tr><td>$K$ :</td><td>Choose one car</td><td>$I, J$</td><td>2</td></tr><tr><td>$L$ :</td><td>Choose dealer</td><td>$K$</td><td>2</td></tr><tr><td>$M$ :</td><td>Search for desired color and options</td><td>$L$</td><td>4</td></tr><tr><td>$N$ :</td><td>Test-drive chosen model once again</td><td>$L$</td><td>1</td></tr><tr><td>$O$ :</td><td>Purchase new car</td><td>$B, M, N$</td><td>3</td></tr></table>
+| Activity | Description | Predecessor(s) | Duration (days) |
+| --- | --- | --- | --- |
+| $A$ | Conduct feasibility study | - | 3 |
+| $B$ | Find potential buyer for present car | $A$ | 14 |
+| $C$ | List possible models | $A$ | 1 |
+| $D$ | Research all possible models | $C$ | 3 |
+| $E$ | Conduct interview with mechanic | $C$ | 1 |
+| $F$ | Collect dealer propaganda | $C$ | 2 |
+| $G$ | Compile pertinent data | $D, E, F$ | 1 |
+| $H$ | Choose top three models | $G$ | 1 |
+| $I$ | Test-drive all three choices | $H$ | 3 |
+| $J$ | Gather warranty and financing data | $H$ | 2 |
+| $K$ | Choose one car | $I, J$ | 2 |
+| $L$ | Choose dealer | $K$ | 2 |
+| $M$ | Search for desired color and options | $L$ | 4 |
+| $N$ | Test-drive chosen model once again | $L$ | 1 |
+| $O$ | Purchase new car | $B, M, N$ | 3 |
 
 *6-52. Determine the critical path for the project network in Figure 6.44.
 
@@ -1708,6 +2109,14 @@ M3: J3 - J1 - J2
 
 6-67. Consider Problem 6-53. The estimates $\left( {a, m, b}\right)$ are listed in the following table:
 
-<table><tr><td colspan="4">Project (a)</td><td colspan="4">Project (b)</td></tr><tr><td>Activity</td><td>$\left( {a, m, b}\right)$</td><td>Activity</td><td>$\left( {a, m, b}\right)$</td><td>Activity</td><td>$\left( {a, m, b}\right)$</td><td>Activity</td><td>$\left( {a, m, b}\right)$</td></tr><tr><td>1-2</td><td>(5, 6, 8)</td><td>3-6</td><td>$\left( {3,4,5}\right)$</td><td>1-2</td><td>(1,3,4)</td><td>3-7</td><td>(12,13,14)</td></tr><tr><td>1-4</td><td>(1,3,4)</td><td>4-6</td><td>(4,8,10)</td><td>1-3</td><td>(5, 7, 8)</td><td>4-5</td><td>(10,12,15)</td></tr><tr><td>1-5</td><td>(2, 4, 5)</td><td>4-7</td><td>(5,6,8)</td><td>1-4</td><td>(6, 7, 9)</td><td>4-7</td><td>(8,10,12)</td></tr><tr><td>2-3</td><td>(4, 5, 6)</td><td>5-6</td><td>(9,10,15)</td><td>1-6</td><td>(1, 2, 3)</td><td>5-6</td><td>(7,8,11)</td></tr><tr><td>2-5</td><td>(7, 8, 10)</td><td>5-7</td><td>(4,6,8)</td><td>2-3</td><td>(3, 4, 5)</td><td>5-7</td><td>(2, 4, 8)</td></tr><tr><td>2-6</td><td>(8,9,13)</td><td>6-7</td><td>(3, 4, 5)</td><td>2-5</td><td>(7, 8, 9)</td><td>6-7</td><td>(5, 6, 7)</td></tr><tr><td>3-4</td><td>(5, 9, 19)</td><td></td><td></td><td>3-4</td><td>(10,15,20)</td><td></td><td></td></tr></table>
+| Project (a) activity | $\left( {a, m, b}\right)$ | Project (a) activity | $\left( {a, m, b}\right)$ | Project (b) activity | $\left( {a, m, b}\right)$ | Project (b) activity | $\left( {a, m, b}\right)$ |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1-2 | (5, 6, 8) | 3-6 | $\left( {3,4,5}\right)$ | 1-2 | (1,3,4) | 3-7 | (12,13,14) |
+| 1-4 | (1,3,4) | 4-6 | (4,8,10) | 1-3 | (5, 7, 8) | 4-5 | (10,12,15) |
+| 1-5 | (2, 4, 5) | 4-7 | (5,6,8) | 1-4 | (6, 7, 9) | 4-7 | (8,10,12) |
+| 2-3 | (4, 5, 6) | 5-6 | (9,10,15) | 1-6 | (1, 2, 3) | 5-6 | (7,8,11) |
+| 2-5 | (7, 8, 10) | 5-7 | (4,6,8) | 2-3 | (3, 4, 5) | 5-7 | (2, 4, 8) |
+| 2-6 | (8,9,13) | 6-7 | (3, 4, 5) | 2-5 | (7, 8, 9) | 6-7 | (5, 6, 7) |
+| 3-4 | (5, 9, 19) |  |  | 3-4 | (10,15,20) |  |  |
 
 Determine the probabilities that the different nodes of the project are realized without delay.

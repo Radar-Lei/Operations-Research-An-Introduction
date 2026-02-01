@@ -1,34 +1,107 @@
-## CHAPTER 4 Duality and Post-Optimal Analysis
+```markmap
+---
+markmap:
+  height: 650
+---
+# [[#^Chapter|CHAPTER 4: Duality and Post-Optimal Analysis]]
+## [[#^DualDefinition|Dual Problem Definition]]
+### [[#^DualMotivation|Why the dual matters]]
+### [[#^DualEquationForm|Equation-form primal as the baseline]]
+### [[#^DualConstruction|How to construct the dual]]
+#### [[#^DualMapping|Constraints ↔ variables correspondence]]
+#### [[#^DualRhsToObjective|Primal RHS becomes dual objective coefficients]]
+#### [[#^DualTranspose|Transpose a primal column into a dual constraint]]
+#### [[#^DualRulesTable|Sense / inequality direction / variable sign rules]]
+### [[#^DualSpecialCases|Special correspondence rules]]
+#### [[#^UnrestrictedPrimalVar|Unrestricted primal variable ↔ equality dual constraint]]
+#### [[#^PrimalEquation|Primal equation ↔ unrestricted dual variable]]
+### [[#^DualExamples|Worked constructions (Examples 4.1-1 to 4.1-3)]]
+## [[#^RelationshipsSection|Primal–Dual Relationships]]
+### [[#^WhyRelationships|Why relationships matter (tableau recomputation)]]
+### [[#^MatrixSection|Matrix tools for simplex computations]]
+#### [[#^MatrixDefs|Matrix / row-vector / column-vector definitions]]
+#### [[#^MatrixOps|Three basic operations used by the tableau]]
+### [[#^TableauLayout|Simplex tableau layout and the inverse matrix]]
+#### [[#^InverseMatrixRole|Inverse matrix as the computational core]]
+### [[#^DualSolutionSection|Recovering the optimal dual solution]]
+#### [[#^DualMethodOne|Method 1: z-row coefficient + original objective coefficient]]
+#### [[#^DualMethodTwo|Method 2: c_B^T × (optimal inverse)]]
+#### [[#^ExampleDualValues|Example 4.2-1: dual values from an optimal tableau]]
+### [[#^ObjectiveValueRelation|Objective value relation (z ≤ w; at optimum z = w)]]
+### [[#^TableauComputations|Recomputing any tableau iteration]]
+#### [[#^FormulaConstraintColumns|Formula 1: compute any constraint/RHS column]]
+#### [[#^FormulaObjectiveRow|Formula 2: compute reduced costs from the dual]]
+#### [[#^RoundoffRemark|Why this motivates the revised simplex method]]
+## [[#^EconomicInterpretation|Economic Interpretation of Duality]]
+### [[#^ResourceAllocationView|Primal as activities vs resources]]
+### [[#^ShadowPrices|Dual variables as shadow prices (worth per unit)]]
+### [[#^ImputedCost|Dual constraints as imputed costs; reduced cost meaning]]
+### [[#^ReddyMikksExample|Example 4.3-1: interpreting shadow prices]]
+### [[#^ToycoExample|Example 4.3-2: reduced cost and profitability]]
+## [[#^AdditionalAlgorithms|Additional Simplex Algorithms]]
+### [[#^DualSimplex|Dual simplex algorithm]]
+#### [[#^DualFeasibilityRule|Feasibility rule (leaving variable)]]
+#### [[#^DualOptimalityRule|Optimality rule (entering variable ratio test)]]
+#### [[#^DualSimplexStartRequirements|How to set up the starting tableau]]
+#### [[#^DualSimplexExample|Example 4.4-1: dual simplex iterations]]
+### [[#^GeneralizedSimplex|Generalized simplex algorithm]]
+#### [[#^GeneralizedIdea|Tandem use of dual and primal simplex]]
+#### [[#^GeneralizedExample|Example 4.4-2: start infeasible and nonoptimal]]
+## [[#^PostOptimalAnalysis|Post-Optimal Analysis]]
+### [[#^PostOptimalMotivation|Goal: update the optimum efficiently]]
+### [[#^PostOptimalCasesTable|Case table: what changes → which algorithm]]
+### [[#^FeasibilityChanges|Changes affecting feasibility]]
+#### [[#^RhsChange|Right-hand-side changes (inverse × new RHS)]]
+#### [[#^NewConstraint|Adding a new constraint (redundant vs binding)]]
+### [[#^OptimalityChanges|Changes affecting optimality]]
+#### [[#^ObjectiveCoeffChanges|Changing objective coefficients (recompute y and reduced costs)]]
+#### [[#^NewActivity|Adding a new activity (variable): check reduced cost]]
+#### [[#^FireEngineExample|Example 4.5-4: add a profitable new product]]
+### [[#^PostOptimalLimitations|Key limitation: changing basic columns breaks the inverse]]
+## [[#^Bibliography|Bibliography]]
+## [[#^ProblemsSection|Problems]]
+```
 
-### 4.1 DEFINITION OF THE DUAL PROBLEM
 
-The dual problem is defined systematically from the primal (or original) LP model. The two problems are closely related, in the sense that the optimal solution of one problem automatically provides the optimal solution to the other. As such, it may be advantageous computationally in some cases to determine the primal solution by solving the dual. But that computational advantage may be minor when compared with what the rich primal-dual theory offers, as we will demonstrate throughout the book.
+## CHAPTER 4 Duality and Post-Optimal Analysis ^Chapter
+
+### 4.1 DEFINITION OF THE DUAL PROBLEM ^DualDefinition
+
+The dual problem is defined systematically from the primal (or original) LP model. The two problems are closely related, in the sense that the optimal solution of one problem automatically provides the optimal solution to the other. As such, it may be advantageous computationally in some cases to determine the primal solution by solving the dual. But that computational advantage may be minor when compared with what the rich primal-dual theory offers, as we will demonstrate throughout the book. ^DualMotivation
 
 In all textbooks this author is familiar with, the dual is defined for various forms of the primal depending on the sense of optimization (maximization or minimization), types of constraints $\left( { \leq  , \geq  ,\text{ or } = }\right)$ , and sign of the variables (nonnegative or unrestricted). Not only are there too many combinations to memorize, but their use may require a degree of reconciling with the simplex algorithm results, primarily because the primal from which the dual is constructed is not in the standard format used by the simplex algorithm (e.g., the primal from which the dual is constructed may have negative right-hand sides in the constraints).
 
-This book offers a single definition that automatically subsumes all forms of the primal. Our definition of the dual problem requires expressing the primal problem in the equation form presented in Section 3.1, a format consistent with the simplex starting tableau (all the constraints are equations with nonnegative right-hand sides, and all the variables are nonnegative). Hence, any results obtained from the primal optimal solution apply unambiguously to the associated dual problem.
+This book offers a single definition that automatically subsumes all forms of the primal. Our definition of the dual problem requires expressing the primal problem in the equation form presented in Section 3.1, a format consistent with the simplex starting tableau (all the constraints are equations with nonnegative right-hand sides, and all the variables are nonnegative). Hence, any results obtained from the primal optimal solution apply unambiguously to the associated dual problem. ^DualEquationForm
 
-The following is a summary of how the dual is constructed from the (equation-form) primal:
+The following is a summary of how the dual is constructed from the (equation-form) primal: ^DualConstruction
 
-1. A dual variable is assigned to each primal (equation) constraint and a dual constraint is assigned to each primal variable.
+1. A dual variable is assigned to each primal (equation) constraint and a dual constraint is assigned to each primal variable. ^DualMapping
 
-2. The right-hand sides of the primal constraints provide the coefficients of the dual objective function.
+2. The right-hand sides of the primal constraints provide the coefficients of the dual objective function. ^DualRhsToObjective
 
-TABLE 4.1 Rules for Constructing the Dual Problem
+TABLE 4.1 Rules for Constructing the Dual Problem ^DualRulesTable
 
-<table><tr><td rowspan="2">Primal problem objective ${}^{a}$</td><td colspan="3">Dual problem</td></tr><tr><td>Objective</td><td>Constraints type ${}^{\mathrm{b}}$</td><td>Variables sign</td></tr><tr><td>Maximization</td><td>Minimization</td><td>≥</td><td>Unrestricted</td></tr><tr><td>Minimization</td><td>Maximization</td><td><</td><td>Unrestricted</td></tr></table>
+| Primal problem objective ${}^{a}$ | Dual problem objective | Dual constraints type ${}^{\mathrm{b}}$ | Dual variables sign |
+| --- | --- | --- | --- |
+| Maximization | Minimization | $\ge$ | Unrestricted |
+| Minimization | Maximization | $\le$ | Unrestricted |
 
 ${}^{a}$ All primal constraints are equations with nonnegative right-hand sides, and all the variables are nonnegative. ${}^{b}$ A convenient way to remember the constraint type $\left( { \geq  \text{ or } \leq  }\right)$ in the dual is that if the dual objective is a "pointing-down" minimization, then all the constraints are "pointing-up" $\left(  \geq  \right)$ -inequalities. The opposite applies when the dual objective is maximization.
 
-3. The dual constraint corresponding to a primal variable is constructed by transposing the primal variable column into a row with (i) the primal objective coefficient becoming the dual right-hand side and (ii) the remaining constraint coefficients comprising the dual left-hand side coefficients.
+3. The dual constraint corresponding to a primal variable is constructed by transposing the primal variable column into a row with (i) the primal objective coefficient becoming the dual right-hand side and (ii) the remaining constraint coefficients comprising the dual left-hand side coefficients. ^DualTranspose
 
 4. The sense of optimization, direction of inequalities, and the signs of the variables in the dual are governed by the rules in Table 4.1
 
-The following examples demonstrate the use of the rules in Table 4.1. The examples also show that our definition incorporates all forms of the primal automatically.
+The following examples demonstrate the use of the rules in Table 4.1. The examples also show that our definition incorporates all forms of the primal automatically. ^DualExamples
 
 Example 4.1-1
 
-<table><tr><td>Primal</td><td>Primal in equation form</td><td>Dual variables</td></tr><tr><td>Maximize $z = 5{x}_{1} + {12}{x}_{2} + 4{x}_{3}$ subject to</td><td>Maximize $z = 5{x}_{1} + {12}{x}_{2} + 4{x}_{3} + 0{x}_{4}$ subject to</td><td></td></tr><tr><td>${x}_{1} + 2{x}_{2} + {x}_{3} \leq  {10}$</td><td>${x}_{1} + 2{x}_{2} + {x}_{3} + {x}_{4} = {10}$</td><td>${y}_{1}$</td></tr><tr><td>$2{x}_{1} - {x}_{2} + 3{x}_{3} = 8$</td><td>$2{x}_{1} - {x}_{2} + 3{x}_{3} + 0{x}_{4} = 8$</td><td>${y}_{2}$</td></tr><tr><td>${x}_{1},{x}_{2},{x}_{3} \geq  0$</td><td>${x}_{1},{x}_{2},{x}_{3},{x}_{4} \geq  0$</td><td></td></tr></table>
+| Primal | Primal in equation form | Dual variables |
+| --- | --- | --- |
+| Maximize $z = 5{x}_{1} + 12{x}_{2} + 4{x}_{3}$ subject to | Maximize $z = 5{x}_{1} + 12{x}_{2} + 4{x}_{3} + 0{x}_{4}$ subject to |  |
+| ${x}_{1} + 2{x}_{2} + {x}_{3} \le 10$ | ${x}_{1} + 2{x}_{2} + {x}_{3} + {x}_{4} = 10$ | ${y}_{1}$ |
+| $2{x}_{1} - {x}_{2} + 3{x}_{3} = 8$ | $2{x}_{1} - {x}_{2} + 3{x}_{3} + 0{x}_{4} = 8$ | ${y}_{2}$ |
+| ${x}_{1},{x}_{2},{x}_{3} \ge 0$ | ${x}_{1},{x}_{2},{x}_{3},{x}_{4} \ge 0$ |  |
 
 Dual Problem
 
@@ -56,7 +129,12 @@ $$
 
 Example 4.1-2
 
-<table><tr><td>Primal</td><td>Primal in equation form</td><td>Dual variables</td></tr><tr><td>Minimize $z = {15}{x}_{1} + {12}{x}_{2}$ <br> subject to</td><td>Minimize $z = {15}{x}_{1} + {12}{x}_{2} + 0{x}_{3} + 0{x}_{4}$ <br> subject to</td><td></td></tr><tr><td>${x}_{1} + 2{x}_{2} \geq  3$</td><td>${x}_{1} + 2{x}_{2} - {x}_{3} + 0{x}_{4} = 3$</td><td>${y}_{1}$</td></tr><tr><td>$2{x}_{1} - 4{x}_{2} \leq  5$</td><td>$2{x}_{1} - 4{x}_{2} + 0{x}_{3} + {x}_{4} = 5$</td><td>${y}_{2}$</td></tr><tr><td>${x}_{1},{x}_{2} \geq  0$</td><td>${x}_{1},{x}_{2},{x}_{3},{x}_{4} \geq  0$</td><td></td></tr></table>
+| Primal | Primal in equation form | Dual variables |
+| --- | --- | --- |
+| Minimize $z = 15{x}_{1} + 12{x}_{2}$<br>subject to | Minimize $z = 15{x}_{1} + 12{x}_{2} + 0{x}_{3} + 0{x}_{4}$<br>subject to |  |
+| ${x}_{1} + 2{x}_{2} \ge 3$ | ${x}_{1} + 2{x}_{2} - {x}_{3} + 0{x}_{4} = 3$ | ${y}_{1}$ |
+| $2{x}_{1} - 4{x}_{2} \le 5$ | $2{x}_{1} - 4{x}_{2} + 0{x}_{3} + {x}_{4} = 5$ | ${y}_{2}$ |
+| ${x}_{1},{x}_{2} \ge 0$ | ${x}_{1},{x}_{2},{x}_{3},{x}_{4} \ge 0$ |  |
 
 Dual Problem
 
@@ -80,7 +158,13 @@ $$
 
 Example 4.1-3
 
-<table><tr><td>Primal</td><td>Primal in equation form</td><td>Dual variables</td></tr><tr><td>Maximize $z = 5{x}_{1} + 6{x}_{2}$ subject to</td><td>Substitute ${x}_{1} = {x}_{1}^{ - } - {x}_{1}^{ + }$ . <br> Maximize $z = 5{x}_{1}^{ - } - 5{x}_{1}^{ + } + 6{x}_{2}$ <br> subject to</td><td></td></tr><tr><td>${x}_{1} + 2{x}_{2} = 5$</td><td>${x}_{1}^{ - } - {x}_{1}^{ + } + 2{x}_{2}$</td><td>${y}_{1}$</td></tr><tr><td>$- {x}_{1} + 5{x}_{2} \geq  3$</td><td>$- {x}_{1}^{ - } + {x}_{1}^{ + } + 5{x}_{2} - {x}_{3}\; = 3$</td><td>${y}_{2}$</td></tr><tr><td>$4{x}_{1} + 7{x}_{2} \leq  8$</td><td>$4{x}_{1}^{ - } - 4{x}_{1}^{ + } + 7{x}_{2}\; + {x}_{4} = 8$</td><td>${y}_{3}$</td></tr><tr><td>${x}_{1}$ unrestricted, ${x}_{2} \geq  0$</td><td>${x}_{1}^{ - },{x}_{1}^{ + },{x}_{2},{x}_{3},{x}_{4} \geq  0$</td><td></td></tr></table>
+| Primal | Primal in equation form | Dual variables |
+| --- | --- | --- |
+| Maximize $z = 5{x}_{1} + 6{x}_{2}$ subject to | Substitute ${x}_{1} = {x}_{1}^{-} - {x}_{1}^{+}$.<br>Maximize $z = 5{x}_{1}^{-} - 5{x}_{1}^{+} + 6{x}_{2}$<br>subject to |  |
+| ${x}_{1} + 2{x}_{2} = 5$ | ${x}_{1}^{-} - {x}_{1}^{+} + 2{x}_{2}$ | ${y}_{1}$ |
+| $- {x}_{1} + 5{x}_{2} \ge 3$ | $- {x}_{1}^{-} + {x}_{1}^{+} + 5{x}_{2} - {x}_{3} = 3$ | ${y}_{2}$ |
+| $4{x}_{1} + 7{x}_{2} \le 8$ | $4{x}_{1}^{-} - 4{x}_{1}^{+} + 7{x}_{2} + {x}_{4} = 8$ | ${y}_{3}$ |
+| ${x}_{1}$ unrestricted, ${x}_{2} \ge 0$ | ${x}_{1}^{-},{x}_{1}^{+},{x}_{2},{x}_{3},{x}_{4} \ge 0$ |  |
 
 Dual Problem
 
@@ -102,25 +186,40 @@ $$
 \left. \begin{array}{r}  - {y}_{2} \geq  0 \\  {y}_{3} \geq  0 \\  {y}_{1},{y}_{2},{y}_{3}\text{ unrestricted } \end{array}\right\}   \Rightarrow  \left( {{y}_{1}\text{ unrestricted },{y}_{2} \leq  0,{y}_{3} \geq  0}\right)
 $$
 
-The first and second constraints are replaced by an equation. The general rule is that an unrestricted primal variable always corresponds to an equality dual constraint. Conversely, a primal equation produces an unrestricted dual variable, as the first primal constraint demonstrates.
+The first and second constraints are replaced by an equation. ^DualSpecialCases
+
+The general rule is that an unrestricted primal variable always corresponds to an equality dual constraint. ^UnrestrictedPrimalVar
+
+Conversely, a primal equation produces an unrestricted dual variable, as the first primal constraint demonstrates. ^PrimalEquation
 
 TABLE 4.2 Rules for Constructing the Dual Problem
 
-<table><tr><td>Maximization problem</td><td></td><td>Minimization problem</td></tr><tr><td>Constraints</td><td></td><td>Variables</td></tr><tr><td>≥</td><td>$\Leftrightarrow$</td><td>$\leq  0$</td></tr><tr><td><</td><td><img src="https://cdn.noedgeai.com/bo_d56m4aref24c73bhe5pg_3.jpg?x=918&y=437&w=41&h=25&r=0"/></td><td>$\geq  0$</td></tr><tr><td>$=$</td><td></td><td>Unrestricted</td></tr><tr><td>Variables</td><td></td><td>Constraints</td></tr><tr><td>$\geq  0$</td><td></td><td>≥</td></tr><tr><td>$\leq  0$</td><td>$\Leftrightarrow$</td><td></td></tr><tr><td>Unrestricted</td><td>$\Leftrightarrow$</td><td>$=$</td></tr></table>
+| Maximization problem |  | Minimization problem |
+| --- | --- | --- |
+| Constraints |  | Variables |
+| $\ge$ | $\Leftrightarrow$ | $\le 0$ |
+| $\le$ | $\Leftrightarrow$ | $\ge 0$ |
+| $=$ |  | Unrestricted |
+| Variables |  | Constraints |
+| $\ge 0$ |  | $\ge$ |
+| $\le 0$ | $\Leftrightarrow$ | $\le$ |
+| Unrestricted | $\Leftrightarrow$ | $=$ |
 
 Summary of the rules for constructing the dual. Table 4.2 summarizes the primal-dual rules as they are usually presented in the literature. It is a good exercise to verify that these explicit rules are subsumed by the two rules in Table 4.1.
 
 Note that the column headings in the table do not use the designation primal and dual. What matters here is the sense of optimization. If the primal is maximization, then the dual is minimization, and vice versa. Note also that no provision is made for including artificial variables in the primal because artificial variables would not change the definition of the dual (see Problem 4-5).
 
-### 4.2 PRIMAL-DUAL RELATIONSHIPS
+### 4.2 PRIMAL-DUAL RELATIONSHIPS ^RelationshipsSection
 
-Changes made in the data of an LP model can affect the optimality and/or the feasibility of the current optimum solution. This section introduces a number of primal-dual relationships that can be used to recompute the elements of the optimal simplex tableau. These relationships form the basis for the economic interpretation of the LP model and for post-optimality analysis.
+Changes made in the data of an LP model can affect the optimality and/or the feasibility of the current optimum solution. This section introduces a number of primal-dual relationships that can be used to recompute the elements of the optimal simplex tableau. These relationships form the basis for the economic interpretation of the LP model and for post-optimality analysis. ^WhyRelationships
 
 The section starts with a brief review of matrices, a convenient tool for carrying out the simplex tableau computations. A more detailed review of matrices is given in Appendix D on the website.
 
-#### 4.2.1 Review of Simple Matrix Operations
+#### 4.2.1 Review of Simple Matrix Operations ^MatrixSection
 
-The simplex tableau can be generated by three elementary matrix operations: (row vector) $\times  \left( \text{ matrix }\right) ,\left( \text{ matrix }\right)  \times  \left( \text{ column vector }\right)$ , and (scalar) $\times  \left( \text{ matrix }\right)$ . These operations are summarized here for convenience. First, we introduce some matrix definitions:
+The simplex tableau can be generated by three elementary matrix operations: (row vector) $\times  \left( \text{ matrix }\right) ,\left( \text{ matrix }\right)  \times  \left( \text{ column vector }\right)$ , and (scalar) $\times  \left( \text{ matrix }\right)$ . ^MatrixOps
+
+These operations are summarized here for convenience. First, we introduce some matrix definitions: ^MatrixDefs
 
 1. A matrix, $\mathbf{A}$ , of size $\left( {m \times  n}\right)$ is a rectangular array of elements with $m$ rows and $n$ columns.
 
@@ -156,9 +255,9 @@ $$
 \left( {10}\right) \left( \begin{array}{lll} 1 & 2 & 3 \\  4 & 5 & 6 \end{array}\right)  = \left( \begin{array}{lll} {10} & {20} & {30} \\  {40} & {50} & {60} \end{array}\right)
 $$
 
-#### 4.2.2 Simplex Tableau Layout
+#### 4.2.2 Simplex Tableau Layout ^TableauLayout
 
-The simplex tableau in Chapter 3 is the basis for the presentation in this chapter. Figure 4.1 represents the starting and general simplex tableaus schematically. In the starting tableau, the constraint coefficients under the starting variables form an identity matrix (all main-diagonal elements are 1, and all off-diagonal elements are zero). With this arrangement, subsequent iterations of the simplex tableau generated by the Gauss-Jordan row operations (see Chapter 3) modify the elements of the identity matrix to produce what is known as the inverse matrix. As we will see in the remainder of this chapter, the inverse matrix is key to computing all the elements of the associated simplex tableau.
+The simplex tableau in Chapter 3 is the basis for the presentation in this chapter. Figure 4.1 represents the starting and general simplex tableaus schematically. In the starting tableau, the constraint coefficients under the starting variables form an identity matrix (all main-diagonal elements are 1, and all off-diagonal elements are zero). With this arrangement, subsequent iterations of the simplex tableau generated by the Gauss-Jordan row operations (see Chapter 3) modify the elements of the identity matrix to produce what is known as the inverse matrix. As we will see in the remainder of this chapter, the inverse matrix is key to computing all the elements of the associated simplex tableau. ^InverseMatrixRole
 
 Remarks. The inverse matrix in the general tableau has its roots in the starting tableau constraint columns. That means that the inverse at any iteration can be computed (from scratch) using the original constraint columns of the LP problem (as will be demonstrated in the remarks following Example 4.2-1). This is an important relationship that has been exploited to control round-off errors in the simplex algorithm computations.
 
@@ -168,19 +267,19 @@ FIGURE 4.1
 
 Schematic representation of the starting and general simplex tableaus
 
-#### 4.2.3 Optimal Dual Solution
+#### 4.2.3 Optimal Dual Solution ^DualSolutionSection
 
 The primal and dual solutions are closely related, in the sense that the optimal solution of either problem directly yields the optimal solution to the other, as is explained subsequently. Thus, in an LP model in which the number of variables is considerably smaller than the number of constraints, computational savings may be realized by solving the dual because the amount of computations associated with determining the inverse matrix primarily increases with the number of constraints. Notice that the rule addresses only the amount of computations in each iteration but says nothing about the total number of iterations needed to solve each problem.
 
 This section provides two methods for determining the dual values.
 
-Method 1.
+Method 1. ^DualMethodOne
 
 $$
 \left( \begin{matrix} \text{ Optimal value of } \\  \text{ dual variable }{y}_{i} \end{matrix}\right)  = \left( \begin{matrix} \text{ Optimal primal }z\text{ -coefficient of starting basic variable }{x}_{i} \\   + \\  \text{ Original objective coefficient of }{x}_{i} \end{matrix}\right)
 $$
 
-Method 2.
+Method 2. ^DualMethodTwo
 
 $$
 \left( \begin{array}{l} \text{ Optimal values } \\  \text{ of dual variables } \end{array}\right)  = \left( \begin{matrix} \text{ Row vector of } \\  \text{ original objective coefficients } \\  \text{ of optimal primal basic variables } \end{matrix}\right)  \times  \left( \begin{matrix} \text{ Optimal primal } \\  \text{ inverse } \end{matrix}\right)
@@ -188,7 +287,7 @@ $$
 
 The elements of the row vector must appear in the same order the basic variables are listed in the Basic-column of the simplex tableau.
 
-Example 4.2-1
+Example 4.2-1 ^ExampleDualValues
 
 Consider the following LP:
 
@@ -222,7 +321,13 @@ We now show how the optimal dual values are determined using the two methods des
 
 Method 1. In Table 4.3, the starting primal variables ${x}_{4}$ and $R$ uniquely correspond to the dual variables ${y}_{1}$ and ${y}_{2}$ , respectively. Thus, we determine the optimum dual solution as follows:
 
-<table><tr><td>Starting primal basic variables</td><td>${x}_{4}$</td><td>$R$</td></tr><tr><td>$z$ -equation coefficients</td><td>$\frac{29}{5}$</td><td>$- \frac{2}{5} + M$</td></tr><tr><td>Original objective coefficient</td><td>0</td><td>$- M$</td></tr><tr><td>Dual variables</td><td>${y}_{1}$</td><td>${y}_{2}$</td></tr><tr><td>Optimal dual values</td><td>$\frac{29}{5} + 0 = \frac{29}{5}$</td><td>$- \frac{2}{5} + M + \left( {-M}\right)  =  - \frac{2}{5}$</td></tr></table>
+|  | ${x}_{4}$ | $R$ |
+| --- | --- | --- |
+| Starting primal basic variables | ${x}_{4}$ | $R$ |
+| $z$-equation coefficients | $\frac{29}{5}$ | $-\frac{2}{5} + M$ |
+| Original objective coefficient | 0 | $-M$ |
+| Dual variables | ${y}_{1}$ | ${y}_{2}$ |
+| Optimal dual values | $\frac{29}{5}$ | $-\frac{2}{5}$ |
 
 Method 2. The optimal inverse matrix, highlighted in Table 4.3 under the starting variables ${x}_{4}$ and $R$ , is
 
@@ -232,7 +337,11 @@ $$
 
 TABLE 4.3 Optimal Tableau of the Primal of Example 4.2-1
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>$R$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>3 5</td><td>29 5</td><td>$- \frac{2}{5} + M$</td><td>${54}\frac{4}{5}$</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>$- \frac{1}{5}$</td><td>$\frac{2}{5}$</td><td>$- \frac{1}{5}$</td><td>$\frac{12}{5}$</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>7</td><td>1</td><td>2 5</td><td>26 5</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | $R$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | $\frac{3}{5}$ | $\frac{29}{5}$ | $-\frac{2}{5} + M$ | $54\frac{4}{5}$ |
+| ${x}_{2}$ | 0 | 1 | $-\frac{1}{5}$ | $\frac{2}{5}$ | $-\frac{1}{5}$ | $\frac{12}{5}$ |
+| ${x}_{1}$ | 1 | 0 | 7 | 1 | $\frac{2}{5}$ | $\frac{26}{5}$ |
 
 The order of the optimal primal basic variables in the Basic-column is ${x}_{2}$ followed by ${x}_{1}$ . The elements of the original objective coefficients for the two variables must appear in the same order-namely,
 
@@ -278,7 +387,7 @@ FIGURE 4.2
 
 Relationship between maximum $z$ and minimum $w$
 
-Primal-dual objective values. For any pair of feasible primal and dual solutions,
+Primal-dual objective values. For any pair of feasible primal and dual solutions, ^ObjectiveValueRelation
 
 $$
 \left( \begin{array}{l} \text{ Objective value in the } \\  \text{ maximization problem } \end{array}\right)  \leq  \left( \begin{array}{l} \text{ Objective value in the } \\  \text{ minimization problem } \end{array}\right)
@@ -298,7 +407,7 @@ Minimization (dual): $w = {10}{y}_{1} + 8{y}_{2} = {10}\left( 6\right)  + 8\left
 
 Since $z < w$ , the solutions are not optimal. The optimum value of $z\left( { = {54}\frac{4}{5}}\right)$ falls within the range $\left( {{10}^{\frac{2}{3}},{60}}\right)$ .
 
-#### 4.2.4 Simplex Tableau Computations
+#### 4.2.4 Simplex Tableau Computations ^TableauComputations
 
 This section shows how any iteration of the simplex tableau can be generated from the original data of the problem, the inverse associated with the iteration, and the dual problem. Using the layout of the simplex tableau in Figure 4.1, we can divide the computations into two types:
 
@@ -306,13 +415,13 @@ This section shows how any iteration of the simplex tableau can be generated fro
 
 2. Objective $z$ -row.
 
-Formula 1: Constraint column computations. In any simplex iteration, a left-hand or a right-hand side column is computed as follows:
+Formula 1: Constraint column computations. In any simplex iteration, a left-hand or a right-hand side column is computed as follows: ^FormulaConstraintColumns
 
 $$
 \left( \begin{matrix} \text{ Constraint column } \\  \text{ in iteration }i \end{matrix}\right)  = \left( \begin{matrix} \text{ Inverse in } \\  \text{ iteration }i \end{matrix}\right)  \times  \left( \begin{matrix} \text{ Original } \\  \text{ constraint column } \end{matrix}\right)
 $$
 
-Formula 2: Objective $z$ -row computations. In any simplex iteration, the objective equation coefficient (reduced cost) of ${x}_{j}$ is computed as follows:
+Formula 2: Objective $z$ -row computations. In any simplex iteration, the objective equation coefficient (reduced cost) of ${x}_{j}$ is computed as follows: ^FormulaObjectiveRow
 
 $$
 \left( \begin{matrix} \text{ Primal z-equation } \\  \text{ coefficient of variable }{x}_{j} \end{matrix}\right)  = \left( \begin{matrix} \text{ Left-hand side of } \\  j\text{ th dual constraint } \end{matrix}\right)  - \left( \begin{matrix} \text{ Right-hand side of } \\  j\text{ th dual constraint } \end{matrix}\right)
@@ -348,19 +457,21 @@ $$
 
 Similar computations can be used to determine the $z$ -coefficients of ${x}_{2},{x}_{3}$ , and ${x}_{4}$ (verify!).
 
-Remarks. The simplex tableau format in Chapter 3 which generates the current tableau from the immediately preceding one is a sure recipe for propagating the roundoff error, greatly distorting the quality of the optimum solution. Fortunately there is a way out! You will notice from the discussion in Sections 4.2.2 and 4.2.3 that the inverse matrix of an iteration plays the key role in determining all the elements of the associated simplex tableau (by using this inverse and the original data of the problem). Indeed, the inverse itself can be determined from the original data once the basic solution is known, as demonstrated in the remarks following Example 4.2-1. This essentially means that at any iteration, all the elements of a tableau (inverse matrix included) can be determined from the original data of the model. This is a powerful result that has been used to keep computational round-off error in check. And this is precisely the overriding reason for the development of the revised simplex method presented in Chapter 7.
+Remarks. The simplex tableau format in Chapter 3 which generates the current tableau from the immediately preceding one is a sure recipe for propagating the roundoff error, greatly distorting the quality of the optimum solution. Fortunately there is a way out! You will notice from the discussion in Sections 4.2.2 and 4.2.3 that the inverse matrix of an iteration plays the key role in determining all the elements of the associated simplex tableau (by using this inverse and the original data of the problem). Indeed, the inverse itself can be determined from the original data once the basic solution is known, as demonstrated in the remarks following Example 4.2-1. This essentially means that at any iteration, all the elements of a tableau (inverse matrix included) can be determined from the original data of the model. This is a powerful result that has been used to keep computational round-off error in check. And this is precisely the overriding reason for the development of the revised simplex method presented in Chapter 7. ^RoundoffRemark
 
-### 4.3 ECONOMIC INTERPRETATION OF DUALITY
+### 4.3 ECONOMIC INTERPRETATION OF DUALITY ^EconomicInterpretation
 
-The LP problem can be viewed as a resource allocation model that seeks to maximize revenue under limited resources. Looking at the problem from this standpoint, the associated dual problem offers interesting economic interpretations.
+The LP problem can be viewed as a resource allocation model that seeks to maximize revenue under limited resources. Looking at the problem from this standpoint, the associated dual problem offers interesting economic interpretations. ^ResourceAllocationView
 
 To formalize the discussion, consider the following representation of the general primal and dual problems:
 
-<table><tr><td>Primal</td><td>Dual</td></tr><tr><td>Maximize $z = \mathop{\sum }\limits_{{j = 1}}^{n}{c}_{j}{x}_{j}$</td><td>Minimize $w = \mathop{\sum }\limits_{{i = 1}}^{m}{b}_{i}{y}_{i}$</td></tr><tr><td>subject to <br> $\mathop{\sum }\limits_{{j = 1}}^{n}{a}_{ij}{x}_{j} \leq  {b}_{i}, i = 1,2,\ldots , m$</td><td>subject to <br> $\mathop{\sum }\limits_{{i = 1}}^{m}{a}_{ij}{y}_{i} \geq  {c}_{j}, j = 1,2,\ldots , n$</td></tr><tr><td>${x}_{j} \geq  0, j = 1,2,\ldots , n$</td><td>${y}_{i} \geq  0, i = 1,2,\ldots , m$</td></tr></table>
+| Primal | Dual |
+| --- | --- |
+| Maximize $z = \sum_{j=1}^{n} {c}_{j}{x}_{j}$<br>subject to<br>$\sum_{j=1}^{n} {a}_{ij}{x}_{j} \le {b}_{i},\ i=1,2,\ldots,m$<br>${x}_{j} \ge 0,\ j=1,2,\ldots,n$ | Minimize $w = \sum_{i=1}^{m} {b}_{i}{y}_{i}$<br>subject to<br>$\sum_{i=1}^{m} {a}_{ij}{y}_{i} \ge {c}_{j},\ j=1,2,\ldots,n$<br>${y}_{i} \ge 0,\ i=1,2,\ldots,m$ |
 
 Viewed as a resource allocation model, the primal problem has $n$ economic activities and $m$ resources. The coefficient ${c}_{j}$ in the primal represents the revenue per unit of activity $j$ and resource $i$ with availability ${b}_{i}$ is consumed at the rate ${a}_{ij}$ units per unit of activity $j$ .
 
-#### 4.3.1 Economic Interpretation of Dual Variables
+#### 4.3.1 Economic Interpretation of Dual Variables ^ShadowPrices
 
 Section 4.2.3 states that for any two primal and dual feasible solutions, the values of the objective functions, when finite, must satisfy the following inequality:
 
@@ -388,17 +499,19 @@ $$
 
 This relationship says that so long as the total revenue from all the activities is less than the worth of the resources, the corresponding primal and dual solutions are not optimal. Optimality is reached only when the resources have been exploited completely. This can happen only when the input (worth of the resources) equals the output (revenue dollars).
 
-Example 4.3-1
+Example 4.3-1 ^ReddyMikksExample
 
 The Reddy Mikks model (Example 2.1-1) and its dual are given as follows:
 
-<table><tr><td>Reddy Mikks primal</td><td>Reddy Mikks dual</td></tr><tr><td>Maximize $z = 5{x}_{1} + 4{x}_{2}$</td><td>Minimize $w = {24}{y}_{1} + 6{y}_{2} + {y}_{3} + 2{y}_{4}$</td></tr><tr><td>subject to</td><td>subject to</td></tr><tr><td>$6{x}_{1} + 4{x}_{2} \leq  {24}$ (resource1, ${M1}$ )</td><td>$6{y}_{1} + {y}_{2} - {y}_{3} \geq  5$</td></tr><tr><td>${x}_{1} + 2{x}_{2} \leq  6$ (resource 2, ${M2}$ )</td><td>$4{y}_{1} + 2{y}_{2} + {y}_{3} + {y}_{4} \geq  4$</td></tr><tr><td>$- {x}_{1} + {x}_{2} \leq  1$ (resource 3, market)</td><td>${y}_{1},{y}_{2},{y}_{3},{y}_{4} \geq  0$</td></tr><tr><td>${x}_{2} \leq  2$ (resource 4, demand)</td><td></td></tr><tr><td colspan="2">${x}_{1},{x}_{2} \geq  0$</td></tr><tr><td>Optimum solution:</td><td>Optimum solution:</td></tr><tr><td>${x}_{1} = 3,{x}_{2} = {1.5}, z = {21}$</td><td>${y}_{1} = {.75},{y}_{2} = {0.5},{y}_{3} = {y}_{4} = 0, w = {21}$</td></tr></table>
+| Reddy Mikks primal | Reddy Mikks dual |
+| --- | --- |
+| Maximize $z = 5{x}_{1} + 4{x}_{2}$<br>subject to<br>$6{x}_{1} + 4{x}_{2} \le 24$ (resource 1, ${M1}$)<br>${x}_{1} + 2{x}_{2} \le 6$ (resource 2, ${M2}$)<br>$- {x}_{1} + {x}_{2} \le 1$ (resource 3, market)<br>${x}_{2} \le 2$ (resource 4, demand)<br>${x}_{1},{x}_{2} \ge 0$<br>Optimum solution: ${x}_{1}=3,{x}_{2}=1.5,\ z=21$ | Minimize $w = 24{y}_{1} + 6{y}_{2} + {y}_{3} + 2{y}_{4}$<br>subject to<br>$6{y}_{1} + {y}_{2} - {y}_{3} \ge 5$<br>$4{y}_{1} + 2{y}_{2} + {y}_{3} + {y}_{4} \ge 4$<br>${y}_{1},{y}_{2},{y}_{3},{y}_{4} \ge 0$<br>Optimum solution: ${y}_{1}=0.75,{y}_{2}=0.5,{y}_{3}={y}_{4}=0,\ w=21$ |
 
 The Reddy Mikks model deals with the production of two types of paint (interior and exterior) using two raw materials ${M1}$ and ${M2}$ (resources 1 and 2) and subject to market and demand limits represented by the third and fourth constraints. The model determines the amounts (in tons/day) of exterior and interior paints that maximize the daily revenue (expressed in thousands of dollars).
 
 The optimal dual solution shows that the dual price (worth per unit) of raw material ${M1}$ (resource 1) is ${y}_{1} = {.75}$ (or $\$ {750}$ per ton) and that of raw material ${M2}$ (resource 2) is ${y}_{2} = {.5}$ (or \$500 per ton). These results hold true for specific feasibility ranges as was shown in Section 3.6. For resources 3 and 4, representing the market and demand limits, the dual prices are both zero, which indicates that their associated resources are abundant (i.e., they are not critical in determining the optimum and, hence, their worth per unit, or dual price, is zero).
 
-#### 4.3.2 Economic Interpretation of Dual Constraints
+#### 4.3.2 Economic Interpretation of Dual Constraints ^ImputedCost
 
 The economic meaning of the dual constraints can be achieved by using Formula 2 in Section 4.2.4, which states that at any primal iteration,
 
@@ -424,13 +537,15 @@ $$
 
 Thus, the maximization optimality condition says that it is economically advantageous to increase the level of an activity if its unit revenue exceeds its unit imputed cost.
 
-## Example 4.3-2
+## Example 4.3-2 ^ToycoExample
 
 TOYCO assembles three types of toys-trains, trucks, and cars-using three operations. Available assembly times for the three operations are 430, 460, and 420 minutes per day, respectively, and the revenues per toy train, truck, and car are \$3, \$2, and \$5, respectively. The assembly times per train for the three operations are 1, 3, and 1 minutes, respectively. The corresponding times per truck and per car are $\left( {2,0,4}\right)$ and $\left( {1,2,0}\right)$ minutes (a zero time indicates that the operation is not used).
 
 Letting ${x}_{1},{x}_{2}$ , and ${x}_{3}$ represent the daily number of units assembled of trains, trucks, and cars, the associated LP model and its dual are given as follows:
 
-<table><tr><td>TOYCO primal</td><td>TOYCO dual</td></tr><tr><td>Maximize $z = 3{x}_{1} + 2{x}_{2} + 5{x}_{3}$ <br> subject to</td><td>Minimize $w = {430}{y}_{1} + {460}{y}_{2} + {420}{y}_{3}$ <br> subject to</td></tr><tr><td>${x}_{1} + 2{x}_{2} + {x}_{3} \leq  {430}$ (Operation 1)</td><td>${y}_{1} + 3{y}_{2} + {y}_{3} \geq  3$</td></tr><tr><td>$3{x}_{1} \; 1 + 2{x}_{3} \leq  {460}$ (Operation 2)</td><td>$2{y}_{1}\; + 4{y}_{3} \geq  2$</td></tr><tr><td>${x}_{1} + 4{x}_{2}\; \leq  {420}$ (Operation 3)</td><td>${y}_{1} + 2{y}_{2}\; \geq  5$</td></tr><tr><td>${x}_{1},{x}_{2},{x}_{3} \geq  0$</td><td>${y}_{1},{y}_{2},{y}_{3} \geq  0$</td></tr><tr><td>Optimal solution:</td><td>Optimal solution:</td></tr><tr><td>${x}_{1} = 0,{x}_{2} = {100},{x}_{3} = {230}, z = \$ {1350}$</td><td>${y}_{1} = 1,{y}_{2} = 2,{y}_{3} = 0, w = \$ {1350}$</td></tr></table>
+| TOYCO primal | TOYCO dual |
+| --- | --- |
+| Maximize $z = 3{x}_{1} + 2{x}_{2} + 5{x}_{3}$<br>subject to<br>${x}_{1} + 2{x}_{2} + {x}_{3} \le 430$ (Operation 1)<br>$3{x}_{1} + 2{x}_{3} \le 460$ (Operation 2)<br>${x}_{1} + 4{x}_{2} \le 420$ (Operation 3)<br>${x}_{1},{x}_{2},{x}_{3} \ge 0$<br>Optimal solution: ${x}_{1}=0,{x}_{2}=100,{x}_{3}=230,\ z=\$1350$ | Minimize $w = 430{y}_{1} + 460{y}_{2} + 420{y}_{3}$<br>subject to<br>${y}_{1} + 3{y}_{2} + {y}_{3} \ge 3$<br>$2{y}_{1} + 4{y}_{3} \ge 2$<br>${y}_{1} + 2{y}_{2} \ge 5$<br>${y}_{1},{y}_{2},{y}_{3} \ge 0$<br>Optimal solution: ${y}_{1}=1,{y}_{2}=2,{y}_{3}=0,\ w=\$1350$ |
 
 The optimal primal solution calls for producing no toy trains, 100 toy trucks, and 230 toy cars.
 
@@ -454,17 +569,17 @@ $$
 
 Any values of ${r}_{1}$ and ${r}_{2}$ that satisfy these conditions will make toy trains profitable. Note, however, that this goal may not be attainable because it requires impractically large reductions in the times of operations 1 and 2. For example, even a 50% reduction (i.e., ${r}_{1} = {r}_{2} = {.5}$ ) fails to satisfy the given condition. The logical conclusion then is that TOYCO should not produce toy trains unless the time reductions are accompanied with increase in unit revenue.
 
-### 4.4 ADDITIONAL SIMPLEX ALGORITHMS
+### 4.4 ADDITIONAL SIMPLEX ALGORITHMS ^AdditionalAlgorithms
 
 Chapter 3 presents the (primal) simplex algorithm that starts feasible and continues to be feasible until the optimum is reached. This section presents two additional algorithms: The dual simplex starts infeasible (but better than optimal) and remains infeasible until feasibility is restored, and the (author's) generalized simplex combines the primal and dual simplex methods, starting both nonoptimal and infeasible. All three algorithms are used with post-optimal analysis in Section 4.5.
 
-#### 4.4.1 Dual Simplex Algorithm
+#### 4.4.1 Dual Simplex Algorithm ^DualSimplex
 
 The dual simplex method starts with a better than optimal and infeasible basic solution. The optimality and feasibility conditions are designed to preserve the optimality of the basic solutions as the solution move toward feasibility.
 
-Dual feasibility condition. The leaving variable, ${x}_{r}$ , is the basic variable having the most negative value (ties are broken arbitrarily). If all the basic variables are nonnegative, the algorithm ends. ${}^{1}$
+Dual feasibility condition. The leaving variable, ${x}_{r}$ , is the basic variable having the most negative value (ties are broken arbitrarily). If all the basic variables are nonnegative, the algorithm ends. ${}^{1}$ ^DualFeasibilityRule
 
-Dual optimality condition. Given that ${x}_{r}$ is the leaving variable, let ${\bar{c}}_{j}$ be the reduced cost of nonbasic variable ${x}_{j}$ and ${\alpha }_{rj}$ the constraint coefficient in the ${x}_{r}$ -row and ${x}_{j}$ -column of the tableau. The entering variable is the nonbasic variable with ${\alpha }_{rj} < 0$ that corresponds to
+Dual optimality condition. Given that ${x}_{r}$ is the leaving variable, let ${\bar{c}}_{j}$ be the reduced cost of nonbasic variable ${x}_{j}$ and ${\alpha }_{rj}$ the constraint coefficient in the ${x}_{r}$ -row and ${x}_{j}$ -column of the tableau. The entering variable is the nonbasic variable with ${\alpha }_{rj} < 0$ that corresponds to ^DualOptimalityRule
 
 $$
 \mathop{\min }\limits_{{\text{ Nonbasic }{x}_{j}}}\left\{  {\left| \frac{{\bar{c}}_{j}}{{\alpha }_{rj}}\right| ,{\alpha }_{rj} < 0}\right\}
@@ -472,7 +587,7 @@ $$
 
 (Ties are broken arbitrarily.) If ${\alpha }_{rj} \geq  0$ for all nonbasic ${x}_{j}$ , the problem has no feasible solution.
 
-To start the LP optimal and infeasible, two requirements must be met:
+To start the LP optimal and infeasible, two requirements must be met: ^DualSimplexStartRequirements
 
 1. The objective function must satisfy the optimality condition of the regular simplex method (Chapter 3).
 
@@ -486,7 +601,7 @@ ${}^{1}$ As explained in Section 3.7, a different feasibility condition, called 
 
 ---
 
-Example 4.4-1
+Example 4.4-1 ^DualSimplexExample
 
 $$
 \text{ Minimize }z = 3{x}_{1} + 2{x}_{2} + {x}_{3}
@@ -512,23 +627,44 @@ $$
 
 In the present example, the first two inequalities are multiplied by -1 to convert them to $\left(  \leq  \right)$ constraints. The starting tableau is thus given as follows:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-3</td><td>-2</td><td>-1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{4}$</td><td>-3</td><td>-1</td><td>-1</td><td>1</td><td>0</td><td>0</td><td>-3</td></tr><tr><td>${x}_{5}$</td><td>3</td><td>-3</td><td>-1</td><td>0</td><td>1</td><td>0</td><td>-6</td></tr><tr><td>${x}_{6}$</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>3</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -3 | -2 | -1 | 0 | 0 | 0 | 0 |
+| ${x}_{4}$ | -3 | -1 | -1 | 1 | 0 | 0 | -3 |
+| ${x}_{5}$ | 3 | -3 | -1 | 0 | 1 | 0 | -6 |
+| ${x}_{6}$ | 1 | 1 | 1 | 0 | 0 | 1 | 3 |
 
 The tableau is optimal because all the reduced costs in the $z$ -row are $\leq  0\left( {{\bar{c}}_{1} =  - 3,{\bar{c}}_{2} =  - 2}\right.$ , $\left. {\bar{c} =  - 1,{\bar{c}}_{4} = 0,{\bar{c}}_{5} = 0,{\bar{c}}_{6} = 0}\right)$ . It is also infeasible because at least one of the basic variables is negative $\left( {{x}_{4} =  - 3,{x}_{5} =  - 6,{x}_{6} = 3}\right)$ .
 
 According to the dual feasibility condition, ${x}_{5}\left( { =  - 6}\right)$ is the leaving variable. The next table shows how the dual optimality condition is used to determine the entering variable.
 
-<table><tr><td></td><td>$j = 1$</td><td>$j = 2$</td><td>$j = 3$</td></tr><tr><td>Nonbasic variable</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td></tr><tr><td>$z$ -row $\left( {\bar{c}}_{j}\right)$</td><td>-3</td><td>-2</td><td>-1</td></tr><tr><td>${x}_{5}$ -row, ${\alpha }_{4j}$</td><td>3</td><td>-3</td><td>-1</td></tr><tr><td>Ratio, $\left| \frac{{\bar{c}}_{j}}{{\alpha }_{5j}}\right| ,{\alpha }_{5j} < 0$</td><td>-</td><td>2</td><td>1</td></tr></table>
+|  | $j = 1$ | $j = 2$ | $j = 3$ |
+| --- | --- | --- | --- |
+| Nonbasic variable | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ |
+| $z$-row $\left( {\bar{c}}_{j}\right)$ | -3 | -2 | -1 |
+| ${x}_{5}$-row, ${\alpha }_{5j}$ | 3 | -3 | -1 |
+| Ratio $\left|\frac{{\bar{c}}_{j}}{{\alpha }_{5j}}\right|$ (only if ${\alpha }_{5j}<0$) | — | 2 | 1 |
 
 The ratios show that ${x}_{2}$ is the entering variable.
 
 The next tableau is obtained by using the familiar row operations, which give
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-5</td><td>0</td><td>$- \frac{1}{3}$</td><td>0</td><td>$- \frac{2}{3}$</td><td>0</td><td>4</td></tr><tr><td>${x}_{4}$</td><td>-4</td><td>0</td><td>$- \frac{2}{3}$</td><td>1</td><td>$- \frac{1}{3}$</td><td>0</td><td>-1</td></tr><tr><td>${x}_{2}$</td><td>-1</td><td>1</td><td>$\frac{1}{3}$</td><td>0</td><td>$- \frac{1}{3}$</td><td>0</td><td>2</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>$\frac{2}{3}$</td><td>0</td><td>$\frac{1}{3}$</td><td>1</td><td>1</td></tr><tr><td>Ratio</td><td>$\frac{5}{4}$</td><td>-</td><td>$\frac{1}{2}$</td><td>-</td><td>2</td><td>-</td><td></td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -5 | 0 | $-\frac{1}{3}$ | 0 | $-\frac{2}{3}$ | 0 | 4 |
+| ${x}_{4}$ | -4 | 0 | $-\frac{2}{3}$ | 1 | $-\frac{1}{3}$ | 0 | -1 |
+| ${x}_{2}$ | -1 | 1 | $\frac{1}{3}$ | 0 | $-\frac{1}{3}$ | 0 | 2 |
+| ${x}_{6}$ | 2 | 0 | $\frac{2}{3}$ | 0 | $\frac{1}{3}$ | 1 | 1 |
+| Ratio | $\frac{5}{4}$ | — | $\frac{1}{2}$ | — | 2 | — |  |
 
 The preceding tableau shows that ${x}_{4}$ leaves and ${x}_{3}$ enters, thus yielding the following tableau, which is both optimal and feasible:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>-3</td><td>0</td><td>0</td><td>$- \frac{1}{2}$</td><td>$- \frac{1}{2}$</td><td>0</td><td>$\frac{9}{2}$</td></tr><tr><td>${x}_{3}$</td><td>6</td><td>0</td><td>1</td><td>$- \frac{3}{2}$</td><td>$\frac{1}{2}$</td><td>0</td><td>$\frac{3}{2}$</td></tr><tr><td>${x}_{2}$</td><td>-3</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{2}$</td><td>0</td><td>$\frac{3}{2}$</td></tr><tr><td>${x}_{6}$</td><td>-2</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | -3 | 0 | 0 | $-\frac{1}{2}$ | $-\frac{1}{2}$ | 0 | $\frac{9}{2}$ |
+| ${x}_{3}$ | 6 | 0 | 1 | $-\frac{3}{2}$ | $\frac{1}{2}$ | 0 | $\frac{3}{2}$ |
+| ${x}_{2}$ | -3 | 1 | 0 | $\frac{1}{2}$ | $-\frac{1}{2}$ | 0 | $\frac{3}{2}$ |
+| ${x}_{6}$ | -2 | 0 | 0 | 1 | 0 | 1 | 0 |
 
 Notice how the dual simplex works. In all the iterations, optimality is maintained (all reduced costs are $\leq  0$ ) as each new iteration moves the solution toward feasibility. At iteration 3, feasibility is restored for the first time, and the process ends with the optimal feasible solution given as ${x}_{1} = 0,{x}_{2} = \frac{3}{2},{x}_{2} = \frac{3}{2}$ , and $z = \frac{9}{2}$ .
 
@@ -536,11 +672,11 @@ Notice how the dual simplex works. In all the iterations, optimality is maintain
 
 TORA provides a tutorial module for the dual simplex method. From the SOLVE/MODIFY menu select Solve $\Rightarrow$ Algebraic $\Rightarrow$ Iterations $\Rightarrow$ Dual Simplex. Remember that you need to convert $\left(  = \right)$ constraints to inequalities. You do not need to convert $\left(  \geq  \right)$ constraints because TORA will do the conversion internally.
 
-#### 4.4.2 Generalized Simplex Algorithm
+#### 4.4.2 Generalized Simplex Algorithm ^GeneralizedSimplex
 
-The (primal) simplex algorithm in Chapter 3 starts feasible but nonoptimal. The dual simplex (Section 4.4.1) starts better than optimal and infeasible. What if an LP model starts both nonoptimal and infeasible? Of course we can use artificial variables and artificial constraints to secure a starting solution. But this really is not necessary because the key idea of both the primal and dual simplex methods is that the optimum feasible solution, when finite, always occurs at a corner point (or a basic solution). This suggests that a new simplex algorithm (developed by this author) can be developed based on tandem use of the dual simplex and the primal simplex methods. First, use the dual algorithm to get rid of infeasibility (without worrying about optimality). Once feasibility is restored, the primal simplex can be used to find the optimum. Alternatively, we can first apply the primal simplex to secure optimality (without worrying about feasibility) and then use the dual simplex to seek feasibility.
+The (primal) simplex algorithm in Chapter 3 starts feasible but nonoptimal. The dual simplex (Section 4.4.1) starts better than optimal and infeasible. What if an LP model starts both nonoptimal and infeasible? Of course we can use artificial variables and artificial constraints to secure a starting solution. But this really is not necessary because the key idea of both the primal and dual simplex methods is that the optimum feasible solution, when finite, always occurs at a corner point (or a basic solution). This suggests that a new simplex algorithm (developed by this author) can be developed based on tandem use of the dual simplex and the primal simplex methods. First, use the dual algorithm to get rid of infeasibility (without worrying about optimality). Once feasibility is restored, the primal simplex can be used to find the optimum. Alternatively, we can first apply the primal simplex to secure optimality (without worrying about feasibility) and then use the dual simplex to seek feasibility. ^GeneralizedIdea
 
-Example 4.4-2
+Example 4.4-2 ^GeneralizedExample
 
 ---
 
@@ -572,39 +708,61 @@ $$
 
 The following tableau format of the problem shows that the starting basic solution $\left( {{x}_{4},{x}_{5},{x}_{6}}\right)$ is both nonoptimal (because of nonbasic ${x}_{3}$ ) and infeasible (because of basic ${x}_{4}$ ).
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>-2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{4}$</td><td>1</td><td>-2</td><td>2</td><td>1</td><td>0</td><td>0</td><td>-8</td></tr><tr><td>${x}_{5}$</td><td>-1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>4</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>-1</td><td>4</td><td>0</td><td>0</td><td>1</td><td>10</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | -2 | 0 | 0 | 0 | 0 |
+| ${x}_{4}$ | 1 | -2 | 2 | 1 | 0 | 0 | -8 |
+| ${x}_{5}$ | -1 | 1 | 1 | 0 | 1 | 0 | 4 |
+| ${x}_{6}$ | 2 | -1 | 4 | 0 | 0 | 1 | 10 |
 
 We can solve the problem without the use of any artificial variables or artificial constraints, first securing feasibility using the dual simplex and then seeking optimality using the primal simplex. The dual simplex selects ${x}_{4}$ as the leaving variable. The entering variable can be any nonbasic variable with a negative constraint coefficient in the ${x}_{4}$ -row (recall that if no negative constraint coefficient exists, the problem has no feasible solution). In the present example, ${x}_{2}$ has a negative coefficient in the ${x}_{4}$ -row and is selected as the entering variable. The next tableau is thus computed as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>-2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{2}$</td><td>1</td><td>-1</td><td>$- \frac{1}{2}$</td><td>0</td><td>0</td><td>4</td></tr><tr><td>${x}_{5}$</td><td>$- \frac{1}{2}$</td><td>0</td><td>2</td><td>$\frac{1}{2}$</td><td>1</td><td>0</td><td>0</td></tr><tr><td>${x}_{6}$</td><td>$\frac{3}{2}$</td><td>0</td><td>3</td><td>$- \frac{1}{2}$</td><td>0</td><td>1</td><td>14</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | -2 | 0 | 0 | 0 | 0 |
+| ${x}_{2}$ | $-\frac{1}{2}$ | 1 | -1 | $-\frac{1}{2}$ | 0 | 0 | 4 |
+| ${x}_{5}$ | $-\frac{1}{2}$ | 0 | 2 | $\frac{1}{2}$ | 1 | 0 | 0 |
+| ${x}_{6}$ | $\frac{3}{2}$ | 0 | 3 | $-\frac{1}{2}$ | 0 | 1 | 14 |
 
 The new solution is now feasible but nonoptimal, and we can use the primal simplex to determine the optimal solution. In general, had we not restored feasibility in the preceding tableau, we would repeat the procedure as necessary until feasibility is satisfied or until there is evidence that the problem has no feasible solution.
 
 Remarks. The essence of the generalized simplex method in Example 4.4-2 is that the simplex algorithm is not rigid. The literature abounds with variations of the simplex method (e.g., the primal-dual method, the criss-cross method, and the multiplex method) that give the impression that each procedure is fundamentally different, when, in fact, they all seek corner-point (basic) solutions, with a slant toward automated computations and, perhaps, computational efficiency.
 
-### 4.5 POST-OPTIMAL ANALYSIS
+### 4.5 POST-OPTIMAL ANALYSIS ^PostOptimalAnalysis
 
-In Section 3.6, we dealt with the sensitivity of the optimum solution by determining the ranges for the different LP parameters that would keep the optimum basic variables unchanged. In this section, we deal with making changes in the parameters of the model and finding the new optimum solution. Take, for example, a case in the poultry industry, where an LP model is commonly used to determine the optimal feed mix per broiler (see Example 2.2-2). The weekly consumption per broiler varies from .26 lb (120 g) for a 1-week-old bird to 2.1 lb (950 g) for an 8-week-old bird. Additionally, the cost of the ingredients in the mix may change periodically. These changes require periodic re-calculation of the optimum solution. Post-optimal analysis determines the new solution in an efficient way. The new computations are rooted in the use duality and the primal-dual relationships given in Section 4.2.
+In Section 3.6, we dealt with the sensitivity of the optimum solution by determining the ranges for the different LP parameters that would keep the optimum basic variables unchanged. In this section, we deal with making changes in the parameters of the model and finding the new optimum solution. Take, for example, a case in the poultry industry, where an LP model is commonly used to determine the optimal feed mix per broiler (see Example 2.2-2). The weekly consumption per broiler varies from .26 lb (120 g) for a 1-week-old bird to 2.1 lb (950 g) for an 8-week-old bird. Additionally, the cost of the ingredients in the mix may change periodically. These changes require periodic re-calculation of the optimum solution. Post-optimal analysis determines the new solution in an efficient way. The new computations are rooted in the use duality and the primal-dual relationships given in Section 4.2. ^PostOptimalMotivation
 
-The following table lists the cases that can arise in post-optimal analysis and the actions needed to obtain the new solution (assuming one exists):
+The following table lists the cases that can arise in post-optimal analysis and the actions needed to obtain the new solution (assuming one exists): ^PostOptimalCasesTable
 
-<table><tr><td>Condition after parameters change</td><td>Recommended action</td></tr><tr><td>Current solution remains optimal and feasible.</td><td>No further action is necessary.</td></tr><tr><td>Current solution becomes infeasible.</td><td>Use dual simplex to recover feasibility.</td></tr><tr><td>Current solution becomes nonoptimal.</td><td>Use primal simplex to recover optimality.</td></tr><tr><td>Current solution becomes both nonoptimal</td><td>Use the generalized simplex method to recover</td></tr><tr><td>and infeasible.</td><td>optimality and feasibility.</td></tr></table>
+| Condition after parameters change | Recommended action |
+| --- | --- |
+| Current solution remains optimal and feasible. | No further action is necessary. |
+| Current solution becomes infeasible. | Use dual simplex to recover feasibility. |
+| Current solution becomes nonoptimal. | Use primal simplex to recover optimality. |
+| Current solution becomes both nonoptimal and infeasible. | Use the generalized simplex method to recover optimality and feasibility. |
 
 The first three cases are investigated in this section. The fourth case, being a combination of cases 2 and 3, is treated in Problem 4-47.
 
 The TOYCO model of Example 4.3-2 will be used to explain the different procedures. Recall that the problem deals with the assembly of three types of toys: trains, trucks, and cars. Three operations are involved in the assembly. The model and its dual are repeated here for convenience.
 
-<table><tr><td>TOYCO primal</td><td>TOYCO dual</td></tr><tr><td>Maximize $z = 3{x}_{1} + 2{x}_{2} + 5{x}_{3}$</td><td>Minimize $z = {430}{y}_{1} + {460}{y}_{2} + {420}{y}_{3}$</td></tr><tr><td>subject to</td><td>subject to</td></tr><tr><td>${x}_{1} + 2{x}_{2} + {x}_{3} \leq  {430}$ (Operation 1)</td><td>${y}_{1} + 3{y}_{2} + {y}_{3} \geq  3$</td></tr><tr><td>$3{x}_{1}\; + 2{x}_{3} \leq  {460}$ (Operation 2)</td><td>$2{y}_{1}\; + 4{y}_{3} \geq  2$</td></tr><tr><td>${x}_{1} + 4{x}_{2}\; \leq  {420}$ (Operation 3)</td><td>${y}_{1} + 2{y}_{2} \geq  5$</td></tr><tr><td>${x}_{1},{x}_{2},{x}_{3} \geq  0$</td><td>${y}_{1},{y}_{2},{y}_{3} \geq  0$</td></tr><tr><td>Optimal solution:</td><td>Optimal solution:</td></tr><tr><td>${x}_{1} = 0,{x}_{2} = {100},{x}_{3} = {230}, z = \$ {1350}$</td><td>${y}_{1} = 1,{y}_{2} = 2,{y}_{3} = 0, w = \$ {1350}$</td></tr></table>
+| TOYCO primal | TOYCO dual |
+| --- | --- |
+| Maximize $z = 3{x}_{1} + 2{x}_{2} + 5{x}_{3}$<br>subject to<br>${x}_{1} + 2{x}_{2} + {x}_{3} \le 430$ (Operation 1)<br>$3{x}_{1} + 2{x}_{3} \le 460$ (Operation 2)<br>${x}_{1} + 4{x}_{2} \le 420$ (Operation 3)<br>${x}_{1},{x}_{2},{x}_{3} \ge 0$<br>Optimal solution: ${x}_{1}=0,{x}_{2}=100,{x}_{3}=230,\ z=\$1350$ | Minimize $z = 430{y}_{1} + 460{y}_{2} + 420{y}_{3}$<br>subject to<br>${y}_{1} + 3{y}_{2} + {y}_{3} \ge 3$<br>$2{y}_{1} + 4{y}_{3} \ge 2$<br>${y}_{1} + 2{y}_{2} \ge 5$<br>${y}_{1},{y}_{2},{y}_{3} \ge 0$<br>Optimal solution: ${y}_{1}=1,{y}_{2}=2,{y}_{3}=0,\ w=\$1350$ |
 
 The associated optimum tableau for the primal is given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$Z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1,350</td></tr><tr><td>${X}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>100</td></tr><tr><td>${X}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>230</td></tr><tr><td>${X}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>20</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $Z$ | 4 | 0 | 0 | 1 | 2 | 0 | 1,350 |
+| ${X}_{2}$ | $-\frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $-\frac{1}{4}$ | 0 | 100 |
+| ${X}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | 1 | 0 | 230 |
+| ${X}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 20 |
 
-#### 4.5.1 Changes Affecting Feasibility
+#### 4.5.1 Changes Affecting Feasibility ^FeasibilityChanges
 
 The feasibility of the current optimum solution is affected only if the right-hand side of the constraints is changed, or a new constraint is added to the model. In both cases, infeasibility occurs when one or more of the current basic variables become negative.
 
-Changes in the right-hand side. This change requires recomputing the right-hand side of the tableau using Formula 1 in Section 4.2.4:
+Changes in the right-hand side. This change requires recomputing the right-hand side of the tableau using Formula 1 in Section 4.2.4: ^RhsChange
 
 $$
 \left( \begin{matrix} \text{ New right-hand side of } \\  \text{ tableau in iteration }i \end{matrix}\right)  = \left( \begin{matrix} \text{ Inverse in } \\  \text{ iteration }i \end{matrix}\right)  \times  \left( \begin{matrix} \text{ New right-hand } \\  \text{ side of constraints } \end{matrix}\right)
@@ -634,15 +792,25 @@ $$
 
 The resulting solution is infeasible because ${x}_{6} =  - {40}$ , which requires applying the dual simplex method to recover feasibility. First, we modify the right-hand side of the tableau as shown by the shaded column. Notice that the associated value of $z = 3 \times  0 + 2 \times  {110} + 5 \times  {230} = \$ {1370}$ .
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1370</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>110</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>-40</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 1370 |
+| ${x}_{2}$ | $-\frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $-\frac{1}{4}$ | 0 | 110 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 230 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | -40 |
 
 Using the dual simplex, ${x}_{6}$ leaves and ${x}_{4}$ enters, which yields the following optimal feasible tableau (in general, the dual simplex may take more than one iteration to recover feasibility).
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>5</td><td>0</td><td>0</td><td>0</td><td>$\frac{5}{2}$</td><td>$\frac{1}{2}$</td><td>1350</td></tr><tr><td>${x}_{2}$</td><td>$\frac{1}{4}$</td><td>1</td><td>0</td><td>0</td><td>0</td><td>$\frac{1}{4}$</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>${x}_{4}$</td><td>-1</td><td>0</td><td>0</td><td>1</td><td>$- \frac{1}{2}$</td><td>$- \frac{1}{2}$</td><td>20</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 5 | 0 | 0 | 0 | $\frac{5}{2}$ | $\frac{1}{2}$ | 1350 |
+| ${x}_{2}$ | $\frac{1}{4}$ | 1 | 0 | 0 | 0 | $\frac{1}{4}$ | 100 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 230 |
+| ${x}_{4}$ | -1 | 0 | 0 | 1 | $-\frac{1}{2}$ | $-\frac{1}{2}$ | 20 |
 
 The optimum solution (in terms of ${x}_{1},{x}_{2}$ , and ${x}_{3}$ ) remains the same as in the original model. This means that the proposed shift in capacity allocation is not advantageous because it simply shifts the surplus capacity from operation 3 to a surplus capacity in operation 1. The conclusion then is that operation 2 is the bottleneck, and it may be advantageous to shift the surplus to operation 2 instead (see Problem 4-42).
 
-Addition of a new constraint. The addition of a new constraint can never improve the current optimum objective value. If the new constraint is redundant, it will have no effect on the current solution. Otherwise, the current solution does not satisfy the new constraint, and a new solution is determined by the dual simplex method.
+Addition of a new constraint. The addition of a new constraint can never improve the current optimum objective value. If the new constraint is redundant, it will have no effect on the current solution. Otherwise, the current solution does not satisfy the new constraint, and a new solution is determined by the dual simplex method. ^NewConstraint
 
 Example 4.5-2
 
@@ -672,7 +840,13 @@ $$
 
 This means that the new constraint is not redundant. Off hand, this is not good news because it indicates that the additional constraint will worsen the optimum objective value (remember the intuitive argument that additional constraints can never improve the optimum objective value). Nonetheless, to obtain the new solution without having to solve the problem completely anew, the constraint is added to the current optimum tableau as follows ( ${x}_{7}$ is a slack variable):
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>${x}_{7}$</td><td>Solution</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>1350</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>0</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>0</td><td>20</td></tr><tr><td>${x}_{7}$</td><td>3</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>500</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | ${x}_{7}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 0 | 1350 |
+| ${x}_{2}$ | $-\frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $-\frac{1}{4}$ | 0 | 0 | 100 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 0 | 230 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 0 | 20 |
+| ${x}_{7}$ | 3 | 3 | 1 | 0 | 0 | 0 | 1 | 500 |
 
 This means that that ${x}_{7} = {500}$ is not consistent with the values of ${x}_{1},{x}_{2}$ and ${x}_{3}$ in the rest of the tableau. To effect consistency, the ${x}_{7}$ -row must be "conditioned" by performing the following row operations:
 
@@ -692,15 +866,21 @@ $$
 
 The new (consistent) tableau is thus given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>${x}_{7}$</td><td>Solution</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>1350</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>0</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>0</td><td>20</td></tr><tr><td>${x}_{7}$</td><td>9</td><td>0</td><td>0</td><td>$- \frac{3}{2}$</td><td>$\frac{1}{4}$</td><td>0</td><td>1</td><td>-30</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | ${x}_{7}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | 1 | 2 | 0 | 0 | 1350 |
+| ${x}_{2}$ | $-\frac{1}{4}$ | 1 | 0 | $\frac{1}{2}$ | $-\frac{1}{4}$ | 0 | 0 | 100 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 0 | 230 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 0 | 20 |
+| ${x}_{7}$ | 9 | 0 | 0 | $-\frac{3}{2}$ | $\frac{1}{4}$ | 0 | 1 | -30 |
 
 Application of the dual simplex method will produce the new optimum solution ${x}_{1} = 0$ , ${x}_{2} = {90},{x}_{3} = {230}$ , and $z = \$ {1330}$ (verify!). The solution shows that the addition of the non-redundant constraint of operation 4 is not recommended because, as expected, it lowers the revenues from \$1350 to \$1330.
 
-#### 4.5.2 Changes Affecting Optimality
+#### 4.5.2 Changes Affecting Optimality ^OptimalityChanges
 
 This section considers making changes in the objective coefficients and the addition of a new economic activity (variable).
 
-Changes in the objective function coefficients. These changes affect only the optimality of the solution and require recomputing the $z$ -row coefficients (reduced costs) according to the following procedure:
+Changes in the objective function coefficients. These changes affect only the optimality of the solution and require recomputing the $z$ -row coefficients (reduced costs) according to the following procedure: ^ObjectiveCoeffChanges
 
 1. Compute the dual values using Method 2, Section 4.2.3.
 
@@ -770,13 +950,18 @@ The new reduced cost of ${x}_{1}$ shows that the current solution is not optimum
 
 To determine the new solution, the $z$ -row is changed as highlighted in the following tableau:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>$- \frac{3}{4}$</td><td>0</td><td>0</td><td>$\frac{3}{2}$</td><td>5 4</td><td>0</td><td>1220</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>1</td><td>- $\frac{1}{4}$</td><td>0</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>-2</td><td>1</td><td>1</td><td>20</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | $-\frac{3}{4}$ | 0 | 0 | $\frac{3}{2}$ | $\frac{5}{4}$ | 0 | 1220 |
+| ${x}_{2}$ | $-\frac{1}{4}$ | 1 | 0 | 1 | $-\frac{1}{4}$ | 0 | 100 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | 0 | $\frac{1}{2}$ | 0 | 230 |
+| ${x}_{6}$ | 2 | 0 | 0 | -2 | 1 | 1 | 20 |
 
 The highlighted elements are the new reduced costs and the new objective value. All the remaining elements are the same as in the original optimal tableau. The new optimum solution is then determined by letting ${x}_{1}$ enter and ${x}_{6}$ leave, which yields the solution ${x}_{1} = {10},{x}_{2} = {102.5}$ , ${x}_{3} = {215}$ , and $z = \$ {1227.50}$ (verify!). Although the new solution recommends the production of all three toys, the optimum revenue is less than that when only two toys are manufactured.
 
-Addition of a new activity. A new activity signifies adding a new variable to the model. Intuitively, the addition of a new activity is desirable only if it is profitable. This condition can be checked by using Formula 2, Section 4.2.4, to compute the reduced cost of the new variable. The new activity is not profitable if it satisfies the optimality condition.
+Addition of a new activity. A new activity signifies adding a new variable to the model. Intuitively, the addition of a new activity is desirable only if it is profitable. This condition can be checked by using Formula 2, Section 4.2.4, to compute the reduced cost of the new variable. The new activity is not profitable if it satisfies the optimality condition. ^NewActivity
 
-## Example 4.5-4
+## Example 4.5-4 ^FireEngineExample
 
 TOYCO recognizes that toy trains are not currently in production because they are not profitable. The company wants to replace toy trains with a new product, a toy fire engine, to be assembled on the existing facilities. TOYCO estimates the revenue per toy fire engine to be \$4 and the assembly times per unit to be 1 minute on each of operations 1 and 2, and 2 minutes on operation 3.
 
@@ -794,7 +979,12 @@ $$
 
 Thus, the current simplex tableau must be modified as follows ${}^{2}$
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{7}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>4</td><td>0</td><td>0</td><td>-1</td><td>1</td><td>2</td><td>0</td><td>1350</td></tr><tr><td>${x}_{2}$</td><td>$- \frac{1}{4}$</td><td>1</td><td>0</td><td>$\frac{1}{4}$</td><td>$\frac{1}{2}$</td><td>$- \frac{1}{4}$</td><td>0</td><td>100</td></tr><tr><td>${x}_{3}$</td><td>$\frac{3}{2}$</td><td>0</td><td>1</td><td>$\frac{1}{2}$</td><td>0</td><td>$\frac{1}{2}$</td><td>0</td><td>230</td></tr><tr><td>${x}_{6}$</td><td>2</td><td>0</td><td>0</td><td>1</td><td>-2</td><td>1</td><td>1</td><td>20</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{7}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 4 | 0 | 0 | -1 | 1 | 2 | 0 | 1350 |
+| ${x}_{2}$ | $-\frac{1}{4}$ | 1 | 0 | $\frac{1}{4}$ | $\frac{1}{2}$ | $-\frac{1}{4}$ | 0 | 100 |
+| ${x}_{3}$ | $\frac{3}{2}$ | 0 | 1 | $\frac{1}{2}$ | 0 | $\frac{1}{2}$ | 0 | 230 |
+| ${x}_{6}$ | 2 | 0 | 0 | 1 | -2 | 1 | 1 | 20 |
 
 ---
 
@@ -804,9 +994,9 @@ ${}^{2}$ As a side observation, variable ${x}_{1}$ can be eliminated from the ta
 
 The new optimum is determined by letting ${x}_{7}$ enter the basic solution, in which case ${x}_{6}$ must leave. The new solution is ${x}_{1} = 0,{x}_{2} = 0,{x}_{3} = {125},{x}_{7} = {210}$ , and $z = \$ {1465}$ (verify!), which improves the revenues by \$115.
 
-Remarks. The heart of the post-optimal computations is the inverse matrix of the optimal tableau; meaning that for the mathematics to work correctly, post-optimal sensitivity analysis cannot include changes in the data of the original problem that affect the inverse matrix (recall from Sections 4.2.2 and 4.2.3 that the inverse is computed from the basic matrix composed of constraint columns of the original problem). So, even though the post-optimal analysis in this chapter is more encompassing than the presentation in Sections 3.6.2 and 3.6.3 in that it allows simultaneous changes in both the objective function and the constraints, it still has the shortcoming of not allowing changes in the constraint columns of basic variables. And herein lies a typical problem where mathematics is not sufficiently responsive to practical needs; meaning that, in a practical sense, we cannot use the technical excuse that the changes cannot be made "because the associated variable is basic"! Instead, the changes have to be tested in a different manner and, as stated in Chapter 3, a viable alternative in this case calls for solving the proposed LP scenario totally anew.
+Remarks. The heart of the post-optimal computations is the inverse matrix of the optimal tableau; meaning that for the mathematics to work correctly, post-optimal sensitivity analysis cannot include changes in the data of the original problem that affect the inverse matrix (recall from Sections 4.2.2 and 4.2.3 that the inverse is computed from the basic matrix composed of constraint columns of the original problem). So, even though the post-optimal analysis in this chapter is more encompassing than the presentation in Sections 3.6.2 and 3.6.3 in that it allows simultaneous changes in both the objective function and the constraints, it still has the shortcoming of not allowing changes in the constraint columns of basic variables. And herein lies a typical problem where mathematics is not sufficiently responsive to practical needs; meaning that, in a practical sense, we cannot use the technical excuse that the changes cannot be made "because the associated variable is basic"! Instead, the changes have to be tested in a different manner and, as stated in Chapter 3, a viable alternative in this case calls for solving the proposed LP scenario totally anew. ^PostOptimalLimitations
 
-## BIBLIOGRAPHY
+## BIBLIOGRAPHY ^Bibliography
 
 Bazaraa, M., J. Jarvis, and H. Sherali, Linear Programming and Network Flows, 4th ed., Wiley, New York, 2009.
 
@@ -818,9 +1008,16 @@ Nering, E., and A. Tucker, Linear Programming and Related Problems, Academic Pre
 
 Vanderbei, R., Linear Programming: Foundation and Extensions, 3rd ed., Springer, New York, 2008.
 
-## PROBLEMS
+## PROBLEMS ^ProblemsSection
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>4.1</td><td>4-1 to 4-6</td><td>4.3.2</td><td>4-31 to 4-34</td></tr><tr><td>4.2.1</td><td>4-7 to 4-7</td><td>4.4.1</td><td>4-35 to 4-39</td></tr><tr><td>4.2.2</td><td>4-8 to 4-9</td><td>4.4.2</td><td>4-40 to 4-41</td></tr><tr><td>4.2.3</td><td>4-10 to 4-18</td><td>4.5.1</td><td>4-42 to 4-49</td></tr><tr><td>4.2.4</td><td>4-19 to 4-27</td><td>4.5.2</td><td>4-50 to 4-56</td></tr><tr><td>4.3.1</td><td>4-28 to 4-30</td><td></td><td></td></tr></table>
+| Section | Assigned Problems | Section | Assigned Problems |
+| --- | --- | --- | --- |
+| 4.1 | 4-1 to 4-6 | 4.3.2 | 4-31 to 4-34 |
+| 4.2.1 | 4-7 to 4-7 | 4.4.1 | 4-35 to 4-39 |
+| 4.2.2 | 4-8 to 4-9 | 4.4.2 | 4-40 to 4-41 |
+| 4.2.3 | 4-10 to 4-18 | 4.5.1 | 4-42 to 4-49 |
+| 4.2.4 | 4-19 to 4-27 | 4.5.2 | 4-50 to 4-56 |
+| 4.3.1 | 4-28 to 4-30 |  |  |
 
 4-1. In Example 4.1-1, derive the associated dual problem if the sense of optimization in the primal problem is changed to minimization.
 
@@ -998,7 +1195,11 @@ $$
 
 Given that the artificial variable ${x}_{4}$ and the slack variable ${x}_{5}$ form the starting basic variables and that $M$ was set equal to 100 when solving the problem, the optimal tableau is given as:
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>23</td><td>7</td><td>105</td><td>0</td><td>75</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>5</td><td>2</td><td>1</td><td>0</td><td>15</td></tr><tr><td>${x}_{5}$</td><td>0</td><td>-10</td><td>-8</td><td>-1</td><td>1</td><td>5</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 23 | 7 | 105 | 0 | 75 |
+| ${x}_{1}$ | 1 | 5 | 2 | 1 | 0 | 15 |
+| ${x}_{5}$ | 0 | -10 | -8 | -1 | 1 | 5 |
 
 Write the associated dual problem, and determine its optimal solution in two ways.
 
@@ -1028,7 +1229,12 @@ $$
 
 The starting solution consists of artificial ${x}_{4}$ and ${x}_{5}$ for the first and second constraints and slack ${x}_{6}$ for the third constraint. Using $M = {100}$ for the artificial variables, the optimal tableau is given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>${x}_{6}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>0</td><td>-98.6</td><td>-100</td><td>-.2</td><td>34</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>.4</td><td>0</td><td>-.2</td><td>4</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>0</td><td>.2</td><td>0</td><td>.6</td><td>18</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>0</td><td>1</td><td>1</td><td>-1</td><td>1</td><td>10</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | ${x}_{6}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 0 | -98.6 | -100 | -0.2 | 34 |
+| ${x}_{1}$ | 1 | 0 | 0 | 0.4 | 0 | -0.2 | 4 |
+| ${x}_{2}$ | 0 | 1 | 0 | 0.2 | 0 | 0.6 | 18 |
+| ${x}_{3}$ | 0 | 0 | 1 | 1 | -1 | 1 | 10 |
 
 Write the associated dual problem, and determine its optimal solution in two ways.
 
@@ -1054,7 +1260,11 @@ $$
 
 Using ${x}_{3}$ and ${x}_{4}$ as starting variables, the optimal tableau is given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>2</td><td>0</td><td>0</td><td>3</td><td>16</td></tr><tr><td>${x}_{3}$</td><td>.75</td><td>0</td><td>1</td><td>-.25</td><td>2</td></tr><tr><td>${x}_{2}$</td><td>.25</td><td>1</td><td>0</td><td>.25</td><td>2</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| $z$ | 2 | 0 | 0 | 3 | 16 |
+| ${x}_{3}$ | 0.75 | 0 | 1 | -0.25 | 2 |
+| ${x}_{2}$ | 0.25 | 1 | 0 | 0.25 | 2 |
 
 Write the associated dual problem, and determine its optimal solution in two ways.
 
@@ -1080,7 +1290,11 @@ $$
 
 The starting solution consists of ${x}_{3}$ in the first constraint and an artificial ${x}_{4}$ in the second constraint with $M = {100}$ . The optimal tableau is given as
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>2</td><td>0</td><td>99</td><td>5</td></tr><tr><td>${x}_{3}$</td><td>1</td><td>2.5</td><td>1</td><td>-.5</td><td>1</td></tr><tr><td>${x}_{1}$</td><td>0</td><td>-.5</td><td>0</td><td>.5</td><td>2</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | Solution |
+| --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 2 | 0 | 99 | 5 |
+| ${x}_{3}$ | 1 | 2.5 | 1 | -0.5 | 1 |
+| ${x}_{1}$ | 0 | -0.5 | 0 | 0.5 | 2 |
 
 Write the associated dual problem, and determine its optimal solution in two ways.
 
@@ -1328,7 +1542,11 @@ $$
 
 The following optimal tableau corresponds to specific values of ${b}_{1}$ and ${b}_{2}$ :
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>乙</td><td>0</td><td>$a$</td><td>7</td><td>$d$</td><td>$e$</td><td>15</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>$b$</td><td>2</td><td>1</td><td>0</td><td>3</td></tr><tr><td>${x}_{5}$</td><td>0</td><td>$C$</td><td>-8</td><td>-1</td><td>1</td><td>1</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | $a$ | 7 | $d$ | $e$ | 15 |
+| ${x}_{1}$ | 1 | $b$ | 2 | 1 | 0 | 3 |
+| ${x}_{5}$ | 0 | $C$ | -8 | -1 | 1 | 1 |
 
 Determine the following:
 
@@ -1340,7 +1558,12 @@ Determine the following:
 
 *4-25. The following is the optimal tableau for a maximization LP model with three $\left(  \leq  \right)$ constraints and all nonnegative variables. The variables ${x}_{3},{x}_{4}$ , and ${x}_{5}$ are the slacks associated with the three constraints. Determine the associated optimal objective value in two different ways by using the primal and dual objective functions.
 
-<table><tr><td>Basic</td><td>${x}_{1}$</td><td>${x}_{2}$</td><td>${x}_{3}$</td><td>${x}_{4}$</td><td>${x}_{5}$</td><td>Solution</td></tr><tr><td>$z$</td><td>0</td><td>0</td><td>0</td><td>3</td><td>2</td><td>?</td></tr><tr><td>${x}_{3}$</td><td>0</td><td>0</td><td>1</td><td>1</td><td>-1</td><td>2</td></tr><tr><td>${x}_{2}$</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>6</td></tr><tr><td>${x}_{1}$</td><td>1</td><td>0</td><td>0</td><td>-1</td><td>1</td><td>2</td></tr></table>
+| Basic | ${x}_{1}$ | ${x}_{2}$ | ${x}_{3}$ | ${x}_{4}$ | ${x}_{5}$ | Solution |
+| --- | --- | --- | --- | --- | --- | --- |
+| $z$ | 0 | 0 | 0 | 3 | 2 | ? |
+| ${x}_{3}$ | 0 | 0 | 1 | 1 | -1 | 2 |
+| ${x}_{2}$ | 0 | 1 | 0 | 1 | 0 | 6 |
+| ${x}_{1}$ | 1 | 0 | 0 | -1 | 1 | 2 |
 
 4-26. Consider the following LP:
 
@@ -1376,7 +1599,13 @@ Use the dual problem to show that the basic solution $\left( {{x}_{1},{x}_{2}}\r
 
 *4-29. NWAC Electronics manufactures four types of simple cables for a defense contractor. Each cable must go through four sequential operations: splicing, soldering, sleeving, and inspection. The following table gives the pertinent data of the situation:
 
-<table><tr><td rowspan="2">Cable</td><td colspan="4">Minutes per unit</td><td rowspan="2">Unit revenue (\$)</td></tr><tr><td>Splicing</td><td>Soldering</td><td>Sleeving</td><td>Inspection</td></tr><tr><td>SC320</td><td>10.5</td><td>20.4</td><td>3.2</td><td>5.0</td><td>9.40</td></tr><tr><td>SC325</td><td>9.3</td><td>24.6</td><td>2.5</td><td>5.0</td><td>10.80</td></tr><tr><td>SC340</td><td>11.6</td><td>17.7</td><td>3.6</td><td>5.0</td><td>8.75</td></tr><tr><td>SC370</td><td>8.2</td><td>26.5</td><td>5.5</td><td>5.0</td><td>7.80</td></tr><tr><td>Daily capacity (minutes)</td><td>4,800.0</td><td>9,600.0</td><td>4,700.0</td><td>4,500.0</td><td></td></tr></table>
+| Cable | Splicing (min/unit) | Soldering (min/unit) | Sleeving (min/unit) | Inspection (min/unit) | Unit revenue (\$) |
+| --- | --- | --- | --- | --- | --- |
+| SC320 | 10.5 | 20.4 | 3.2 | 5.0 | 9.40 |
+| SC325 | 9.3 | 24.6 | 2.5 | 5.0 | 10.80 |
+| SC340 | 11.6 | 17.7 | 3.6 | 5.0 | 8.75 |
+| SC370 | 8.2 | 26.5 | 5.5 | 5.0 | 7.80 |
+| Daily capacity (minutes) | 4,800.0 | 9,600.0 | 4,700.0 | 4,500.0 |  |
 
 The contractor guarantees a minimum production level of 100 units for each of the four cables.
 
@@ -1400,7 +1629,11 @@ The contractor guarantees a minimum production level of 100 units for each of th
 
 *4-33. JoShop uses lathes and drill presses to produce four types of machine parts, PP1, PP2, PP3, and PP4. The following table summarizes the pertinent data:
 
-<table><tr><td rowspan="2">Machine</td><td colspan="4">Machining time in minutes per unit of</td><td rowspan="2">Capacity (min)</td></tr><tr><td>PP1</td><td>PP2</td><td>PP3</td><td>PP4</td></tr><tr><td>Lathes</td><td>2</td><td>5</td><td>3</td><td>4</td><td>5300</td></tr><tr><td>Drill presses</td><td>3</td><td>4</td><td>6</td><td>4</td><td>5300</td></tr><tr><td>Unit revenue (\$)</td><td>3</td><td>6</td><td>5</td><td>4</td><td></td></tr></table>
+| Machine | PP1 (min/unit) | PP2 (min/unit) | PP3 (min/unit) | PP4 (min/unit) | Capacity (min) |
+| --- | --- | --- | --- | --- | --- |
+| Lathes | 2 | 5 | 3 | 4 | 5300 |
+| Drill presses | 3 | 4 | 6 | 4 | 5300 |
+| Unit revenue (\$) | 3 | 6 | 5 | 4 |  |
 
 For the parts that are not produced by the present optimum solution, determine the rate of deterioration in the optimum revenue per unit increase of each of these products.
 
@@ -1632,13 +1865,19 @@ Use post-optimal analysis to determine the optimum solution in each case.
 
 *4-45. The Ozark Farm has 20,000 broilers that are fed for 8 weeks before being marketed. The weekly feed per broiler varies according to the following schedule:
 
-<table><tr><td>Week</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr><tr><td>lb/broiler</td><td>.26</td><td>.48</td><td>.75</td><td>1.00</td><td>1.30</td><td>1.60</td><td>1.90</td><td>2.10</td></tr></table>
+| Week | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| lb/broiler | 0.26 | 0.48 | 0.75 | 1.00 | 1.30 | 1.60 | 1.90 | 2.10 |
 
 For the broiler to reach a desired weight gain in 8 weeks, the feedstuffs must satisfy specific nutritional needs. Although a typical list of feedstuffs is large, for simplicity
 
 we will limit the model to three items only: limestone, corn, and soybean meal. The nutritional needs will also be limited to three types: calcium, protein, and fiber. The following table summarizes the nutritive content of the selected ingredients together with the cost data.
 
-<table><tr><td rowspan="2">Ingredient</td><td colspan="3">Content (lb) per lb of</td><td rowspan="2">\$ per lb</td></tr><tr><td>Calcium</td><td>Protein</td><td>Fiber</td></tr><tr><td>Limestone</td><td>.380</td><td>.00</td><td>.00</td><td>.12</td></tr><tr><td>Corn</td><td>.001</td><td>.09</td><td>.02</td><td>.45</td></tr><tr><td>Soybean meal</td><td>.002</td><td>.50</td><td>.08</td><td>1.60</td></tr></table>
+| Ingredient | Calcium (lb/lb) | Protein (lb/lb) | Fiber (lb/lb) | \$ per lb |
+| --- | --- | --- | --- | --- |
+| Limestone | 0.380 | 0.00 | 0.00 | 0.12 |
+| Corn | 0.001 | 0.09 | 0.02 | 0.45 |
+| Soybean meal | 0.002 | 0.50 | 0.08 | 1.60 |
 
 The feed mix must contain at least .8% but not more than 1.2% calcium, at least 22% protein, and at most 5% crude fiber.
 
