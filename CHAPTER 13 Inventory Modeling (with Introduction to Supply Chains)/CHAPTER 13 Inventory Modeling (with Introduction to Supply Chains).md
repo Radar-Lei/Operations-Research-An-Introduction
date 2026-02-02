@@ -1,6 +1,117 @@
 ## CHAPTER 13 Inventory Modeling (with Introduction to Supply Chains)
 
-## Real-Life Application: Kroger Improves Pharmacy Inventory Management
+```markmap
+---
+markmap:
+  height: 643
+---
+# Inventory Modeling (with Introduction to Supply Chains)
+
+## Real-Life Application
+- [[#^kroger|Kroger Case Study]]
+  - Pharmacy inventory management
+  - Results: $80M revenue increase, $120M inventory reduction
+  - Tool: Spreadsheet simulation-optimization
+
+## Supply Chain Perspective
+- [[#^supplychain|Supply Chain Flow]]
+  - Goods: Supplier → Manufacturer → Retailer → Consumer
+  - Funds: Supplier ← Manufacturer ← Retailer ← Consumer
+  - Information: Bidirectional among all entities
+  - [[#^balanceeff|Balance: Responsiveness vs Efficiency]]
+
+### Inventory Metrics
+- [[#^turnover|Turnover Ratio]]
+  - Formula: Cost of goods sold / Average inventory cost
+  - Assessment: < 1 (excessive), high (desirable), very high (stock-out risk)
+- [[#^daysinv|Days in Inventory]]
+  - Formula: $360 / \text{Turnover ratio}$
+
+### Cost Components
+- [[#^costcomponents|Total Inventory Cost]]
+  - Purchasing cost
+  - Setup (ordering) cost
+  - Holding (carrying) cost
+  - Shortage cost
+  - [[#^conflictingcosts|Conflicting costs require trade-off]]
+
+## Demand Types
+### Four Categories
+- [[#^demandtypes|Demand Classification]]
+  - Deterministic: Constant or variable over time
+  - Probabilistic: Stationary or nonstationary over time
+- [[#^coefficient|Assessment using Coefficient of Variation (V)]]
+  - [[#^guideline|V < 20%: Consider deterministic]]
+  - [[#^guideline|V high: Probabilistic]]
+
+## Static EOQ Models
+### Classical EOQ
+- [[#^eoq|EOQ Model]]
+  - Assumptions: Constant demand, instantaneous replenishment, no shortages
+  - Formula: $y^* = \sqrt{2KD/h}$
+  - Cycle length: $t_0 = y/D$
+  - Reorder point: $LD$ units ($L$ = lead time)
+  - [[#^reorder|Effective lead time: $L_e = L - n \cdot t_0^*$]]
+
+### EOQ with Price Breaks
+- [[#^pricebreaks|Price Breaks Model]]
+  - Unit price decreases for orders > q
+  - Two cost functions: $\text{TCU}_1 (y \le q)$, $\text{TCU}_2 (y > q)$
+  - Optimal solution: y* depends on price breakpoint location
+  - Three zones: I $(0, y_m)$, II $(y_m, Q)$, III $(Q, \infty)$
+  - Solution: $y^* = y_m$ (zones I or III) or $y^* = q$ (zone II)
+
+### Multi-Item EOQ
+- [[#^multiitem|Multi-Item with Storage Limitation]]
+  - Items compete for limited storage space
+  - Mathematical model: Minimize sum of individual TCU functions
+  - Constraint: Sum of storage requirements ≤ available space
+  - Solution: Try unconstrained EOQ first, then use nonlinear programming
+
+## Dynamic EOQ Models
+### No-Setup Model
+- [[#^nosetup|No-Setup EOQ]]
+  - No fixed ordering cost
+  - Multiple production levels (regular time, overtime)
+  - [[#^convexcost|Convex production cost function]]
+  - [[#^transportation|Solved as transportation model]]
+  - Solution: Assign demand to cheapest routes first
+
+### Setup EOQ Model
+- [[#^setup|Setup EOQ with Dynamic Programming]]
+  - [[#^recursive|Forward recursive algorithm]]
+  - [[#^endinventory|State: End-of-period inventory level]]
+  - Decision: Production quantity
+  - Cost function: Production + holding costs
+  - Special case: Constant/decreasing marginal costs
+    - [[#^contiguous|Optimal: Produce for exact demand of contiguous periods]]
+    - [[#^productionorinventory|Either new production OR inventory, never both]]
+
+### Heuristic Methods
+- [[#^silvermeal|Silver-Meal Heuristic]]
+  - Valid for constant unit production cost
+  - Objective: Minimize setup + holding cost per period
+  - Algorithm: Find $t^*$ minimizing $\text{TCU}(i,t)$
+  - Repeat for each planning period
+
+## Implementation Issues
+- [[#^issues|Implementation Challenges]]
+  - Model selection
+  - Cost parameter estimation
+  - No universal rules available
+
+## Case Study: Kroger Pharmacy
+- [[#^krogerdetail|Kroger Case Details]]
+  - 2000 in-store pharmacies
+  - $8B retail value, 2500 drugs per pharmacy
+  - (s, S) periodic review policy
+  - Demand: Intermittent, irregular, empirical distribution
+  - Tool: Spreadsheet simulation with local search algorithm
+  - Results: $80M revenue increase, $120M inventory reduction
+```
+
+
+## Real-Life Application: Kroger Improves Pharmacy Inventory Management ^kroger
 
 The Kroger Company operates approximately 2500 pharmacies in its stores across the United States. Drug shortages and excessive inventory were kept in check through the use of a spreadsheet simulation optimization model. The use of the spreadsheet made it easy to gain wide acceptance by both the management and pharmacy personnel. Kroger reports an increase in revenue of \$80 million and a reduction in inventory of more than \$120 million from November 2011 to March 2013. The full case study is presented at the end of the chapter.
 
@@ -12,7 +123,7 @@ Goods flow: Supplier $\rightarrow$ Manufacturer $\rightarrow$ Retailer $\rightar
 
 Funds flow: Supplier $\leftarrow$ Manufacturer $\leftarrow$ Retailer $\leftarrow$ Consumer
 
-Information flow: Supplier $\leftrightarrow$ Manufacturer $\leftrightarrow$ Retailer $\leftrightarrow$ Consumer
+Information flow: Supplier $\leftrightarrow$ Manufacturer $\leftrightarrow$ Retailer $\leftrightarrow$ Consumer ^supplychain
 
 Goods flow starts at the supplier and ends at the consumer. Funds flow starts at the consumer, the main source of revenue for the entire chain, and moves upstream, allotting portions of the revenue to retailer, manufacturer, and supplier. Information flow requires close collaboration among all the entities of the chain. Among the most crucial information exchange is the sales data at the consumer level. This data is used to predict the nature of the demand distribution, which is subsequently used to determine the optimum levels and movements of goods at/to all locations in the supply chain. From this standpoint, it is important to recognize that no member of the supply chain should attempt to gain economic advantages at the expense of another member. In the end, such policy will result in a higher cost for the final product and, hence, lower revenue for all the members of the supply chain.
 
@@ -22,9 +133,9 @@ ${}^{1}$ This brief presentation of supply chains is not intended to compete wit
 
 ---
 
-The arrows in the supply chain representation given above symbolize the distance and time lapse separations among the physical locations of the four entities of the chain. The important implication here is that each location must maintain a level of inventory to guarantee a reasonable degree of operational responsiveness (to client's needs). At the same time, the supply chain must be efficient, in the sense that the inventory cost of storing, transporting, handling, and running out of stock must be kept in check. Thus, in deciding the level of inventory, a balance must be maintained between level of responsiveness and the degree of efficiency.
+The arrows in the supply chain representation given above symbolize the distance and time lapse separations among the physical locations of the four entities of the chain. The important implication here is that each location must maintain a level of inventory to guarantee a reasonable degree of operational responsiveness (to client's needs). At the same time, the supply chain must be efficient, in the sense that the inventory cost of storing, transporting, handling, and running out of stock must be kept in check. Thus, in deciding the level of inventory, a balance must be maintained between level of responsiveness and the degree of efficiency. ^balanceeff
 
-#### 13.1.1 An Inventory Metric in Supply Chains
+#### 13.1.1 An Inventory Metric in Supply Chains ^turnover
 
 Businesses use simple ratios and formulas to evaluate the impact of inventories on the financial health of the company. A common metric is the following turnover ratio:
 
@@ -38,7 +149,7 @@ As a general rule, a ratio less than 1 is a strong indicator that a business car
 
 All the data for computing this ratio are usually taken from the (end-of-year) balance sheet of the company. For this reason, the turnover ratio is computed over a 1-year period and the average inventory is the simple average of the beginning and ending inventory costs for the year. This simple average assumes that inventory is depleted uniformly over the year, which may not be true. For example, distortion will occur in the extreme case of the inventory staying constant for the first 10 months of the year and then depleted sharply during the Christmas shopping months of November and December. This bias can be alleviated by tracking the actual inventory on a monthly or quarterly basis. However, collecting the information for this task may be costly (as opposed to simply using balance sheet data).
 
-A companion metric of the turnover ratio is the number of days inventory is held in the system before it is turned over, computed as:
+A companion metric of the turnover ratio is the number of days inventory is held ^daysinv in the system before it is turned over, computed as:
 
 $$
 \text{ Days in inventory } = \frac{360}{\text{ Turnover ratio }}
@@ -48,13 +159,27 @@ Example 13.1-1
 
 The following table summarizes financial information taken from the balance sheets of a hypothetical company.
 
-<table><tr><td rowspan="2"></td><td colspan="3">(Million \$)</td></tr><tr><td>December 31, 2014</td><td>December 31, 2013</td><td>December 31, 2012</td></tr><tr><td>Cost of goods sold</td><td>3989.1</td><td>3872.1</td><td>3562.7</td></tr><tr><td>Inventories:</td><td></td><td></td><td></td></tr><tr><td>Supplies</td><td>310.2</td><td>210.4</td><td>156.2</td></tr><tr><td>Raw materials</td><td>189.7</td><td>199.4</td><td>172.6</td></tr><tr><td>Work-in-process</td><td>339.1</td><td>310.5</td><td>342.3</td></tr><tr><td>Finished goods</td><td>200.1</td><td>196.4</td><td>150.7</td></tr></table>
+|  | (Million \$) | (Million \$) | (Million \$) |
+|---|---|---|---|
+| December 31, 2014 | December 31, 2013 | December 31, 2012 |  |
+| Cost of goods sold | 3989.1 | 3872.1 | 3562.7 |
+| Inventories: |  |  |  |
+| Supplies | 310.2 | 210.4 | 156.2 |
+| Raw materials | 189.7 | 199.4 | 172.6 |
+| Work-in-process | 339.1 | 310.5 | 342.3 |
+| Finished goods | 200.1 | 196.4 | 150.7 |
 
 Assess how well the company is managing its inventory.
 
 The following table summarizes the calculation of the turnover ratios:
 
-<table><tr><td>(Million \$)</td><td>2014</td><td>2013</td><td>2012</td></tr><tr><td>Cost of goods sold</td><td>3989.1</td><td>3872.1</td><td>3562.7</td></tr><tr><td>Total inventory</td><td>1039.1</td><td>916.7</td><td>821.8</td></tr><tr><td>Average inventory</td><td>(1039.1 + 916.7)/2 = 977.9</td><td>(916.7 + 821.8)/2 = 869.25</td><td></td></tr><tr><td>Turnover ratio</td><td>(3989.1/977.9) = 4.08</td><td>(3872.1/869.25) = 4.45</td><td></td></tr><tr><td>Days in inventory</td><td>(365/4.08) = 89.46</td><td>(365/4.45) = 82.02</td><td></td></tr></table>
+| (Million \$)       | 2014                       | 2013                       | 2012   |
+| ------------------ | -------------------------- | -------------------------- | ------ |
+| Cost of goods sold | 3989.1                     | 3872.1                     | 3562.7 |
+| Total inventory    | 1039.1                     | 916.7                      | 821.8  |
+| Average inventory  | (1039.1 + 916.7)/2 = 977.9 | (916.7 + 821.8)/2 = 869.25 |        |
+| Turnover ratio     | (3989.1/977.9) = 4.08      | (3872.1/869.25) = 4.45     |        |
+| Days in inventory  | (365/4.08) = 89.46         | (365/4.45) = 82.02         |        |
 
 The calculations show an unfavorable inventory situation: Low inventory turns (approximately 4 times a year) in 2013 and 2014 and high average days in inventory (over 80 days). Moreover, a worsening inventory situation occurs in 2014 compared to 2013.
 
@@ -64,7 +189,7 @@ To alleviate the problem, it is necessary to devise tools suitable for determini
 
 The nature of demand for an item can be broadly categorized as either deterministic or probabilistic. This categorization is a key factor in the development of inventory optimization tools. The remainder of this chapter deals with the (more analytically amenable) deterministic case. The probabilistic case will be presented in Chapter 16 following a review of probability and statistics in Chapter 14.
 
-#### 13.1.2 Elements of the Inventory Optimization Model
+#### 13.1.2 Elements of the Inventory Optimization Model ^costcomponents
 
 Most businesses must maintain inventory on hand to deal with uncertainties in demand. Too much inventory increases the holding cost of maintaining inventory in stock (capital, storage, maintenance, and handling), and too little increases shortage cost (lost sales, disruption in production, and loss of customer's goodwill). As units are withdrawn from stock, inventory is replenished periodically by initiating new orders from suppliers, with each new order incurring a (fixed) setup cost that is independent of the size of the order. In most cases, the purchase price from the supplier is discounted for large-size orders. What this all means is that the associated total inventory cost can be expressed as
 
@@ -72,7 +197,7 @@ $$
 \left( \begin{matrix} \text{ Total } \\  \text{ inventory } \\  \text{ cost } \end{matrix}\right)  = \left( \begin{matrix} \text{ Purchasing } \\  \text{ cost } \end{matrix}\right)  + \left( \begin{matrix} \text{ Setup } \\  \text{ cost } \end{matrix}\right)  + \left( \begin{matrix} \text{ Holding } \\  \text{ cost } \end{matrix}\right)  + \left( \begin{matrix} \text{ Shortage } \\  \text{ cost } \end{matrix}\right)
 $$
 
-These are conflicting costs, in the sense that smaller order sizes will reduce the holding cost (per unit time) while, at the same time, increasing the remaining costs, and vice versa. In this situation, the best that can be done is to seek a trade-off among these costs by deciding an inventory level that minimizes the total inventory cost.
+These are conflicting costs, in the sense that smaller order sizes will reduce the holding cost (per unit time) while, at the same time, increasing the remaining costs, and vice versa. In this situation, the best that can be done is to seek a trade-off among these costs by deciding an inventory level that minimizes the total inventory cost. ^conflictingcosts
 
 The inventory problem reduces to devising an inventory policy that answers two questions:
 
@@ -102,7 +227,7 @@ How much to order simply translates to determining the size of the order at repl
 
 The presentation above gives a unifying framework for deciding the optimum inventory policy. Yet, the specific models for determining these policies are as diverse as the different situations they handle. In general, the complexity of the resulting models depends to a great degree on the degree of uncertainty in the demand for the inventory item.
 
-### 13.2 ROLE OF DEMAND IN THE DEVELOPMENT OF INVENTORY MODELS
+### 13.2 ROLE OF DEMAND IN THE DEVELOPMENT OF INVENTORY MODELS ^demandrole
 
 In general, the analytic complexity of inventory models depends on whether the demand is deterministic or probabilistic. Within either category, the demand may or may not vary with time. For example, the consumption of natural gas used in heating homes is seasonal. Though the seasonal pattern repeats itself annually, a same-month consumption may vary from year to year, depending, for example, on the severity of weather.
 
@@ -116,11 +241,11 @@ In practical situations, the demand pattern in an inventory model may assume one
 
 4. Probabilistic and nonstationary over time.
 
-This categorization assumes the availability of reliable data to forecast future demand.
+This categorization assumes the availability of reliable data to forecast future demand. ^demandtypes
 
 In terms of the development of inventory models, the first category is the simplest analytically, and the fourth is the most complex. On the other hand, the first category is the least likely to occur in practice and the fourth is the most prevalent. In practice, the goal is to balance model simplicity and model accuracy.
 
-How can we decide if a certain approximation of demand is acceptable? An initial "guesstimate" is based on computing the mean and standard deviation of consumption for a specific period (e.g., monthly). The coefficient of variation, $V = \frac{\text{ Standard deviation }}{\text{ Mean }} \times  {100}$ , can then be used to assess the nature of demand using the following guideline: ${}^{2}$
+How can we decide if a certain approximation of demand is acceptable? An initial "guesstimate" is based on computing the mean and standard deviation of consumption for a specific period (e.g., monthly). The coefficient of variation, $V = \frac{\text{ Standard deviation }}{\text{ Mean }} \times  {100}$ , can then be used to assess the nature of demand using the following guideline: ${}^{2}$ ^coefficient
 
 1. If the average monthly demand (taken over a number of years) is "approximately" constant and $V$ is reasonably small (<20%), then the demand may be considered deterministic and constant.
 
@@ -128,7 +253,7 @@ How can we decide if a certain approximation of demand is acceptable? An initial
 
 3. If in Case ${1V}$ is high (>20%) but approximately constant, then the demand is probabilistic and stationary.
 
-4. The remaining case is the probabilistic nonstationary demand, which occurs when the averages and coefficients of variation vary appreciably month to month.
+4. The remaining case is the probabilistic nonstationary demand, which occurs when the averages and coefficients of variation vary appreciably month to month. ^guideline
 
 ## Example 13.2-1
 
@@ -138,7 +263,22 @@ From the standpoint of inventory modeling, it is reasonable to assume that each 
 
 TABLE 13.1 Monthly (January through December) Consumption of Natural Gas
 
-<table><tr><td rowspan="2">Year</td><td colspan="12">Natural-Gas Consumption in Cubic Feet</td></tr><tr><td>Jan</td><td>Feb</td><td>Mar</td><td>Apr</td><td>May</td><td>Jun</td><td>Jul</td><td>Aug</td><td>Sep</td><td>Oct</td><td>Nov</td><td>Dec</td></tr><tr><td>1990</td><td>100</td><td>110</td><td>90</td><td>70</td><td>65</td><td>50</td><td>40</td><td>42</td><td>56</td><td>68</td><td>88</td><td>95</td></tr><tr><td>1991</td><td>110</td><td>125</td><td>98</td><td>80</td><td>60</td><td>53</td><td>44</td><td>45</td><td>63</td><td>77</td><td>92</td><td>99</td></tr><tr><td>1992</td><td>90</td><td>100</td><td>88</td><td>79</td><td>56</td><td>57</td><td>38</td><td>39</td><td>60</td><td>70</td><td>82</td><td>90</td></tr><tr><td>1993</td><td>121</td><td>130</td><td>95</td><td>90</td><td>70</td><td>58</td><td>41</td><td>44</td><td>70</td><td>80</td><td>95</td><td>100</td></tr><tr><td>1994</td><td>109</td><td>119</td><td>99</td><td>75</td><td>68</td><td>55</td><td>43</td><td>41</td><td>65</td><td>79</td><td>88</td><td>94</td></tr><tr><td>1995</td><td>130</td><td>122</td><td>100</td><td>85</td><td>73</td><td>58</td><td>42</td><td>43</td><td>64</td><td>75</td><td>80</td><td>101</td></tr><tr><td>1996</td><td>115</td><td>100</td><td>103</td><td>90</td><td>76</td><td>55</td><td>45</td><td>40</td><td>67</td><td>78</td><td>98</td><td>97</td></tr><tr><td>1997</td><td>130</td><td>115</td><td>100</td><td>95</td><td>80</td><td>60</td><td>49</td><td>48</td><td>64</td><td>85</td><td>96</td><td>105</td></tr><tr><td>1998</td><td>125</td><td>100</td><td>94</td><td>86</td><td>79</td><td>59</td><td>46</td><td>39</td><td>69</td><td>90</td><td>100</td><td>110</td></tr><tr><td>1999</td><td>87</td><td>80</td><td>78</td><td>75</td><td>69</td><td>48</td><td>39</td><td>41</td><td>50</td><td>70</td><td>88</td><td>93</td></tr><tr><td>Mean</td><td>111.7</td><td>110</td><td>95</td><td>82.5</td><td>69.6</td><td>55</td><td>42.7</td><td>42</td><td>62.8</td><td>77</td><td>91</td><td>98</td></tr><tr><td>Std Dev</td><td>15.54</td><td>15.2</td><td>7.5</td><td>7.99</td><td>7.82</td><td>3.9</td><td>3.4</td><td>2.9</td><td>6.09</td><td>6.9</td><td>6.7</td><td>6</td></tr><tr><td>$V\left( \% \right)$</td><td>13.91</td><td>13.8</td><td>7.9</td><td>9.68</td><td>11.2</td><td>7.1</td><td>7.96</td><td>6.8</td><td>9.69</td><td>8.9</td><td>7.4</td><td>6.1</td></tr></table>
+| Year | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet | Natural-Gas Consumption in Cubic Feet |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec |  |
+| 1990 | 100 | 110 | 90 | 70 | 65 | 50 | 40 | 42 | 56 | 68 | 88 | 95 |
+| 1991 | 110 | 125 | 98 | 80 | 60 | 53 | 44 | 45 | 63 | 77 | 92 | 99 |
+| 1992 | 90 | 100 | 88 | 79 | 56 | 57 | 38 | 39 | 60 | 70 | 82 | 90 |
+| 1993 | 121 | 130 | 95 | 90 | 70 | 58 | 41 | 44 | 70 | 80 | 95 | 100 |
+| 1994 | 109 | 119 | 99 | 75 | 68 | 55 | 43 | 41 | 65 | 79 | 88 | 94 |
+| 1995 | 130 | 122 | 100 | 85 | 73 | 58 | 42 | 43 | 64 | 75 | 80 | 101 |
+| 1996 | 115 | 100 | 103 | 90 | 76 | 55 | 45 | 40 | 67 | 78 | 98 | 97 |
+| 1997 | 130 | 115 | 100 | 95 | 80 | 60 | 49 | 48 | 64 | 85 | 96 | 105 |
+| 1998 | 125 | 100 | 94 | 86 | 79 | 59 | 46 | 39 | 69 | 90 | 100 | 110 |
+| 1999 | 87 | 80 | 78 | 75 | 69 | 48 | 39 | 41 | 50 | 70 | 88 | 93 |
+| Mean | 111.7 | 110 | 95 | 82.5 | 69.6 | 55 | 42.7 | 42 | 62.8 | 77 | 91 | 98 |
+| Std Dev | 15.54 | 15.2 | 7.5 | 7.99 | 7.82 | 3.9 | 3.4 | 2.9 | 6.09 | 6.9 | 6.7 | 6 |
+| $V\left( \% \right)$ | 13.91 | 13.8 | 7.9 | 9.68 | 11.2 | 7.1 | 7.96 | 6.8 | 9.69 | 8.9 | 7.4 | 6.1 |
 
 ---
 
@@ -154,13 +294,13 @@ An examination of the mean and the coefficient of variation, $V$ , in Table 13.1
 
 The conclusion is that the monthly demand is (approximately) deterministic but variable.
 
-### 13.3 STATIC ECONOMIC-ORDER-QUANTITY MODELS
+### 13.3 STATIC ECONOMIC-ORDER-QUANTITY MODELS ^staticeoq
 
 This section presents three variations of the economic-order-quantity (EOQ) model with static (constant) demand. These models are simple analytically.
 
-#### 13.3.1 Classical EOQ Model
+#### 13.3.1 Classical EOQ Model ^eoq
 
-The simplest of the inventory models involves constant-rate demand with instantaneous order replenishment and no shortage. Define
+The simplest of the inventory models involves constant-rate demand with instantaneous order replenishment and no shortage. ^eoqassumptions Define
 
 $$
 y = \text{ Order quantity (number of units) }
@@ -230,9 +370,9 @@ $$
 \text{ Order }{y}^{ * } = \sqrt{\frac{2KD}{h}}\text{ units every }{t}_{0}^{ * } = \frac{{y}^{ * }}{D}\text{ time units }
 $$
 
-Actually, a new order need not be received at the instant it is ordered. Instead, a positive lead time, $L$ , may occur between the placement and the receipt of an order, as reorder point occurs when the inventory level drops to ${LD}$ units.
+Actually, a new order need not be received at the instant it is ordered. Instead, a positive lead time, $L$ , may occur between the placement and the receipt of an order, as reorder point occurs when the inventory level drops to ${LD}$ units. ^reorder
 
-Figure 13.2 assumes that the lead time, $L$ , is less than the cycle length ${t}_{0}^{ * }$ , which may not be the case in general. In such cases, we define the effective lead time as
+Figure 13.2 assumes that the lead time, $L$ , is less than the cycle length ${t}_{0}^{ * }$ , which may not be the case in general. In such cases, we define the effective lead time as ^effective
 
 $$
 {L}_{e} = L - n{t}_{0}^{ * }
@@ -308,7 +448,37 @@ $$
 
 510 Chapter 13 Inventory Modeling (with Introduction to Supply Chains)
 
-<table><tr><td></td><td>B</td><td>C</td><td>D</td></tr><tr><td colspan="4">1 General Economic Order Quantity (EOQ)</td></tr><tr><td colspan="4">2 Input data: (Enter -1 in column C if data element does not apply)</td></tr><tr><td>3</td><td>Item cost, c1 =</td><td>-1</td><td></td></tr><tr><td>4</td><td>Qty discount limit, $q =$</td><td>-1</td><td></td></tr><tr><td>5</td><td>Item cost, c2 =</td><td>-1</td><td></td></tr><tr><td>6</td><td>Setup cost, K =</td><td>100</td><td></td></tr><tr><td>7</td><td>Demand rate, D =</td><td>100</td><td></td></tr><tr><td>8</td><td>Production rate, a =</td><td>-1</td><td></td></tr><tr><td>9</td><td>Unit holding cost, h =</td><td>0.02</td><td></td></tr><tr><td>10</td><td>Unit penalty cost, p =</td><td>-1</td><td></td></tr><tr><td>11</td><td>Lead time, L =</td><td>12</td><td></td></tr><tr><td colspan="4">12 Model output results:</td></tr><tr><td>13</td><td>Order qty, y* =</td><td colspan="2">1000.00</td></tr><tr><td>14</td><td>Shortage qty, w* =</td><td colspan="2">0.00</td></tr><tr><td>15</td><td>Reorder point, R =</td><td colspan="2">200.00</td></tr><tr><td>16</td><td>TCU(y*) =</td><td colspan="2">20.00</td></tr><tr><td>17</td><td>Purchase/prod. Cost =</td><td colspan="2">0.00</td></tr><tr><td>18</td><td>Setup cost/unit time =</td><td colspan="2">10.00</td></tr><tr><td>19</td><td>Holding cost /unit time =</td><td colspan="2">10.00</td></tr><tr><td>20</td><td>Shortage cost/unit time = (</td><td colspan="2">0.00</td></tr><tr><td colspan="4">21 Optimal inventory policy: Order 1000.00 units when level drops to 200.00 units</td></tr><tr><td colspan="4">22 Model intermediate calculations:</td></tr><tr><td>23</td><td>ym =</td><td colspan="2">1000.00</td></tr><tr><td>24</td><td>TCU1(ym)=</td><td colspan="2">Not applicable</td></tr><tr><td>25</td><td>Q-equation:</td><td colspan="2">Not applicable</td></tr><tr><td>26</td><td>Q =</td><td colspan="2">Not applicable</td></tr><tr><td>27</td><td>cycle length, t0 =</td><td colspan="2">10.00</td></tr><tr><td>28</td><td>Optimization zone =</td><td colspan="2">Not applicable</td></tr><tr><td>29</td><td>Effective lead time. Le =</td><td colspan="2">2.00</td></tr></table>
+|  | B | C | D |
+|---|---|---|---|
+| 1 General Economic Order Quantity (EOQ) | 1 General Economic Order Quantity (EOQ) | 1 General Economic Order Quantity (EOQ) | 1 General Economic Order Quantity (EOQ) |
+| 2 Input data: (Enter -1 in column C if data element does not apply) | 2 Input data: (Enter -1 in column C if data element does not apply) | 2 Input data: (Enter -1 in column C if data element does not apply) | 2 Input data: (Enter -1 in column C if data element does not apply) |
+| 3 | Item cost, c1 = | -1 |  |
+| 4 | Qty discount limit, $q =$ | -1 |  |
+| 5 | Item cost, c2 = | -1 |  |
+| 6 | Setup cost, K = | 100 |  |
+| 7 | Demand rate, D = | 100 |  |
+| 8 | Production rate, a = | -1 |  |
+| 9 | Unit holding cost, h = | 0.02 |  |
+| 10 | Unit penalty cost, p = | -1 |  |
+| 11 | Lead time, L = | 12 |  |
+| 12 Model output results: | 12 Model output results: | 12 Model output results: | 12 Model output results: |
+| 13 | Order qty, y* = | 1000.00 | 1000.00 |
+| 14 | Shortage qty, w* = | 0.00 | 0.00 |
+| 15 | Reorder point, R = | 200.00 | 200.00 |
+| 16 | TCU(y*) = | 20.00 | 20.00 |
+| 17 | Purchase/prod. Cost = | 0.00 | 0.00 |
+| 18 | Setup cost/unit time = | 10.00 | 10.00 |
+| 19 | Holding cost /unit time = | 10.00 | 10.00 |
+| 20 | Shortage cost/unit time = ( | 0.00 | 0.00 |
+| 21 Optimal inventory policy: Order 1000.00 units when level drops to 200.00 units | 21 Optimal inventory policy: Order 1000.00 units when level drops to 200.00 units | 21 Optimal inventory policy: Order 1000.00 units when level drops to 200.00 units | 21 Optimal inventory policy: Order 1000.00 units when level drops to 200.00 units |
+| 22 Model intermediate calculations: | 22 Model intermediate calculations: | 22 Model intermediate calculations: | 22 Model intermediate calculations: |
+| 23 | ym = | 1000.00 | 1000.00 |
+| 24 | TCU1(ym)= | Not applicable | Not applicable |
+| 25 | Q-equation: | Not applicable | Not applicable |
+| 26 | Q = | Not applicable | Not applicable |
+| 27 | cycle length, t0 = | 10.00 | 10.00 |
+| 28 | Optimization zone = | Not applicable | Not applicable |
+| 29 | Effective lead time. Le = | 2.00 | 2.00 |
 
 FIGURE 13.3
 
@@ -332,7 +502,7 @@ Wilson started publishing accounts of its use in his consulting work. Yet, Harri
 
 Perhaps one of the reasons for not giving Harris his due credit is that he was not academic, hence he lacked the exposure afforded in academic circles. In fact, Harris did not have any formal education past a high school diploma. Yet, through tutoring and self-study, he was hired as an engineer at Westinghouse, where he patented numerous inventions. Later, once again relying on self-study, he decided to change careers and became a successful patent lawyer.
 
-#### 13.3.2 EOQ with Price Breaks
+#### 13.3.2 EOQ with Price Breaks ^pricebreaks
 
 This model is the same as in Section 13.3.1, except that the inventory item may be purchased at a discount if the size of the order, $y$ , exceeds a given limit, $q$ . Mathematically, the unit purchasing price, $c$ , is given as
 
@@ -352,7 +522,7 @@ $$
 \operatorname{TCU}\left( y\right)  = \left\{  \begin{array}{l} {\operatorname{TCU}}_{1}\left( y\right)  = D{c}_{1} + \frac{KD}{y} + \frac{h}{2}y, y \leq  q \\  {\operatorname{TCU}}_{2}\left( y\right)  = D{c}_{2} + \frac{KD}{y} + \frac{h}{2}y, y > q \end{array}\right.
 $$
 
-The functions ${\mathrm{{TCU}}}_{1}$ and ${\mathrm{{TCU}}}_{2}$ are graphed in Figure 13.4. Because the two functions differ only by a constant amount, their minima must coincide at
+The functions ${\mathrm{{TCU}}}_{1}$ and ${\mathrm{{TCU}}}_{2}$ are graphed in Figure 13.4. Because the two functions differ only by a constant amount, their minima must coincide at ^twocosts
 
 $$
 {y}_{m} = \sqrt{\frac{2KD}{h}}
@@ -370,7 +540,7 @@ FIGURE 13.4
 
 Inventory cost function with price breaks
 
-The determination of the optimum order quantity ${y}^{ * }$ depends on where the price breakpoint, $q$ , lies with respect to zones I, II, and III, delineated in Figure 13.4 by the ranges $\left( {0,{y}_{m}}\right\rbrack  ,\left( {{y}_{m}, Q}\right\rbrack$ , and $\left( {Q,\infty }\right)$ , respectively. The value of $Q\left( { > {y}_{m}}\right)$ is determined from the equation
+The determination of the optimum order quantity ${y}^{ * }$ depends on where the price breakpoint, $q$ , lies with respect to zones I, II, and III, delineated in Figure 13.4 by the ranges $\left( {0,{y}_{m}}\right\rbrack  ,\left( {{y}_{m}, Q}\right\rbrack$ , and $\left( {Q,\infty }\right)$ , respectively. ^threezones The value of $Q\left( { > {y}_{m}}\right)$ is determined from the equation
 
 $$
 {\mathrm{{TCU}}}_{2}\left( Q\right)  = {\mathrm{{TCU}}}_{1}\left( {y}_{m}\right)
@@ -496,9 +666,9 @@ Order 1000 gallons when the inventory level drops to 375 gallons.
 
 File excelEOQ.xls solves the discount price situation as a special case of template in Figure 13.3. Enter applicable data in the input data section C3:C11. The output gives the optimal inventory policy as well as all the intermediate calculations of the model.
 
-#### 13.3.3 Multi-Item EOQ with Storage Limitation
+#### 13.3.3 Multi-Item EOQ with Storage Limitation ^multiitem
 
-This model deals with multiple items whose individual inventory fluctuations follow the pattern as in Figure 13.1 (no shortage allowed). The difference is that the items compete for a limited storage space.
+This model deals with multiple items whose individual inventory fluctuations follow the pattern as in Figure 13.1 (no shortage allowed). The difference is that the items compete for a limited storage space. ^competespace
 
 Define for item $i, i = 1,2,\ldots , n$ ,
 
@@ -544,7 +714,12 @@ In previous editions of this book, we used the (rather involved) Lagrangean algo
 
 The following data describe three inventory items:
 
-<table><tr><td>Item $i$</td><td>${K}_{i}\left( \mathbb{s}\right)$</td><td>${D}_{i}$ (units per day)</td><td>${h}_{i}\left( \$ \right)$</td><td>${a}_{1}\left( {\mathrm{{ft}}}^{2}\right)$</td></tr><tr><td>1</td><td>10</td><td>2</td><td>.30</td><td>1</td></tr><tr><td>2</td><td>5</td><td>4</td><td>.10</td><td>1</td></tr><tr><td>3</td><td>15</td><td>4</td><td>.20</td><td>1</td></tr><tr><td colspan="5">Total available storage area $= {25}{\mathrm{{ft}}}^{2}$</td></tr></table>
+| Item $i$ | ${K}_{i}\left( \mathbb{s}\right)$ | ${D}_{i}$ (units per day) | ${h}_{i}\left( \$ \right)$ | ${a}_{1}\left( {\mathrm{{ft}}}^{2}\right)$ |
+|---|---|---|---|---|
+| 1 | 10 | 2 | .30 | 1 |
+| 2 | 5 | 4 | .10 | 1 |
+| 3 | 15 | 4 | .20 | 1 |
+| Total available storage area $= {25}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {25}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {25}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {25}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {25}{\mathrm{{ft}}}^{2}$ |
 
 The unconstrained optimum values, ${y}_{i}^{ * } = \sqrt{\frac{2{K}_{i}{D}_{i}}{{h}_{i}}}, i = 1,2,3$ , are 11.55,20.00, and 24.49 units, respectively, which violate the storage constraint ${y}_{1} + {y}_{2} + {y}_{3} \leq  {25}$ . The constrained problem can be solved as a nonlinear program using Solver or AMPL as explained below.
 
@@ -564,7 +739,7 @@ Solver template for Example 13.3-3 (file solverConstrEOQ.xls)
 
 ![bo_d56m533ef24c73bhe630_15_482_1419_904_742_0.jpg](bo_d56m533ef24c73bhe630_15_482_1419_904_742_0.jpg)
 
-### 13.4 DYNAMIC EOQ MODELS
+### 13.4 DYNAMIC EOQ MODELS ^dynamiceoq
 
 These models differ from those in Section 13.3 in two respects:
 
@@ -586,9 +761,9 @@ Example of dynamic demand generated by MRP
 
 Two models are presented in this section. The first model assumes no setup (ordering) cost, and the second one does. This seemingly "small" variation makes a difference in the complexity of the model.
 
-#### 13.4.1 No-Setup EOQ Model
+#### 13.4.1 No-Setup EOQ Model ^nosetup
 
-This model involves a planning horizon of $n$ equal periods. Each period has a limited production capacity with one or more production levels (e.g., regular time and overtime represent two production levels). A current period may produce more than its immediate demand to satisfy the need in later periods, in which case an inventory holding cost takes place.
+This model involves a planning horizon of $n$ equal periods. Each period has a limited production capacity with one or more production levels (e.g., regular time and overtime represent two production levels). ^productionlevels A current period may produce more than its immediate demand to satisfy the need in later periods, in which case an inventory holding cost takes place.
 
 The general assumptions of the model are as follows:
 
@@ -596,7 +771,7 @@ The general assumptions of the model are as follows:
 
 2. No shortage is allowed.
 
-3. The unit production cost function in any period either is constant or has increasing (convex) marginal costs.
+3. The unit production cost function in any period either is constant or has increasing (convex) marginal costs. ^convexcost
 
 4. The unit holding cost in any period is constant.
 
@@ -604,7 +779,7 @@ The absence of shortage signifies that delayed production in future periods cann
 
 Figure 13.8 illustrates the unit production cost function with increasing margins. For example, regular time and overtime production correspond to two levels where the unit production cost during overtime exceeds that regular time.
 
-The $n$ -period problem can be formulated as a transportation model (see Chapter 5) with ${kn}$ sources and $n$ destinations, where $k$ is the number of production levels per period (e.g., $k = 2$ if each period uses regular time and overtime). The production capacity of each of the ${kn}$ production-level sources equals the supply amounts. The demand amounts are specified by each period's demand. The unit "transportation" cost from a source to a destination is the sum of the applicable production and holding costs per unit. The solution of the problem as a transportation model determines the minimum-cost production amounts in each production level.
+The $n$ -period problem can be formulated as a transportation model (see Chapter 5) with ${kn}$ sources and $n$ destinations, where $k$ is the number of production levels per period (e.g., $k = 2$ if each period uses regular time and overtime). ^transportation The production capacity of each of the ${kn}$ production-level sources equals the supply amounts. The demand amounts are specified by each period's demand. The unit "transportation" cost from a source to a destination is the sum of the applicable production and holding costs per unit. The solution of the problem as a transportation model determines the minimum-cost production amounts in each production level.
 
 ![bo_d56m533ef24c73bhe630_17_369_1691_643_497_0.jpg](bo_d56m533ef24c73bhe630_17_369_1691_643_497_0.jpg)
 
@@ -612,25 +787,36 @@ FIGURE 13.8
 
 Convex unit production cost function
 
-The resulting transportation model can be solved without using the familiar transportation technique presented in Chapter 5. The validity of the new solution algorithm rests on the special assumptions of no shortage and a convex production-cost function.
+The resulting transportation model can be solved without using the familiar transportation technique presented in Chapter 5. The validity of the new solution algorithm rests on the special assumptions of no shortage and a convex production-cost function. ^transportation
 
 ## Example 13.4-1
 
 Metalco produces draft deflectors for use in home fireplaces during the months of December to March. The demand starts slow, peaks in the middle of the season, and tapers off toward the end. Because of the popularity of the product, Metalco may use overtime to satisfy the demand. The following table provides the production capacities and the demands for the four winter months:
 
-<table><tr><td rowspan="2">Month</td><td colspan="2">Capacity</td><td rowspan="2">Demand (units)</td></tr><tr><td>Regular (units)</td><td>Overtime (units)</td></tr><tr><td>1</td><td>90</td><td>50</td><td>100</td></tr><tr><td>2</td><td>100</td><td>60</td><td>190</td></tr><tr><td>3</td><td>120</td><td>80</td><td>210</td></tr><tr><td>4</td><td>110</td><td>70</td><td>160</td></tr></table>
+| Month | Capacity | Capacity | Demand (units) |
+|---|---|---|---|
+| Regular (units) | Overtime (units) |  |  |
+| 1 | 90 | 50 | 100 |
+| 2 | 100 | 60 | 190 |
+| 3 | 120 | 80 | 210 |
+| 4 | 110 | 70 | 160 |
 
 Unit production cost in any period is $\$ 6$ during regular time and $\$ 9$ during overtime. Holding cost per unit per month is \$.10.
 
 To ensure that the model has a feasible solution when shortage is not allowed, each month's cumulative supply cannot be smaller than its cumulative demand, as the following table shows:
 
-<table><tr><td>Month</td><td>Cumulative supply</td><td>Cumulative demand</td></tr><tr><td>1</td><td>${90} + {50} = {140}$</td><td>100</td></tr><tr><td>2</td><td>${140} + {100} + {60} = {300}$</td><td>${100} + {190} = {290}$</td></tr><tr><td>3</td><td>${300} + {120} + {80} = {500}$</td><td>${290} + {210} = {500}$</td></tr><tr><td>4</td><td>${500} + {110} + {70} = {680}$</td><td>${500} + {160} = {660}$</td></tr></table>
+| Month | Cumulative supply              | Cumulative demand       |
+| ----- | ------------------------------ | ----------------------- |
+| 1     | ${90} + {50} = {140}$          | 100                     |
+| 2     | ${140} + {100} + {60} = {300}$ | ${100} + {190} = {290}$ |
+| 3     | ${300} + {120} + {80} = {500}$ | ${290} + {210} = {500}$ |
+| 4     | ${500} + {110} + {70} = {680}$ | ${500} + {160} = {660}$ |
 
 Table 13.2 summarizes the model and its solution. The symbols ${R}_{i}$ and ${O}_{i}$ represent regular and overtime production levels in period $i, i = 1,2,3,4$ . Because cumulative supply at period 4 exceeds cumulative demand, a dummy surplus destination is added to balance the model as shown in Table 13.2. All the "transportation" routes from a previous to a current period are blocked because no shortage is allowed.
 
 The unit "transportation" cost is the sum of applicable production and holding costs. For example, unit cost from ${R}_{1}$ to period 1 equals unit production cost only $\left( { = \$ 6}\right)$ , whereas unit cost from ${O}_{1}$ to period 4 equals unit production cost in ${O}_{1}$ plus unit holding cost from period 1 to period 4-that is, $\$ 9 + \left( {\$ {.1} + \$ {.1} + \$ {.1}}\right)  = \$ {9.30}$ . The unit cost to any surplus destination is zero.
 
-The model is solved starting at column 1 and ending at the surplus column. For each column, the demand is satisfied giving priority to its cheapest routes. ${}^{5}$ For column 1, route $\left( {{R}_{1},1}\right)$ is the cheapest and is thus assigned the maximum feasible amount $= \min \{ {90},{100}\}  = {90}$ units. This assignment leaves 10 unsatisfied units in column 1. The next-cheapest route in column 1 is $\left( {{O}_{1},1}\right)$ , to which ${10}\left( { = \min \{ {50},{10}\} }\right)$ are assigned. The demand for period 1 is now satisfied.
+The model is solved starting at column 1 and ending at the surplus column. For each column, the demand is satisfied giving priority to its cheapest routes. ${}^{5}$ ^cheapestroutes For column 1, route $\left( {{R}_{1},1}\right)$ is the cheapest and is thus assigned the maximum feasible amount $= \min \{ {90},{100}\}  = {90}$ units. This assignment leaves 10 unsatisfied units in column 1. The next-cheapest route in column 1 is $\left( {{O}_{1},1}\right)$ , to which ${10}\left( { = \min \{ {50},{10}\} }\right)$ are assigned. The demand for period 1 is now satisfied.
 
 ---
 
@@ -646,11 +832,20 @@ Next, we move to column 2. The assignments in this column occur in the following
 
 Continuing in the same manner, we satisfy the demands of column 3 and then column 4. The optimum solution (shown in boldface in Table 13.2) is summarized as follows:
 
-<table><tr><td>Period</td><td>Production Schedule</td></tr><tr><td>Regular 1</td><td>Produce 90 units for period 1.</td></tr><tr><td>Overtime 1</td><td>Produce 50 units: 10 units for period 1, 30 for 2, and 10 for 3.</td></tr><tr><td>Regular 2</td><td>Produce 100 units for period 2.</td></tr><tr><td>Overtime 2</td><td>Produce 60 units for period 2.</td></tr><tr><td>Regular 3</td><td>Produce 120 units for period 3.</td></tr><tr><td>Overtime 3</td><td>Produce 80 units for period 3.</td></tr><tr><td>Regular 4</td><td>Produce 110 units for period 4.</td></tr><tr><td>Overtime 4</td><td>Produce 50 units for period 4, with 20 units of idle capacity.</td></tr></table>
+| Period | Production Schedule |
+|---|---|
+| Regular 1 | Produce 90 units for period 1. |
+| Overtime 1 | Produce 50 units: 10 units for period 1, 30 for 2, and 10 for 3. |
+| Regular 2 | Produce 100 units for period 2. |
+| Overtime 2 | Produce 60 units for period 2. |
+| Regular 3 | Produce 120 units for period 3. |
+| Overtime 3 | Produce 80 units for period 3. |
+| Regular 4 | Produce 110 units for period 4. |
+| Overtime 4 | Produce 50 units for period 4, with 20 units of idle capacity. |
 
 The associated total cost is ${90} \times  \$ 6 + {10} \times  \$ 9 + {30} \times  \$ {9.10} + {100} \times  \$ 6 + {60} \times  \$ 9 + {10} \times \; \$ {9.20} + {120} \times  \$ 6 + {80} \times  \$ 9 + {110} \times  \$ 6 + {50} \times  \$ 9 = \$ {4685}.$
 
-#### 13.4.2 Setup EOQ Model
+#### 13.4.2 Setup EOQ Model ^setup
 
 In this situation, no shortage is allowed, and a setup cost is incurred each time a new production lot is started. Two solution methods will be presented: an exact dynamic programming algorithm and a heuristic.
 
@@ -682,7 +877,7 @@ $$
 {x}_{i + 1} = {x}_{i} + {z}_{i} - {D}_{i}
 $$
 
-For the forward recursive equation, the state at stage (period) $i$ is defined as ${x}_{i + 1}$ , the end-of-period inventory level. In the extreme case, the remaining inventory, ${x}_{i + 1}$ , can satisfy the demand for all the remaining periods-that is,
+For the forward recursive equation, the state at stage (period) $i$ is defined as ${x}_{i + 1}$ , the end-of-period inventory level. ^endinventory In the extreme case, the remaining inventory, ${x}_{i + 1}$ , can satisfy the demand for all the remaining periods-that is,
 
 $$
 0 \leq  {x}_{i + 1} \leq  {D}_{i + 1} + \ldots  + {D}_{n}
@@ -694,7 +889,7 @@ Elements of the dynamic inventory model with setup cost
 
 ![bo_d56m533ef24c73bhe630_20_387_1956_1182_214_0.jpg](bo_d56m533ef24c73bhe630_20_387_1956_1182_214_0.jpg)
 
-Let ${f}_{i}\left( {x}_{i + 1}\right)$ be the minimum inventory cost for periods $1,2,\ldots$ , and $i$ given the end-of-period inventory ${x}_{i + 1}$ . The forward recursive equation is
+Let ${f}_{i}\left( {x}_{i + 1}\right)$ be the minimum inventory cost for periods $1,2,\ldots$ , and $i$ given the end-of-period inventory ${x}_{i + 1}$ . The forward recursive equation is ^recursive
 
 $$
 {f}_{1}\left( {x}_{2}\right)  = \mathop{\min }\limits_{{{z}_{1} = {D}_{1} + {x}_{2} - {x}_{1}}}\left\{  {{C}_{1}\left( {z}_{1}\right)  + {h}_{1}{x}_{2}}\right\}
@@ -710,7 +905,11 @@ Note that for period $1,{z}_{1}$ exactly equals ${D}_{1} + {x}_{2} - {x}_{1}$ . 
 
 The following table provides the data for a 3-period inventory situation:
 
-<table><tr><td>Period <br> $i$</td><td>Demand ${D}_{i}$ (units)</td><td>Setup cost ${K}_{i}\left( \mathbb{s}\right)$</td><td>Holding cost ${h}_{i}\left( \mathbb{s}\right)$</td></tr><tr><td>1</td><td>3</td><td>3</td><td>1</td></tr><tr><td>2</td><td>2</td><td>7</td><td>3</td></tr><tr><td>3</td><td>4</td><td>6</td><td>2</td></tr></table>
+| Period  $i$ | Demand ${D}_{i}$ (units) | Setup cost ${K}_{i}\left( \mathbb{s}\right)$ | Holding cost ${h}_{i}\left( \mathbb{s}\right)$ |
+|---|---|---|---|
+| 1 | 3 | 3 | 1 |
+| 2 | 2 | 7 | 3 |
+| 3 | 4 | 6 | 2 |
 
 The demand occurs in discrete units, and the starting inventory is ${x}_{1} = 1$ unit. The unit production cost, ${c}_{i}\left( {z}_{i}\right)$ , is $\$ {10}$ for the first 3 units and $\$ {20}$ for each additional unit-that is,
 
@@ -722,17 +921,44 @@ Determine the optimal inventory policy.
 
 Period 1: ${D}_{1} = 3,0 \leq  {x}_{2} \leq  2 + 4 = 6,{z}_{1} = {x}_{2} + {D}_{1} - {x}_{1} = {x}_{2} + 2$
 
-<table><tr><td rowspan="2" colspan="2"></td><td colspan="7">${C}_{1}\left( {z}_{1}\right)$</td><td colspan="2" rowspan="2">Optimal solution</td></tr><tr><td>${z}_{1} = 2$</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr><tr><td>${x}_{2}$</td><td>${h}_{1}{x}_{2}$</td><td>${C}_{1}\left( {z}_{1}\right)  = {23}$</td><td>33</td><td>53</td><td>73</td><td>93</td><td>113</td><td>133</td><td>${f}_{1}\left( {x}_{2}\right)$</td><td>${z}_{1}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>23</td><td></td><td></td><td></td><td></td><td></td><td></td><td>23</td><td>2</td></tr><tr><td>1</td><td>1</td><td></td><td>34</td><td></td><td></td><td></td><td></td><td></td><td>34</td><td>3</td></tr><tr><td>2</td><td>2</td><td></td><td></td><td>55</td><td></td><td></td><td></td><td></td><td>55</td><td>4</td></tr><tr><td>3</td><td>3</td><td></td><td></td><td></td><td>76</td><td></td><td></td><td></td><td>76</td><td>5</td></tr><tr><td>4</td><td>4</td><td></td><td></td><td></td><td></td><td>97</td><td></td><td></td><td>97</td><td>6</td></tr><tr><td>5</td><td>5</td><td></td><td></td><td></td><td></td><td></td><td>118</td><td></td><td>118</td><td>7</td></tr><tr><td>6</td><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td><td>139</td><td>139</td><td>8</td></tr></table>
+|  |  | ${C}_{1}\left( {z}_{1}\right)$ | ${C}_{1}\left( {z}_{1}\right)$ | ${C}_{1}\left( {z}_{1}\right)$ | ${C}_{1}\left( {z}_{1}\right)$ | ${C}_{1}\left( {z}_{1}\right)$ | ${C}_{1}\left( {z}_{1}\right)$ | ${C}_{1}\left( {z}_{1}\right)$ | Optimal solution | Optimal solution |
+|---|---|---|---|---|---|---|---|---|---|---|
+| ${z}_{1} = 2$ | 3 | 4 | 5 | 6 | 7 | 8 |  |  |  |  |
+| ${x}_{2}$ | ${h}_{1}{x}_{2}$ | ${C}_{1}\left( {z}_{1}\right)  = {23}$ | 33 | 53 | 73 | 93 | 113 | 133 | ${f}_{1}\left( {x}_{2}\right)$ | ${z}_{1}^{ * }$ |
+| 0 | 0 | 23 |  |  |  |  |  |  | 23 | 2 |
+| 1 | 1 |  | 34 |  |  |  |  |  | 34 | 3 |
+| 2 | 2 |  |  | 55 |  |  |  |  | 55 | 4 |
+| 3 | 3 |  |  |  | 76 |  |  |  | 76 | 5 |
+| 4 | 4 |  |  |  |  | 97 |  |  | 97 | 6 |
+| 5 | 5 |  |  |  |  |  | 118 |  | 118 | 7 |
+| 6 | 6 |  |  |  |  |  |  | 139 | 139 | 8 |
 
 Note that because ${x}_{1} = 1$ , the smallest value of ${z}_{1}$ is ${D}_{1} - {x}_{1} = 3 - 1 = 2$ .
 
 Period 2: ${D}_{2} = 2,0 \leq  {x}_{3} \leq  4,0 \leq  {z}_{2} \leq  {D}_{2} + {x}_{3} = {x}_{3} + 2$
 
-<table><tr><td rowspan="3">${x}_{3}$</td><td rowspan="3">${h}_{2}{x}_{3}$</td><td colspan="7">${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$</td><td rowspan="2" colspan="2">Optimal solution</td></tr><tr><td>${z}_{2} = 0$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr><tr><td>${C}_{2}\left( {z}_{2}\right)  = 0$</td><td>17</td><td>27</td><td>37</td><td>57</td><td>77</td><td>97</td><td>${f}_{2}\left( {x}_{3}\right)$</td><td>${z}_{2}^{ * }$</td></tr><tr><td rowspan="2">0</td><td>0</td><td>$0 + {55}$</td><td>17 + 34</td><td>27 + 23</td><td></td><td></td><td></td><td></td><td>50</td><td>2</td></tr><tr><td></td><td>$= {55}$</td><td>$= {51}$</td><td>$= {50}$</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td rowspan="2">1</td><td>3</td><td>$3 + {76}$</td><td>20 + 55</td><td>30 + 34</td><td>40 + 23</td><td></td><td></td><td></td><td>63</td><td>3</td></tr><tr><td></td><td>$= {79}$</td><td>$= {75}$</td><td>$= {64}$</td><td>$= {63}$</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>2</td><td>6</td><td>6 + 97</td><td>23 + 76</td><td>33 + 55</td><td>43 + 34</td><td>63 + 23</td><td></td><td></td><td>77</td><td>3</td></tr><tr><td></td><td></td><td>$= {103}$</td><td>$= {99}$</td><td>$= {88}$</td><td>$= {77}$</td><td>$= {86}$</td><td></td><td></td><td></td><td></td></tr><tr><td>3</td><td>9</td><td>9 + 118</td><td>26 + 97</td><td>36 + 76</td><td>46 + 55</td><td>66 + 34</td><td>${86} + {23}$</td><td></td><td>100</td><td>4</td></tr><tr><td></td><td></td><td>$= {127}$</td><td>$= {123}$</td><td>$= {112}$</td><td>$= {101}$</td><td>$= {100}$</td><td>$= {109}$</td><td></td><td></td><td></td></tr><tr><td>4</td><td>12</td><td>${12} + {139}$</td><td>29 + 118</td><td>39 + 97</td><td>49 + 76</td><td>69 + 55</td><td>${89} + {34}$</td><td>109 + 23</td><td>123</td><td>5</td></tr><tr><td></td><td></td><td>$= {151}$</td><td>$= {147}$</td><td>$= {136}$</td><td>$= {125}$</td><td>$= {124}$</td><td>$= {123}$</td><td>$= {132}$</td><td></td><td></td></tr></table>
+| ${x}_{3}$                           | ${h}_{2}{x}_{3}$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | Optimal solution | Optimal solution |
+| ----------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------- | ---------------- |
+| ${z}_{2} = 0$                       | 1                | 2                                                                                                     | 3                                                                                                     | 4                                                                                                     | 5                                                                                                     | 6                                                                                                     |                                                                                                       |                                                                                                       |                  |                  |
+| ${C}_{2}\left( {z}_{2}\right)  = 0$ | 17               | 27                                                                                                    | 37                                                                                                    | 57                                                                                                    | 77                                                                                                    | 97                                                                                                    | ${f}_{2}\left( {x}_{3}\right)$                                                                        | ${z}_{2}^{ * }$                                                                                       |                  |                  |
+| 0                                   | 0                | $0 + {55}$                                                                                            | 17 + 34                                                                                               | 27 + 23                                                                                               |                                                                                                       |                                                                                                       |                                                                                                       |                                                                                                       | 50               | 2                |
+|                                     | $= {55}$         | $= {51}$                                                                                              | $= {50}$                                                                                              |                                                                                                       |                                                                                                       |                                                                                                       |                                                                                                       |                                                                                                       |                  |                  |
+| 1                                   | 3                | $3 + {76}$                                                                                            | 20 + 55                                                                                               | 30 + 34                                                                                               | 40 + 23                                                                                               |                                                                                                       |                                                                                                       |                                                                                                       | 63               | 3                |
+|                                     | $= {79}$         | $= {75}$                                                                                              | $= {64}$                                                                                              | $= {63}$                                                                                              |                                                                                                       |                                                                                                       |                                                                                                       |                                                                                                       |                  |                  |
+| 2                                   | 6                | 6 + 97                                                                                                | 23 + 76                                                                                               | 33 + 55                                                                                               | 43 + 34                                                                                               | 63 + 23                                                                                               |                                                                                                       |                                                                                                       | 77               | 3                |
+|                                     |                  | $= {103}$                                                                                             | $= {99}$                                                                                              | $= {88}$                                                                                              | $= {77}$                                                                                              | $= {86}$                                                                                              |                                                                                                       |                                                                                                       |                  |                  |
+| 3                                   | 9                | 9 + 118                                                                                               | 26 + 97                                                                                               | 36 + 76                                                                                               | 46 + 55                                                                                               | 66 + 34                                                                                               | ${86} + {23}$                                                                                         |                                                                                                       | 100              | 4                |
+|                                     |                  | $= {127}$                                                                                             | $= {123}$                                                                                             | $= {112}$                                                                                             | $= {101}$                                                                                             | $= {100}$                                                                                             | $= {109}$                                                                                             |                                                                                                       |                  |                  |
+| 4                                   | 12               | ${12} + {139}$                                                                                        | 29 + 118                                                                                              | 39 + 97                                                                                               | 49 + 76                                                                                               | 69 + 55                                                                                               | ${89} + {34}$                                                                                         | 109 + 23                                                                                              | 123              | 5                |
+|                                     |                  | $= {151}$                                                                                             | $= {147}$                                                                                             | $= {136}$                                                                                             | $= {125}$                                                                                             | $= {124}$                                                                                             | $= {123}$                                                                                             | $= {132}$                                                                                             |                  |                  |
 
 Period 3: ${D}_{3} = 4,{x}_{4} = 0,0 \leq  {z}_{3} \leq  {D}_{3} + {x}_{4} = 4$
 
-<table><tr><td rowspan="3">${x}_{4}$</td><td rowspan="3">${h}_{3}{x}_{4}$</td><td colspan="5">${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$</td><td colspan="2" rowspan="2">Optimal solution</td></tr><tr><td>${z}_{3} = 0$</td><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td>${C}_{3}\left( {z}_{3}\right)  = 0$</td><td>16</td><td>26</td><td>36</td><td>56</td><td>${f}_{3}\left( {x}_{4}\right)$</td><td>${z}_{3}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>0 + 123 <br> $= {123}$</td><td>16 + 100 <br> $= {116}$</td><td>26 + 77 <br> $= {103}$</td><td>36 + 63 <br> $= {99}$</td><td>56 + 50 <br> $= {106}$</td><td>99</td><td>3</td></tr></table>
+| ${x}_{4}$ | ${h}_{3}{x}_{4}$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | Optimal solution | Optimal solution |
+|---|---|---|---|---|---|---|---|
+| ${z}_{3} = 0$ | 1 | 2 | 3 | 4 |  |  |  |  |
+| ${C}_{3}\left( {z}_{3}\right)  = 0$ | 16 | 26 | 36 | 56 | ${f}_{3}\left( {x}_{4}\right)$ | ${z}_{3}^{ * }$ |  |  |
+| 0 | 0 | 0 + 123  $= {123}$ | 16 + 100  $= {116}$ | 26 + 77  $= {103}$ | 36 + 63  $= {99}$ | 56 + 50  $= {106}$ | 99 | 3 |
 
 The optimum solution is read in the following manner:
 
@@ -754,15 +980,60 @@ Figure 13.10 shows the application of excelDPInv.xls to Example 13.4-2. The inpu
 
 Period 1:
 
-<table><tr><td>2</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>1</td><td>J</td><td>K</td><td>S</td><td>T U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td></tr><tr><td>1</td><td colspan="18">General (Forward) Dynamic Programming Inventory Model</td></tr><tr><td>2</td><td>1</td><td colspan="3">Number of periods, N-</td><td>3</td><td>Current</td><td>period-</td><td>1</td><td></td><td></td><td></td><td rowspan="5">Optimum</td><td colspan="6">Optimum solution</td></tr><tr><td>3</td><td>N</td><td>K1=</td><td>3</td><td>h1=</td><td>1</td><td>c1(z1)=</td><td>10</td><td>20</td><td>3</td><td></td><td></td><td colspan="6">Summary</td></tr><tr><td>4</td><td>P</td><td>Period</td><td>1</td><td>2</td><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td>✘</td><td>f</td><td>Z</td><td>✘</td><td>f</td><td>Z</td></tr><tr><td>5</td><td>U</td><td>D(1 to 3)-</td><td>2</td><td>2</td><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td colspan="3">Period 1</td><td></td><td></td><td></td></tr><tr><td>6</td><td>T</td><td colspan="3">Are z1 values correct?</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>0</td><td>23</td><td>2</td><td></td><td></td><td></td></tr><tr><td>7</td><td></td><td>Period 0</td><td colspan="2">z1=</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>Period1</td><td>1</td><td>34</td><td>3</td><td></td><td></td><td></td></tr><tr><td>8</td><td></td><td>f0</td><td colspan="2">C1(z1)=</td><td>23</td><td>33</td><td>53</td><td>73</td><td>93</td><td>113</td><td>133</td><td>f1 z1</td><td>2</td><td>55</td><td>4</td><td></td><td></td><td></td></tr><tr><td>9</td><td>S</td><td></td><td>x2=</td><td>0</td><td>23</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>23</td><td>2 3</td><td>76</td><td>5</td><td></td><td></td><td></td></tr><tr><td>10</td><td>T</td><td></td><td>x2=</td><td>1</td><td>1111111</td><td>34</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>34</td><td>3 4</td><td>97</td><td>6</td><td></td><td></td><td></td></tr><tr><td>11</td><td>A</td><td></td><td>x2=</td><td>2</td><td>1111111</td><td>1111111</td><td>55</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>55</td><td>4 5</td><td>118</td><td>7</td><td></td><td></td><td></td></tr><tr><td>12</td><td>G</td><td></td><td>x2=</td><td>3</td><td>1111111</td><td>1111111</td><td>1111111</td><td>76</td><td>1111111</td><td>1111111</td><td>1111111</td><td>76</td><td>5 6</td><td>139</td><td>B</td><td></td><td></td><td></td></tr><tr><td>13</td><td>E</td><td></td><td>x2=</td><td>4</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>97</td><td>1111111</td><td>1111111</td><td>97</td><td>6</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>14</td><td></td><td></td><td>x2=</td><td>5</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>118</td><td>1111111</td><td>118</td><td>7</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15</td><td>C</td><td></td><td>x2=</td><td>6</td><td>1111111</td><td>1111111</td><td>1111111</td><td>111111</td><td>1111111</td><td>1111111</td><td>139</td><td>139</td><td>8</td><td></td><td></td><td></td><td></td><td></td></tr></table>
+| 2 | A | B | C | D | E | F | G | H | 1 | J | K | S | T U | V | W | X | Y | Z |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model | General (Forward) Dynamic Programming Inventory Model |
+| 2 | 1 | Number of periods, N- | Number of periods, N- | Number of periods, N- | 3 | Current | period- | 1 |  |  |  | Optimum | Optimum solution | Optimum solution | Optimum solution | Optimum solution | Optimum solution | Optimum solution |
+| 3 | N | K1= | 3 | h1= | 1 | c1(z1)= | 10 | 20 | 3 |  |  | Summary | Summary | Summary | Summary | Summary | Summary |  |
+| 4 | P | Period | 1 | 2 | 3 |  |  |  |  |  |  | ✘ | f | Z | ✘ | f | Z |  |
+| 5 | U | D(1 to 3)- | 2 | 2 | 4 |  |  |  |  |  |  | Period 1 | Period 1 | Period 1 |  |  |  |  |
+| 6 | T | Are z1 values correct? | Are z1 values correct? | Are z1 values correct? | yes | yes | yes | yes | yes | yes | yes | 0 | 23 | 2 |  |  |  |  |
+| 7 |  | Period 0 | z1= | z1= | 2 | 3 | 4 | 5 | 6 | 7 | 8 | Period1 | 1 | 34 | 3 |  |  |  |
+| 8 |  | f0 | C1(z1)= | C1(z1)= | 23 | 33 | 53 | 73 | 93 | 113 | 133 | f1 z1 | 2 | 55 | 4 |  |  |  |
+| 9 | S |  | x2= | 0 | 23 | 1111111 | 1111111 | 1111111 | 1111111 | 1111111 | 1111111 | 23 | 2 3 | 76 | 5 |  |  |  |
+| 10 | T |  | x2= | 1 | 1111111 | 34 | 1111111 | 1111111 | 1111111 | 1111111 | 1111111 | 34 | 3 4 | 97 | 6 |  |  |  |
+| 11 | A |  | x2= | 2 | 1111111 | 1111111 | 55 | 1111111 | 1111111 | 1111111 | 1111111 | 55 | 4 5 | 118 | 7 |  |  |  |
+| 12 | G |  | x2= | 3 | 1111111 | 1111111 | 1111111 | 76 | 1111111 | 1111111 | 1111111 | 76 | 5 6 | 139 | B |  |  |  |
+| 13 | E |  | x2= | 4 | 1111111 | 1111111 | 1111111 | 1111111 | 97 | 1111111 | 1111111 | 97 | 6 |  |  |  |  |  |
+| 14 |  |  | x2= | 5 | 1111111 | 1111111 | 1111111 | 1111111 | 1111111 | 118 | 1111111 | 118 | 7 |  |  |  |  |  |
+| 15 | C |  | x2= | 6 | 1111111 | 1111111 | 1111111 | 111111 | 1111111 | 1111111 | 139 | 139 | 8 |  |  |  |  |  |
 
 Period 2:
 
-<table><tr><td>7</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>1</td><td>J</td><td>K</td><td>S</td><td>T</td><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>2</td></tr><tr><td colspan="20">1 General (Forward) Dynamic Programming Inventory Model</td></tr><tr><td>2</td><td>1</td><td colspan="3">Number of periods, N-</td><td>3</td><td>Current</td><td>period-</td><td>2</td><td></td><td></td><td></td><td></td><td></td><td colspan="6">Optimum solution</td></tr><tr><td>3</td><td>N</td><td>K2-</td><td>7</td><td>h2=</td><td>3</td><td>c2(z2)-</td><td>10</td><td>20</td><td>3</td><td></td><td></td><td></td><td></td><td colspan="6">Summary</td></tr><tr><td>4</td><td>P</td><td>Period</td><td>1</td><td>2</td><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>✘</td><td>f</td><td>Z</td><td>✘</td><td>f</td><td>Z</td></tr><tr><td>5</td><td>U</td><td>D(1 to 3)=</td><td>2</td><td>2</td><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td colspan="3">Period 1</td><td colspan="3">Period 2</td></tr><tr><td>6</td><td>T</td><td colspan="3">Are z2 values correct?</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td colspan="2">Optimum</td><td>0</td><td>23</td><td>2</td><td>0</td><td>50</td><td>2</td></tr><tr><td>7</td><td></td><td>Period 1</td><td colspan="2">z2-</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td colspan="2">Period2</td><td>1</td><td>34</td><td>3</td><td>1</td><td>63</td><td>3</td></tr><tr><td>8</td><td></td><td>f1</td><td colspan="2">C2(z2)=</td><td>0</td><td>17</td><td>27</td><td>37</td><td>57</td><td>77</td><td>97</td><td>f2</td><td>z2</td><td>2</td><td>55</td><td>4</td><td>2</td><td>77</td><td>3</td></tr><tr><td>9</td><td>S</td><td>23</td><td>x3=</td><td>0</td><td>55</td><td>51</td><td>50</td><td>111111</td><td>1111111</td><td>1111111</td><td>1111111</td><td>50</td><td>2</td><td>3</td><td>76</td><td>5</td><td>3</td><td>100</td><td>4</td></tr><tr><td>10</td><td>T</td><td>34</td><td>x3=</td><td>1</td><td>79</td><td>75</td><td>64</td><td>63</td><td>1111111</td><td>1111111</td><td>1111111</td><td>63</td><td>3</td><td>4</td><td>97</td><td>6</td><td>4</td><td>123</td><td>5</td></tr><tr><td>11</td><td>A</td><td>55</td><td>x3=</td><td>2</td><td>103</td><td>99</td><td>88</td><td>77</td><td>86</td><td>1111111</td><td>1111111</td><td>77</td><td>3</td><td>5</td><td>118</td><td>7</td><td></td><td>Period 3</td><td></td></tr><tr><td>12</td><td>G</td><td>76</td><td>x3=</td><td>3</td><td>127</td><td>123</td><td>112</td><td>101</td><td>100</td><td>109</td><td>1111111</td><td>100</td><td>4</td><td>6</td><td>139</td><td>8</td><td></td><td></td><td></td></tr><tr><td>13</td><td>E</td><td>97</td><td>x3=</td><td>4</td><td>151</td><td>147</td><td>136</td><td>125</td><td>124</td><td>123</td><td>132</td><td>123</td><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>14</td><td></td><td>118</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15</td><td>C</td><td>139</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>
+| 7 | A | B | C | D | E | F | G | H | 1 | J | K | S | T | U | V | W | X | Y | 2 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model |
+| 2 | 1 | Number of periods, N- | Number of periods, N- | Number of periods, N- | 3 | Current | period- | 2 |  |  |  |  |  | Optimum solution | Optimum solution | Optimum solution | Optimum solution | Optimum solution | Optimum solution |
+| 3 | N | K2- | 7 | h2= | 3 | c2(z2)- | 10 | 20 | 3 |  |  |  |  | Summary | Summary | Summary | Summary | Summary | Summary |
+| 4 | P | Period | 1 | 2 | 3 |  |  |  |  |  |  |  |  | ✘ | f | Z | ✘ | f | Z |
+| 5 | U | D(1 to 3)= | 2 | 2 | 4 |  |  |  |  |  |  |  |  | Period 1 | Period 1 | Period 1 | Period 2 | Period 2 | Period 2 |
+| 6 | T | Are z2 values correct? | Are z2 values correct? | Are z2 values correct? | yes | yes | yes | yes | yes | yes | yes | Optimum | Optimum | 0 | 23 | 2 | 0 | 50 | 2 |
+| 7 |  | Period 1 | z2- | z2- | 0 | 1 | 2 | 3 | 4 | 5 | 6 | Period2 | Period2 | 1 | 34 | 3 | 1 | 63 | 3 |
+| 8 |  | f1 | C2(z2)= | C2(z2)= | 0 | 17 | 27 | 37 | 57 | 77 | 97 | f2 | z2 | 2 | 55 | 4 | 2 | 77 | 3 |
+| 9 | S | 23 | x3= | 0 | 55 | 51 | 50 | 111111 | 1111111 | 1111111 | 1111111 | 50 | 2 | 3 | 76 | 5 | 3 | 100 | 4 |
+| 10 | T | 34 | x3= | 1 | 79 | 75 | 64 | 63 | 1111111 | 1111111 | 1111111 | 63 | 3 | 4 | 97 | 6 | 4 | 123 | 5 |
+| 11 | A | 55 | x3= | 2 | 103 | 99 | 88 | 77 | 86 | 1111111 | 1111111 | 77 | 3 | 5 | 118 | 7 |  | Period 3 |  |
+| 12 | G | 76 | x3= | 3 | 127 | 123 | 112 | 101 | 100 | 109 | 1111111 | 100 | 4 | 6 | 139 | 8 |  |  |  |
+| 13 | E | 97 | x3= | 4 | 151 | 147 | 136 | 125 | 124 | 123 | 132 | 123 | 5 |  |  |  |  |  |  |
+| 14 |  | 118 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| 15 | C | 139 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 
 Period 3:
 
-<table><tr><td></td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>1</td><td>J</td><td>K</td><td>S</td><td>T U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td></tr><tr><td colspan="19">1 General (Forward) Dynamic Programming Inventory Model</td></tr><tr><td>2</td><td>I</td><td colspan="3">Number of periods, N=</td><td>3</td><td>Current</td><td>period=</td><td>3</td><td></td><td></td><td></td><td></td><td colspan="6">Optimum solution</td></tr><tr><td>3</td><td>N</td><td>K3=</td><td>6</td><td>h3=</td><td>2</td><td>c3(z3)-</td><td>10</td><td>20</td><td>3</td><td></td><td></td><td></td><td colspan="6">Summary</td></tr><tr><td>4</td><td>P</td><td>Period</td><td>7</td><td>2</td><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>✘</td><td>f</td><td>Z</td><td>✘</td><td>f</td><td>Z</td></tr><tr><td>5</td><td>U</td><td>D(1 to 3)=</td><td>2</td><td>2</td><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td colspan="3">Period 1</td><td colspan="3">Period 2</td></tr><tr><td>6</td><td>T</td><td colspan="3">Are z3 values correct?</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td></td><td></td><td>Optimum</td><td>0</td><td>23</td><td>2</td><td>0</td><td>50</td><td>2</td></tr><tr><td>7</td><td></td><td>Period 2</td><td colspan="2">z3=</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td></td><td></td><td>Period3</td><td>1</td><td>34</td><td>3</td><td>1</td><td>63</td><td>3</td></tr><tr><td>B</td><td></td><td>f2</td><td colspan="2">C3(z3)=</td><td>0</td><td>16</td><td>26</td><td>36</td><td>56</td><td></td><td></td><td>f3 z3</td><td>2</td><td>55</td><td>4</td><td>2</td><td>77</td><td>3</td></tr><tr><td>9</td><td>S</td><td>50</td><td>x4=</td><td>0</td><td>123</td><td>116</td><td>103</td><td>99</td><td>106</td><td></td><td></td><td>99</td><td>3 3</td><td>76</td><td>5</td><td>3</td><td>100</td><td>4</td></tr><tr><td>10</td><td>T</td><td>63</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>4</td><td>97</td><td>6</td><td>4</td><td>123</td><td>5</td></tr><tr><td>11</td><td>A</td><td>77</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>5</td><td>118</td><td>7</td><td colspan="3">Period 3</td></tr><tr><td>12</td><td>G</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>6</td><td>139</td><td>8</td><td>0</td><td>99</td><td>3</td></tr></table>
+|  | A | B | C | D | E | F | G | H | 1 | J | K | S | T U | V | W | X | Y | Z |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model | 1 General (Forward) Dynamic Programming Inventory Model |
+| 2 | I | Number of periods, N= | Number of periods, N= | Number of periods, N= | 3 | Current | period= | 3 |  |  |  |  | Optimum solution | Optimum solution | Optimum solution | Optimum solution | Optimum solution | Optimum solution |
+| 3 | N | K3= | 6 | h3= | 2 | c3(z3)- | 10 | 20 | 3 |  |  |  | Summary | Summary | Summary | Summary | Summary | Summary |
+| 4 | P | Period | 7 | 2 | 3 |  |  |  |  |  |  |  | ✘ | f | Z | ✘ | f | Z |
+| 5 | U | D(1 to 3)= | 2 | 2 | 4 |  |  |  |  |  |  |  | Period 1 | Period 1 | Period 1 | Period 2 | Period 2 | Period 2 |
+| 6 | T | Are z3 values correct? | Are z3 values correct? | Are z3 values correct? | yes | yes | yes | yes | yes |  |  | Optimum | 0 | 23 | 2 | 0 | 50 | 2 |
+| 7 |  | Period 2 | z3= | z3= | 0 | 1 | 2 | 3 | 4 |  |  | Period3 | 1 | 34 | 3 | 1 | 63 | 3 |
+| B |  | f2 | C3(z3)= | C3(z3)= | 0 | 16 | 26 | 36 | 56 |  |  | f3 z3 | 2 | 55 | 4 | 2 | 77 | 3 |
+| 9 | S | 50 | x4= | 0 | 123 | 116 | 103 | 99 | 106 |  |  | 99 | 3 3 | 76 | 5 | 3 | 100 | 4 |
+| 10 | T | 63 |  |  |  |  |  |  |  |  |  |  | 4 | 97 | 6 | 4 | 123 | 5 |
+| 11 | A | 77 |  |  |  |  |  |  |  |  |  |  | 5 | 118 | 7 | Period 3 | Period 3 | Period 3 |
+| 12 | G | 100 |  |  |  |  |  |  |  |  |  |  | 6 | 139 | 8 | 0 | 99 | 3 |
 
 FIGURE 13.10
 
@@ -772,21 +1043,26 @@ Once all input data have been entered, the optimum values of ${f}_{i}$ and ${z}_
 
 Next, to prepare for stage 2, copy ${f}_{1}$ from the permanent record and paste it in column A, as shown in Figure 13.10. All that is needed now is to update the input data for period 2. The process is repeated for period 3.
 
-Dynamic programming algorithm with constant or decreasing marginal costs. The general DP given above is applicable with any cost function. This generalization dictates that the state ${x}_{i}$ and the alternatives ${z}_{i}$ at stage $i$ assume values in increments of 1, which could result in large tableaus when the demand amounts are large.
+Dynamic programming algorithm with constant or decreasing marginal costs. The general DP given above is applicable with any cost function. This generalization dictates that the state ${x}_{i}$ and the alternatives ${z}_{i}$ at stage $i$ assume values in increments of 1, which could result in large tableaus when the demand amounts are large. ^constantcosts
 
 A special case of the general DP model holds promise in reducing the volume of computations. In this special situation, both the unit production and the unit holding costs are nonincreasing (concave) functions of the production quantity and the inventory level, respectively. This situation typically occurs when the unit cost function is constant or when quantity discount is allowed.
 
 Under the given conditions, it can be proved that ${}^{6}$
 
-1. Given zero initial inventory $\left( {{x}_{1} = 0}\right)$ , it is optimal to satisfy the demand in any period $i$ either from new production or from entering inventory, but never from both-that is, ${z}_{i}{x}_{i} = 0$ . (For the case with positive initial inventory, ${x}_{1} > 0$ , the amount can be written off from the demands of the successive periods until it is exhausted.)
+1. Given zero initial inventory $\left( {{x}_{1} = 0}\right)$ , it is optimal to satisfy the demand in any period $i$ either from new production or from entering inventory, but never from both-that is, ${z}_{i}{x}_{i} = 0$ . ^productionorinventory (For the case with positive initial inventory, ${x}_{1} > 0$ , the amount can be written off from the demands of the successive periods until it is exhausted.)
 
-2. The optimal production quantity, ${z}_{i}$ , for period $i$ must either be zero or it must satisfy the exact demand for one or more contiguous succeeding periods.
+2. The optimal production quantity, ${z}_{i}$ , for period $i$ must either be zero or it must satisfy the exact demand for one or more contiguous succeeding periods. ^contiguous
 
 ## Example 13.4-3
 
 A four-period inventory model operates with the following data:
 
-<table><tr><td>Period $i$</td><td>Demand ${D}_{i}$ (units)</td><td>Setup cost ${K}_{i}\left( \mathbb{s}\right)$</td></tr><tr><td>1</td><td>76</td><td>98</td></tr><tr><td>2</td><td>26</td><td>114</td></tr><tr><td>3</td><td>90</td><td>185</td></tr><tr><td>4</td><td>67</td><td>70</td></tr></table>
+| Period $i$ | Demand ${D}_{i}$ (units) | Setup cost ${K}_{i}\left( \mathbb{s}\right)$ |
+|---|---|---|
+| 1 | 76 | 98 |
+| 2 | 26 | 114 |
+| 3 | 90 | 185 |
+| 4 | 67 | 70 |
 
 The initial inventory ${x}_{1}$ is 15 units, the unit production cost is $\$ 2$ , and the unit holding cost per period is $\$ 1$ for all the periods. (For simplicity, the unit production and holding costs are the same for all the periods.)
 
@@ -794,7 +1070,15 @@ The solution is determined by the forward algorithm given previously, except tha
 
 Period 1. ${D}_{1} = {61}$
 
-<table><tr><td rowspan="3">${x}_{2}$</td><td rowspan="3">${h}_{1}{x}_{2}$</td><td colspan="4">${C}_{1}\left( {z}_{1}\right)  + {h}_{1}{x}_{2}$</td><td colspan="2" rowspan="2">Optimal solution</td></tr><tr><td>${z}_{1} = {61}$</td><td>87</td><td>177</td><td>244</td></tr><tr><td>${C}_{1}\left( {z}_{1}\right)  = {220}$</td><td>272</td><td>452</td><td>586</td><td>${f}_{1}\left( {x}_{2}\right)$</td><td>${z}_{1}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>220</td><td></td><td></td><td></td><td>220</td><td>61</td></tr><tr><td>26</td><td>26</td><td></td><td>298</td><td></td><td></td><td>298</td><td>87</td></tr><tr><td>116</td><td>116</td><td></td><td></td><td>568</td><td></td><td>568</td><td>177</td></tr><tr><td>183</td><td>183</td><td></td><td></td><td></td><td>769</td><td>769</td><td>244</td></tr><tr><td colspan="2">Order in 1 for</td><td>1</td><td>1,2</td><td>1,2,3</td><td>1,2,3,4</td><td></td><td></td></tr></table>
+| ${x}_{2}$ | ${h}_{1}{x}_{2}$ | ${C}_{1}\left( {z}_{1}\right)  + {h}_{1}{x}_{2}$ | ${C}_{1}\left( {z}_{1}\right)  + {h}_{1}{x}_{2}$ | ${C}_{1}\left( {z}_{1}\right)  + {h}_{1}{x}_{2}$ | ${C}_{1}\left( {z}_{1}\right)  + {h}_{1}{x}_{2}$ | Optimal solution | Optimal solution |
+|---|---|---|---|---|---|---|---|
+| ${z}_{1} = {61}$ | 87 | 177 | 244 |  |  |  |  |
+| ${C}_{1}\left( {z}_{1}\right)  = {220}$ | 272 | 452 | 586 | ${f}_{1}\left( {x}_{2}\right)$ | ${z}_{1}^{ * }$ |  |  |
+| 0 | 0 | 220 |  |  |  | 220 | 61 |
+| 26 | 26 |  | 298 |  |  | 298 | 87 |
+| 116 | 116 |  |  | 568 |  | 568 | 177 |
+| 183 | 183 |  |  |  | 769 | 769 | 244 |
+| Order in 1 for | Order in 1 for | 1 | 1,2 | 1,2,3 | 1,2,3,4 |  |  |
 
 ---
 
@@ -804,15 +1088,36 @@ ${}^{6}$ See H. Wagner and T. Whitin,"Dynamic Version of the Economic Lot Size M
 
 Period 2. ${D}_{2} = {26}$
 
-<table><tr><td rowspan="3">${x}_{3}$</td><td rowspan="3">${h}_{2}{x}_{3}$</td><td colspan="4">${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$</td><td colspan="2" rowspan="2">Optimal solution</td></tr><tr><td>${z}_{2} = 0$</td><td>26</td><td>116</td><td>183</td></tr><tr><td>${C}_{2}\left( {z}_{2}\right)  = 0$</td><td>166</td><td>346</td><td>480</td><td>${f}_{2}\left( {x}_{3}\right)$</td><td>${z}_{2}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>0 + 298</td><td>166 + 220</td><td></td><td></td><td>298</td><td>0</td></tr><tr><td></td><td></td><td>$= {298}$</td><td>$= {386}$</td><td></td><td></td><td></td><td></td></tr><tr><td>90</td><td>90</td><td>90 + 568</td><td></td><td>436 + 220</td><td></td><td>656</td><td>116</td></tr><tr><td></td><td></td><td>$= {658}$</td><td></td><td>$= {656}$</td><td></td><td></td><td></td></tr><tr><td>157</td><td>157</td><td>157 + 769</td><td></td><td></td><td>637 + 220</td><td>857</td><td>183</td></tr><tr><td></td><td></td><td>$= {926}$</td><td></td><td></td><td>$= {857}$</td><td></td><td></td></tr><tr><td colspan="2">Order in 2 for</td><td>-</td><td>2</td><td>2,3</td><td>2, 3, 4</td><td></td><td></td></tr></table>
+| ${x}_{3}$ | ${h}_{2}{x}_{3}$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | ${C}_{2}\left( {z}_{2}\right)  + {h}_{2}{x}_{3} + {f}_{1}\left( {{x}_{3} + {D}_{2} - {z}_{2}}\right)$ | Optimal solution | Optimal solution |
+|---|---|---|---|---|---|---|---|
+| ${z}_{2} = 0$ | 26 | 116 | 183 |  |  |  |  |
+| ${C}_{2}\left( {z}_{2}\right)  = 0$ | 166 | 346 | 480 | ${f}_{2}\left( {x}_{3}\right)$ | ${z}_{2}^{ * }$ |  |  |
+| 0 | 0 | 0 + 298 | 166 + 220 |  |  | 298 | 0 |
+|  |  | $= {298}$ | $= {386}$ |  |  |  |  |
+| 90 | 90 | 90 + 568 |  | 436 + 220 |  | 656 | 116 |
+|  |  | $= {658}$ |  | $= {656}$ |  |  |  |
+| 157 | 157 | 157 + 769 |  |  | 637 + 220 | 857 | 183 |
+|  |  | $= {926}$ |  |  | $= {857}$ |  |  |
+| Order in 2 for | Order in 2 for | - | 2 | 2,3 | 2, 3, 4 |  |  |
 
 Period 3. ${D}_{3} = {90}$
 
-<table><tr><td rowspan="3">${x}_{4}$</td><td rowspan="3">${h}_{3}{x}_{4}$</td><td colspan="3">${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$</td><td colspan="2" rowspan="2">Optimal solution</td></tr><tr><td>${z}_{3} = 0$</td><td>90</td><td>157</td></tr><tr><td>${C}_{3}\left( {z}_{3}\right)  = 0$</td><td>365</td><td>499</td><td>${f}_{3}\left( {x}_{4}\right)$</td><td>${z}_{3}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>$0 + {656} = {656}$</td><td>${365} + {298} = {663}$</td><td></td><td>656</td><td>0</td></tr><tr><td>67</td><td>67</td><td>${67} + {857} = {924}$</td><td></td><td>${566} + {298} = {864}$</td><td>864</td><td>157</td></tr><tr><td colspan="2">Order in 3 for</td><td>-</td><td>3</td><td>3,4</td><td></td><td></td></tr></table>
+| ${x}_{4}$ | ${h}_{3}{x}_{4}$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | ${C}_{3}\left( {z}_{3}\right)  + {h}_{3}{x}_{4} + {f}_{2}\left( {{x}_{4} + {D}_{3} - {z}_{3}}\right)$ | Optimal solution | Optimal solution |
+|---|---|---|---|---|---|---|
+| ${z}_{3} = 0$ | 90 | 157 |  |  |  |  |
+| ${C}_{3}\left( {z}_{3}\right)  = 0$ | 365 | 499 | ${f}_{3}\left( {x}_{4}\right)$ | ${z}_{3}^{ * }$ |  |  |
+| 0 | 0 | $0 + {656} = {656}$ | ${365} + {298} = {663}$ |  | 656 | 0 |
+| 67 | 67 | ${67} + {857} = {924}$ |  | ${566} + {298} = {864}$ | 864 | 157 |
+| Order in 3 for | Order in 3 for | - | 3 | 3,4 |  |  |
 
 Period 4. ${D}_{4} = {67}$
 
-<table><tr><td rowspan="3">${x}_{5}$</td><td rowspan="3">${h}_{4}{x}_{5}$</td><td colspan="2">${C}_{4}\left( {z}_{4}\right)  + {h}_{4}{x}_{5} + {f}_{3}\left( {{x}_{5} + {D}_{4} - {z}_{4}}\right)$</td><td colspan="2" rowspan="2">Optimal solution</td></tr><tr><td>${z}_{4} = 0$</td><td>67</td></tr><tr><td>${C}_{4}\left( {z}_{4}\right)  = 0$</td><td>204</td><td>${f}_{4}\left( {x}_{5}\right)$</td><td>${z}_{4}^{ * }$</td></tr><tr><td>0</td><td>0</td><td>$0 + {864} = {864}$</td><td>${204} + {656} = {860}$</td><td>860</td><td>67</td></tr><tr><td colspan="2">Order in 4 for</td><td>-</td><td>4</td><td></td><td></td></tr></table>
+| ${x}_{5}$ | ${h}_{4}{x}_{5}$ | ${C}_{4}\left( {z}_{4}\right)  + {h}_{4}{x}_{5} + {f}_{3}\left( {{x}_{5} + {D}_{4} - {z}_{4}}\right)$ | ${C}_{4}\left( {z}_{4}\right)  + {h}_{4}{x}_{5} + {f}_{3}\left( {{x}_{5} + {D}_{4} - {z}_{4}}\right)$ | Optimal solution | Optimal solution |
+|---|---|---|---|---|
+| ${z}_{4} = 0$ | 67 |  |  |  |  |
+| ${C}_{4}\left( {z}_{4}\right)  = 0$ | 204 | ${f}_{4}\left( {x}_{5}\right)$ | ${z}_{4}^{ * }$ |  |  |
+| 0 | 0 | $0 + {864} = {864}$ | ${204} + {656} = {860}$ | 860 | 67 |
+| Order in 4 for | Order in 4 for | - | 4 |  |  |
 
 The optimal policy is determined from the tableaus as follows:
 
@@ -832,7 +1137,7 @@ Template excelWagnerWhitin.xls is similar to that of the general model excelDPIn
 
 Silver-Meal heuristic. This heuristic is valid only when the unit production cost is constant and identical for all the periods. For this reason, it balances only the setup and holding costs.
 
-The heuristic identifies the successive future periods whose demand can be filled from the production of the current period. The objective is to minimize the associated setup and holding costs per period.
+The heuristic identifies the successive future periods whose demand can be filled from the production of the current period. The objective is to minimize the associated setup and holding costs per period. ^silvermeal
 
 Suppose that we produce in period $i$ for periods $i, i + 1,\ldots$ , and $t, i < t$ , and define $\operatorname{TC}\left( {i, t}\right)$ as the associated setup and holding costs for the same periods. Using the same notation of the DP models, we have
 
@@ -878,31 +1183,59 @@ Example 13.4-4
 
 Find the optimal inventory policy for the following six-period inventory situation:
 
-<table><tr><td>Period $i$</td><td>${D}_{i}$ (units)</td><td>${K}_{i}\left( \mathbb{S}\right)$</td><td>${h}_{i}\left( \$ \right)$</td></tr><tr><td>1</td><td>10</td><td>20</td><td>1</td></tr><tr><td>2</td><td>15</td><td>17</td><td>1</td></tr><tr><td>3</td><td>7</td><td>10</td><td>1</td></tr><tr><td>4</td><td>20</td><td>18</td><td>3</td></tr><tr><td>5</td><td>13</td><td>5</td><td>1</td></tr><tr><td>6</td><td>25</td><td>50</td><td>1</td></tr></table>
+| Period $i$ | ${D}_{i}$ (units) | ${K}_{i}\left( \mathbb{S}\right)$ | ${h}_{i}\left( \$ \right)$ |
+|---|---|---|---|
+| 1 | 10 | 20 | 1 |
+| 2 | 15 | 17 | 1 |
+| 3 | 7 | 10 | 1 |
+| 4 | 20 | 18 | 3 |
+| 5 | 13 | 5 | 1 |
+| 6 | 25 | 50 | 1 |
 
 The unit production cost is $\$ 2$ for all the periods.
 
 Iteration $\mathbf{1}\left( {i = 1,{K}_{1} = \$ {20}}\right)$ . The function $\operatorname{TC}\left( {1, t}\right)$ is computed recursively in $t$ . For example, given $\operatorname{TC}\left( {1,1}\right)  = \$ {20},\operatorname{TC}\left( {1,2}\right)  = \operatorname{TC}\left( {1,1}\right)  + {h}_{1}{D}_{2} = {20} + 1 \times  {15} = \$ {35}$ .
 
-<table><tr><td>Period $t$</td><td>${D}_{i}$</td><td>$\operatorname{TC}\left( {1, t}\right)$</td><td>$\operatorname{TCU}\left( {1, t}\right)$</td></tr><tr><td>1</td><td>10</td><td>\$20</td><td>$\frac{20}{1} = \$ {20.00}$</td></tr><tr><td>2</td><td>15</td><td>${20} + 1 \times  {15} = \$ {35}$</td><td>$\frac{35}{2} = \$ {17.50}$</td></tr><tr><td>3</td><td>7</td><td>${35} + \left( {1 + 1}\right)  \times  7 = \$ {94}$</td><td>$\frac{49}{3} = \$ {16.33}$</td></tr><tr><td>4</td><td>20</td><td>${49} + \left( {1 + 1 + 1}\right)  \times  {20} = \$ {109}$</td><td>$\frac{109}{4} = \$ {27.25}$</td></tr></table>
+| Period $t$ | ${D}_{i}$ | $\operatorname{TC}\left( {1, t}\right)$ | $\operatorname{TCU}\left( {1, t}\right)$ |
+|---|---|---|---|
+| 1 | 10 | \$20 | $\frac{20}{1} = \$ {20.00}$ |
+| 2 | 15 | ${20} + 1 \times  {15} = \$ {35}$ | $\frac{35}{2} = \$ {17.50}$ |
+| 3 | 7 | ${35} + \left( {1 + 1}\right)  \times  7 = \$ {94}$ | $\frac{49}{3} = \$ {16.33}$ |
+| 4 | 20 | ${49} + \left( {1 + 1 + 1}\right)  \times  {20} = \$ {109}$ | $\frac{109}{4} = \$ {27.25}$ |
 
 The local minimum occurs at ${t}^{ * } = 3$ , which calls for ordering ${10} + {15} + 7 = {32}$ units in period 1 for periods 1 to 3 . Set $i = {t}^{ * } + 1 = 3 + 1 = 4$ .
 
 Iteration 2 (i = 4, ${\mathbf{K}}_{\mathbf{4}} = \$ \mathbf{{18}}$ ).
 
-<table><tr><td>Period $t$</td><td>${D}_{\mathrm{i}}$</td><td>$\operatorname{TC}\left( {4, t}\right)$</td><td>$\operatorname{TCU}\left( {4, t}\right)$</td></tr><tr><td>4</td><td>20</td><td>\$18</td><td>$\frac{18}{1} = \$ {18.00}$</td></tr><tr><td>5</td><td>13</td><td>${18} + 3 \times  {13} = \$ {57}$</td><td>$\frac{57}{2} = \$ {28.50}$</td></tr></table>
+| Period $t$ | ${D}_{\mathrm{i}}$ | $\operatorname{TC}\left( {4, t}\right)$ | $\operatorname{TCU}\left( {4, t}\right)$ |
+|---|---|---|---|
+| 4 | 20 | \$18 | $\frac{18}{1} = \$ {18.00}$ |
+| 5 | 13 | ${18} + 3 \times  {13} = \$ {57}$ | $\frac{57}{2} = \$ {28.50}$ |
 
 The calculations show that ${t}^{ * } = 4$ , which calls for ordering 20 units in period 4 for period 4 . Set $i = 4 + 1 = 5$ .
 
 Iteration $3\left( {i = 5,{K}_{5} = \$ 5}\right)$
 
-<table><tr><td>Period $t$</td><td>${D}_{r}$</td><td>$\operatorname{TC}\left( {5, t}\right)$</td><td>$\operatorname{TCU}\left( {5, t}\right)$</td></tr><tr><td>5</td><td>13</td><td>\$5</td><td>$\frac{5}{1} = \$ 5$</td></tr><tr><td>6</td><td>25</td><td>$5 + 1 \times  {25} = \$ {30}$</td><td>$\frac{30}{2} = \$ {15}$</td></tr></table>
+| Period $t$ | ${D}_{r}$ | $\operatorname{TC}\left( {5, t}\right)$ | $\operatorname{TCU}\left( {5, t}\right)$ |
+|---|---|---|---|
+| 5 | 13 | \$5 | $\frac{5}{1} = \$ {5.00}$ |
+| 5 | 13 | \$5 | $\frac{5}{1} = \$ 5$ |
+| 6 | 25 | $5 + 1 \times  {25} = \$ {30}$ | $\frac{30}{2} = \$ {15}$ |
 
 The minimum occurs at ${t}^{ * } = 5$ , which requires ordering 13 units in period 5 for period 5 . Next, we set $i = 5 + 1 = 6$ . However, because $i = 6$ is the last period of the planning horizon, we must order 25 unit in period 6 for period 6 .
 
 Remarks. The following table compares the heuristic and the exact DP solution. We have deleted the unit production cost in the dynamic programming model because it is not included in the heuristic computations.
 
-<table><tr><td rowspan="2">Period</td><td colspan="2">Heuristic</td><td colspan="2">Dynamic programming</td></tr><tr><td>Units produced</td><td>Cost (\$)</td><td>Units produced</td><td>Cost (\$)</td></tr><tr><td>1</td><td>32</td><td>49</td><td>10</td><td>20</td></tr><tr><td>2</td><td>0</td><td>0</td><td>22</td><td>24</td></tr><tr><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>4</td><td>20</td><td>18</td><td>20</td><td>18</td></tr><tr><td>5</td><td>13</td><td>5</td><td>38</td><td>30</td></tr><tr><td>6</td><td>25</td><td>50</td><td>0</td><td>0</td></tr><tr><td>Total</td><td>90</td><td>122</td><td>90</td><td>92</td></tr></table>
+| Period | Heuristic | Heuristic | Dynamic programming | Dynamic programming |
+|---|---|---|---|---|---|
+| Units produced | Cost (\$) | Units produced | Cost (\$) |  |
+| 1 | 32 | 49 | 10 | 20 |
+| 2 | 0 | 0 | 22 | 24 |
+| 3 | 0 | 0 | 0 | 0 |
+| 4 | 20 | 18 | 20 | 18 |
+| 5 | 13 | 5 | 38 | 30 |
+| 6 | 25 | 50 | 0 | 0 |
+| Total | 90 | 122 | 90 | 92 |
 
 The heuristic production schedule costs about ${32}\%$ more than that of the DP solution (\$122 vs. \$92). The "inadequate" performance of the heuristic may be attributed to the nature of the data, as the problem may lie in the extreme setup cost values for periods 5 and 6. Nevertheless, the example shows that the heuristic does not have the capability to "look ahead" for better scheduling opportunities. For example, ordering in period 5 for periods 5 and 6 (instead of ordering for each period separately) can save \$25, which will bring the total heuristic cost down to \$97.
 
@@ -920,7 +1253,7 @@ FIGURE 13.11
 
 Excel solution of Example 13.4-4 using Silver-Meal heuristic (file ExcelSilverMeal.xls)
 
-### 13.5 STICKY ISSUES IN INVENTORY MODELING
+### 13.5 STICKY ISSUES IN INVENTORY MODELING ^issues
 
 Implementation of inventory modeling in practice faces two hurdles:
 
@@ -956,7 +1289,7 @@ Tersine, R., Principles of Inventory and Materials Management, 4th ed., North Ho
 
 Waters, D., Inventory Control and Management, 2nd ed., Wiley, New York, 2003.
 
-## Case Study: Kroger Improves Pharmacy Inventory Management ${}^{7}$
+## Case Study: Kroger Improves Pharmacy Inventory Management ^krogerdetail ${}^{7}$
 
 Application Area: Pharmacies inventory control
 
@@ -1010,9 +1343,38 @@ ${}^{9}$ The inverse method for generating random discrete samples is presented 
 
 ---
 
-<table><tr><td>4</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td></tr><tr><td>1</td><td colspan="4">Input</td><td colspan="4">Output</td></tr><tr><td>2</td><td>Reorder pt. s</td><td>120</td><td>Start wk day</td><td>Thu</td><td></td><td>Average demand</td><td>24.00</td><td>Normalize</td></tr><tr><td>3</td><td>Up-to qty. S</td><td>180</td><td>Starting inv</td><td>100</td><td></td><td>Average inventory</td><td>85.00</td><td>d cost, $C$</td></tr><tr><td>4</td><td colspan="3">Reviews occur on MWF Pkge. Size</td><td>10</td><td colspan="2">Average shortage</td><td>25</td><td>15.31250</td></tr><tr><td>5</td><td></td><td></td><td>Lead time</td><td>2</td><td colspan="2">Number of orders</td><td>5</td><td></td></tr><tr><td>6</td><td></td><td></td><td></td><td></td><td colspan="2">Min. inv. Held (I+)</td><td>30</td><td></td></tr><tr><td>7</td><td></td><td></td><td></td><td></td><td colspan="2">Max. shortage (I-)</td><td>30</td><td></td></tr></table>
+| 4 | A | B | C | D | E | F | G | H |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | Input | Input | Input | Input | Output | Output | Output | Output |
+| 2 | Reorder pt. s | 120 | Start wk day | Thu |  | Average demand | 24.00 | Normalize |
+| 3 | Up-to qty. S | 180 | Starting inv | 100 |  | Average inventory | 85.00 | d cost, $C$ |
+| 4 | Reviews occur on MWF Pkge. Size | Reviews occur on MWF Pkge. Size | Reviews occur on MWF Pkge. Size | 10 | Average shortage | Average shortage | 25 | 15.31250 |
+| 5 |  |  | Lead time | 2 | Number of orders | Number of orders | 5 |  |
+| 6 |  |  |  |  | Min. inv. Held (I+) | Min. inv. Held (I+) | 30 |  |
+| 7 |  |  |  |  | Max. shortage (I-) | Max. shortage (I-) | 30 |  |
 
-<table><tr><td>8</td><td>Demand</td><td>Week days</td><td>Beginning inventory</td><td>Inventory position</td><td>Place order?</td><td>Order quantity</td><td>Quantity received</td><td>Ending inventory</td></tr><tr><td>9</td><td>0</td><td>Thu</td><td>100</td><td>100</td><td></td><td>0</td><td>0</td><td>100</td></tr><tr><td>10</td><td>60</td><td>Fri</td><td>100</td><td>100</td><td>yes</td><td>80</td><td>0</td><td>40</td></tr><tr><td>11</td><td>60</td><td>Sat</td><td>40</td><td>120</td><td></td><td>0</td><td>0</td><td>-20</td></tr><tr><td>12</td><td>0</td><td>Sun</td><td>-20</td><td>60</td><td></td><td>0</td><td>80</td><td>60</td></tr><tr><td>13</td><td>0</td><td>Mon</td><td>60</td><td>60</td><td>yes</td><td>120</td><td>0</td><td>60</td></tr><tr><td>14</td><td>30</td><td>Tue</td><td>60</td><td>180</td><td></td><td>0</td><td>0</td><td>30</td></tr><tr><td>15</td><td>0</td><td>Wed</td><td>30</td><td>150</td><td></td><td>0</td><td>120</td><td>150</td></tr><tr><td>16</td><td>0</td><td>Thu</td><td>150</td><td>150</td><td></td><td>0</td><td>0</td><td>150</td></tr><tr><td>17</td><td>0</td><td>Fri</td><td>150</td><td>150</td><td></td><td>0</td><td>0</td><td>150</td></tr><tr><td>18</td><td>0</td><td>Sat</td><td>150</td><td>150</td><td></td><td>0</td><td>0</td><td>150</td></tr><tr><td>19</td><td>0</td><td>Sun</td><td>150</td><td>150</td><td></td><td>0</td><td>0</td><td>150</td></tr><tr><td>20</td><td>30</td><td>Mon</td><td>150</td><td>150</td><td></td><td>0</td><td>0</td><td>120</td></tr><tr><td>21</td><td>60</td><td>Tue</td><td>120</td><td>120</td><td></td><td>0</td><td>0</td><td>60</td></tr><tr><td>22</td><td>30</td><td>Wed</td><td>60</td><td>60</td><td>yes</td><td>120</td><td>0</td><td>30</td></tr><tr><td>23</td><td>60</td><td>Thu</td><td>30</td><td>150</td><td></td><td>0</td><td>0</td><td>-30</td></tr><tr><td>24</td><td>0</td><td>Fri</td><td>-30</td><td>90</td><td>yes</td><td>90</td><td>120</td><td>90</td></tr><tr><td>25</td><td>60</td><td>Sat</td><td>90</td><td>180</td><td></td><td>0</td><td>0</td><td>30</td></tr><tr><td>26</td><td>90</td><td>Sun</td><td>30</td><td>120</td><td></td><td>0</td><td>90</td><td>30</td></tr><tr><td>27</td><td>0</td><td>Mon</td><td>30</td><td>30</td><td>yes</td><td>150</td><td>0</td><td>30</td></tr><tr><td>28</td><td>0</td><td>Tue</td><td>30</td><td>180</td><td></td><td>0</td><td>0</td><td>30</td></tr></table>
+| 8 | Demand | Week days | Beginning inventory | Inventory position | Place order? | Order quantity | Quantity received | Ending inventory |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 9 | 0 | Thu | 100 | 100 |  | 0 | 0 | 100 |
+| 10 | 60 | Fri | 100 | 100 | yes | 80 | 0 | 40 |
+| 11 | 60 | Sat | 40 | 120 |  | 0 | 0 | -20 |
+| 12 | 0 | Sun | -20 | 60 |  | 0 | 80 | 60 |
+| 13 | 0 | Mon | 60 | 60 | yes | 120 | 0 | 60 |
+| 14 | 30 | Tue | 60 | 180 |  | 0 | 0 | 30 |
+| 15 | 0 | Wed | 30 | 150 |  | 0 | 120 | 150 |
+| 16 | 0 | Thu | 150 | 150 |  | 0 | 0 | 150 |
+| 17 | 0 | Fri | 150 | 150 |  | 0 | 0 | 150 |
+| 18 | 0 | Sat | 150 | 150 |  | 0 | 0 | 150 |
+| 19 | 0 | Sun | 150 | 150 |  | 0 | 0 | 150 |
+| 20 | 30 | Mon | 150 | 150 |  | 0 | 0 | 120 |
+| 21 | 60 | Tue | 120 | 120 |  | 0 | 0 | 60 |
+| 22 | 30 | Wed | 60 | 60 | yes | 120 | 0 | 30 |
+| 23 | 60 | Thu | 30 | 150 |  | 0 | 0 | -30 |
+| 24 | 0 | Fri | -30 | 90 | yes | 90 | 120 | 90 |
+| 25 | 60 | Sat | 90 | 180 |  | 0 | 0 | 30 |
+| 26 | 90 | Sun | 30 | 120 |  | 0 | 90 | 30 |
+| 27 | 0 | Mon | 30 | 30 | yes | 150 | 0 | 30 |
+| 28 | 0 | Tue | 30 | 180 |  | 0 | 0 | 30 |
 
 FIGURE 13.12
 
@@ -1084,7 +1446,11 @@ Plans are underway to extend the model to other store departments. In particular
 
 ## PROBLEMS
 
-<table><tr><td>Section</td><td>Assigned Problems</td><td>Section</td><td>Assigned Problems</td></tr><tr><td>13.1.1</td><td>13-1 to 13-2</td><td>13.3.3</td><td>13-18 to 13-21</td></tr><tr><td>13.3.1</td><td>13-3 to 13-12</td><td>13.4.1</td><td>13-22 to 13-25</td></tr><tr><td>13.3.2</td><td>13-13 to 13-17</td><td>13.4.2</td><td>13-26 to 13-36</td></tr></table>
+| Section | Assigned Problems | Section | Assigned Problems |
+|---|---|---|---|
+| 13.1.1 | 13-1 to 13-2 | 13.3.3 | 13-18 to 13-21 |
+| 13.3.1 | 13-3 to 13-12 | 13.4.1 | 13-22 to 13-25 |
+| 13.3.2 | 13-13 to 13-17 | 13.4.2 | 13-26 to 13-36 |
 
 *13-1. The current-year balance sheet of a company shows a beginning and end inventories of \$90.4 million and \$20.2 million, respectively. The net revenue from sales for the year is \$210.3 million and the gross profit is \$30.4 million. The final report claims that the company's average days-in-inventory is about 4 months. Assess the company's claim.
 
@@ -1180,7 +1546,14 @@ $$
 
 *13-18. The following data describe five inventory items: ${}^{11}$
 
-<table><tr><td>Item $i$</td><td>${K}_{i}\left( \mathbb{s}\right)$</td><td>${D}_{i}$ (units per day)</td><td>${h}_{i}\left( \$ \right)$</td><td>${a}_{i}\left( {\mathrm{{ft}}}^{2}\right)$</td></tr><tr><td>1</td><td>35</td><td>22</td><td>0.35</td><td>1.0</td></tr><tr><td>2</td><td>28</td><td>34</td><td>0.15</td><td>0.8</td></tr><tr><td>3</td><td>30</td><td>14</td><td>0.28</td><td>1.1</td></tr><tr><td>4</td><td>25</td><td>21</td><td>0.30</td><td>0.5</td></tr><tr><td>5</td><td>20</td><td>26</td><td>0.42</td><td>1.2</td></tr><tr><td colspan="5">Total available storage area $= {22}{\mathrm{{ft}}}^{2}$</td></tr></table>
+| Item $i$ | ${K}_{i}\left( \mathbb{s}\right)$ | ${D}_{i}$ (units per day) | ${h}_{i}\left( \$ \right)$ | ${a}_{i}\left( {\mathrm{{ft}}}^{2}\right)$ |
+|---|---|---|---|---|
+| 1 | 35 | 22 | 0.35 | 1.0 |
+| 2 | 28 | 34 | 0.15 | 0.8 |
+| 3 | 30 | 14 | 0.28 | 1.1 |
+| 4 | 25 | 21 | 0.30 | 0.5 |
+| 5 | 20 | 26 | 0.42 | 1.2 |
+| Total available storage area $= {22}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {22}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {22}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {22}{\mathrm{{ft}}}^{2}$ | Total available storage area $= {22}{\mathrm{{ft}}}^{2}$ |
 
 Determine the optimal order quantities.
 
@@ -1190,7 +1563,12 @@ Determine the optimal order quantities.
 
 *13-21. The following data describe four inventory items:
 
-<table><tr><td>Item $i$</td><td>${K}_{i}\left( \mathbb{s}\right)$</td><td>${D}_{i}$ (units per day)</td><td>${h}_{i}\left( \mathbb{s}\right)$</td></tr><tr><td>1</td><td>100</td><td>10</td><td>.1</td></tr><tr><td>2</td><td>50</td><td>20</td><td>.2</td></tr><tr><td>3</td><td>90</td><td>5</td><td>.2</td></tr><tr><td>4</td><td>20</td><td>10</td><td>.1</td></tr></table>
+| Item $i$ | ${K}_{i}\left( \mathbb{s}\right)$ | ${D}_{i}$ (units per day) | ${h}_{i}\left( \mathbb{s}\right)$ |
+|---|---|---|---|
+| 1 | 100 | 10 | .1 |
+| 2 | 50 | 20 | .2 |
+| 3 | 90 | 5 | .2 |
+| 4 | 20 | 10 | .1 |
 
 The company wishes to determine the economic order quantity for each of the four items such that the total number of orders per 365-day year is at most 150. Formulate the problem as a nonlinear program, and find the optimum solution.
 
@@ -1202,11 +1580,24 @@ The company wishes to determine the economic order quantity for each of the four
 
 13-23. Solve Example 13.4-1, assuming that the unit production and holding costs are as given in the following table:
 
-<table><tr><td>Period $i$</td><td>Regular time unit cost (\$)</td><td>Overtime unit cost (\$)</td><td>Unit holding cost (\$) to period $i + 1$</td></tr><tr><td>1</td><td>5.00</td><td>7.50</td><td>.10</td></tr><tr><td>2</td><td>3.00</td><td>4.50</td><td>.15</td></tr><tr><td>3</td><td>4.00</td><td>6.00</td><td>.12</td></tr><tr><td>4</td><td>1.00</td><td>1.50</td><td>.20</td></tr></table>
+| Period $i$ | Regular time unit cost (\$) | Overtime unit cost (\$) | Unit holding cost (\$) to period $i + 1$ |
+|---|---|---|---|
+| 1 | 5.00 | 7.50 | .10 |
+| 2 | 3.00 | 4.50 | .15 |
+| 3 | 4.00 | 6.00 | .12 |
+| 4 | 1.00 | 1.50 | .20 |
 
 13-24. An item is manufactured to meet known demand for four periods according to the following data:
 
-<table><tr><td rowspan="2">Production range (units)</td><td colspan="4">Unit production cost (\$) for period</td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td></tr><tr><td>1-3</td><td>1</td><td>2</td><td>2</td><td>3</td></tr><tr><td>4-11</td><td>1</td><td>4</td><td>5</td><td>4</td></tr><tr><td>12-15</td><td>2</td><td>4</td><td>7</td><td>5</td></tr><tr><td>16-25</td><td>5</td><td>6</td><td>10</td><td>7</td></tr><tr><td>Unit holding cost to next period (\$)</td><td>.30</td><td>.35</td><td>.20</td><td>.25</td></tr><tr><td>Total demand (units)</td><td>11</td><td>4</td><td>17</td><td>29</td></tr></table>
+| Production range (units) | Unit production cost (\$) for period | Unit production cost (\$) for period | Unit production cost (\$) for period | Unit production cost (\$) for period |
+|---|---|---|---|---|---|
+| 1 | 2 | 3 | 4 |  |
+| 1-3 | 1 | 2 | 2 | 3 |
+| 4-11 | 1 | 4 | 5 | 4 |
+| 12-15 | 2 | 4 | 7 | 5 |
+| 16-25 | 5 | 6 | 10 | 7 |
+| Unit holding cost to next period (\$) | .30 | .35 | .20 | .25 |
+| Total demand (units) | 11 | 4 | 17 | 29 |
 
 (a) Find the optimal solution, indicating the number of units to be produced in each period.
 
@@ -1214,7 +1605,14 @@ The company wishes to determine the economic order quantity for each of the four
 
 *13-25. The demand for a product over the next five periods may be filled from regular production, overtime production, or subcontracting. Subcontracting may be used only if the overtime capacity has been used. The following table gives the supply, demand, and cost data of the situation:
 
-<table><tr><td rowspan="2">Period</td><td colspan="4">Production capacity (units)</td></tr><tr><td>Regular time</td><td>Overtime</td><td>Subcontracting</td><td>Demand</td></tr><tr><td>1</td><td>100</td><td>50</td><td>30</td><td>153</td></tr><tr><td>2</td><td>40</td><td>60</td><td>80</td><td>200</td></tr><tr><td>3</td><td>90</td><td>80</td><td>70</td><td>150</td></tr><tr><td>4</td><td>60</td><td>50</td><td>20</td><td>200</td></tr><tr><td>5</td><td>70</td><td>50</td><td>100</td><td>203</td></tr></table>
+| Period | Production capacity (units) | Production capacity (units) | Production capacity (units) | Production capacity (units) |
+|---|---|---|---|---|---|
+| Regular time | Overtime | Subcontracting | Demand |  |
+| 1 | 100 | 50 | 30 | 153 |
+| 2 | 40 | 60 | 80 | 200 |
+| 3 | 90 | 80 | 70 | 150 |
+| 4 | 60 | 50 | 20 | 200 |
+| 5 | 70 | 50 | 100 | 203 |
 
 The unit production costs for the three levels in each period are \$4, \$6, and \$7, respectively. The unit holding cost per period is \$.50. Determine the optimal solution.
 
@@ -1230,7 +1628,12 @@ The unit production costs for the three levels in each period are \$4, \$6, and 
 
 *13-27. (a) Find the optimal solution for the following four-period inventory model:
 
-<table><tr><td>Period $i$</td><td>Demand ${D}_{i}$ (units)</td><td>Setup cost ${K}_{i}\left( \mathbb{s}\right)$</td><td>Holding cost ${h}_{i}\left( \$ \right)$</td></tr><tr><td>1</td><td>5</td><td>5</td><td>1</td></tr><tr><td>2</td><td>2</td><td>7</td><td>1</td></tr><tr><td>3</td><td>3</td><td>9</td><td>1</td></tr><tr><td>4</td><td>3</td><td>7</td><td>1</td></tr></table>
+| Period $i$ | Demand ${D}_{i}$ (units) | Setup cost ${K}_{i}\left( \mathbb{s}\right)$ | Holding cost ${h}_{i}\left( \$ \right)$ |
+|---|---|---|---|
+| 1 | 5 | 5 | 1 |
+| 2 | 2 | 7 | 1 |
+| 3 | 3 | 9 | 1 |
+| 4 | 3 | 7 | 1 |
 
 The unit production cost is $\$ 1$ each for the first 6 units and $\$ 2$ each for additional units.
 
@@ -1246,15 +1649,39 @@ The unit production cost is $\$ 1$ each for the first 6 units and $\$ 2$ each fo
 
 13-32. Solve the following 10-period deterministic inventory model. Assume an initial inventory of 50 units.
 
-<table><tr><td>Period $i$</td><td>Demand ${D}_{i}$ (units)</td><td>Unit production cost (\$)</td><td>Unit holding cost (\$)</td><td>Setup cost (\$)</td></tr><tr><td>1</td><td>150</td><td>6</td><td>1</td><td>100</td></tr><tr><td>2</td><td>100</td><td>6</td><td>1</td><td>100</td></tr><tr><td>3</td><td>20</td><td>4</td><td>2</td><td>100</td></tr><tr><td>4</td><td>40</td><td>4</td><td>1</td><td>200</td></tr><tr><td>5</td><td>70</td><td>6</td><td>2</td><td>200</td></tr><tr><td>6</td><td>90</td><td>8</td><td>3</td><td>200</td></tr><tr><td>7</td><td>130</td><td>4</td><td>1</td><td>300</td></tr><tr><td>8</td><td>180</td><td>4</td><td>4</td><td>300</td></tr><tr><td>9</td><td>140</td><td>2</td><td>2</td><td>300</td></tr><tr><td>10</td><td>50</td><td>6</td><td>1</td><td>300</td></tr></table>
+| Period $i$ | Demand ${D}_{i}$ (units) | Unit production cost (\$) | Unit holding cost (\$) | Setup cost (\$) |
+|---|---|---|---|---|---|
+| 1 | 150 | 6 | 1 | 100 |
+| 2 | 100 | 6 | 1 | 100 |
+| 3 | 20 | 4 | 2 | 100 |
+| 4 | 40 | 4 | 1 | 200 |
+| 5 | 70 | 6 | 2 | 200 |
+| 6 | 90 | 8 | 3 | 200 |
+| 7 | 130 | 4 | 1 | 300 |
+| 8 | 180 | 4 | 4 | 300 |
+| 9 | 140 | 2 | 2 | 300 |
+| 10 | 50 | 6 | 1 | 300 |
 
 13-33. Find the optimal inventory policy for the following five-period model. The unit production cost is \$10 for all periods. The unit holding cost is \$1 per period.
 
-<table><tr><td>Period $i$</td><td>Demand ${D}_{i}$ (units)</td><td>Setup cost ${K}_{1}\left( \mathbb{S}\right)$</td></tr><tr><td>1</td><td>50</td><td>80</td></tr><tr><td>2</td><td>70</td><td>70</td></tr><tr><td>3</td><td>100</td><td>60</td></tr><tr><td>4</td><td>30</td><td>80</td></tr><tr><td>5</td><td>60</td><td>60</td></tr></table>
+| Period $i$ | Demand ${D}_{i}$ (units) | Setup cost ${K}_{1}\left( \mathbb{S}\right)$ |
+|---|---|---|
+| 1 | 50 | 80 |
+| 2 | 70 | 70 |
+| 3 | 100 | 60 |
+| 4 | 30 | 80 |
+| 5 | 60 | 60 |
 
 13-34. Find the optimal inventory policy for the following six-period inventory situation: The unit production cost is \$2 for all the periods.
 
-<table><tr><td>Period $i$</td><td>${D}_{i}$ (units)</td><td>${K}_{i}\left( \mathbb{s}\right)$</td><td>${h}_{i}\left( \$ \right)$</td></tr><tr><td>1</td><td>10</td><td>20</td><td>1</td></tr><tr><td>2</td><td>15</td><td>17</td><td>1</td></tr><tr><td>3</td><td>7</td><td>10</td><td>1</td></tr><tr><td>4</td><td>20</td><td>18</td><td>3</td></tr><tr><td>5</td><td>13</td><td>5</td><td>1</td></tr><tr><td>6</td><td>25</td><td>50</td><td>1</td></tr></table>
+| Period $i$ | ${D}_{i}$ (units) | ${K}_{i}\left( \mathbb{s}\right)$ | ${h}_{i}\left( \$ \right)$ |
+|---|---|---|---|
+| 1 | 10 | 20 | 1 |
+| 2 | 15 | 17 | 1 |
+| 3 | 7 | 10 | 1 |
+| 4 | 20 | 18 | 3 |
+| 5 | 13 | 5 | 1 |
+| 6 | 25 | 50 | 1 |
 
 *13-35. The demand for fishing poles is at its minimum during the month of December and reaches its maximum during the month of April. Fishing Hole, Inc., estimates the
 
